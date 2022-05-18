@@ -6,21 +6,41 @@ import win32gui
 
 
 def click(x, y):
+    """
+    Clicks at the specified pixel coordinates.
+    :param x: x pixel
+    :param y: y pixel
+    :return:
+    """
     win32api.SetCursorPos((x, y))
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
     time.sleep(.01)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
 
 
-def get_screenshot():
-    toplist, winlist = [], []
-
+def get_hwnd(window_title: str):
+    """
+    Gets the window handle of the specified application.
+    :param window_title: the title of the application
+    :return: the window handle
+    """
     def enum_cb(hwnd, result):
-        winlist.append((hwnd, win32gui.GetWindowText(hwnd)))
+        win_list.append((hwnd, win32gui.GetWindowText(hwnd)))
 
-    win32gui.EnumWindows(enum_cb, toplist)
-    hwnd_list = [(hwnd, title) for hwnd, title in winlist if "downloads" in title.lower()]
-    hwnd = hwnd_list[0][0]
-    win32gui.SetForegroundWindow(hwnd)
+    top_list, win_list = [], []
+    win32gui.EnumWindows(enum_cb, top_list)
+    hwnd_list = [(hwnd, title) for hwnd, title in win_list if window_title in title.lower()]
+
+    if len(hwnd_list) != 0:
+        return hwnd_list[0][0]
+    return None
+
+
+def get_screenshot(hwnd: int) -> Image:
+    """
+    Takes a screenshot of the specified application.
+    :param hwnd: the window handle of the application.
+    :return: the screenshot of the specified application
+    """
     bbox = win32gui.GetWindowRect(hwnd)
     return ImageGrab.grab(bbox)
