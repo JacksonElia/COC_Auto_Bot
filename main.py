@@ -1,4 +1,7 @@
 from ctypes import windll
+
+import win32gui
+
 from obstacle_clearing import *
 from interaction_functions import *
 import cv2 as cv
@@ -9,7 +12,10 @@ def main():
     # Make program aware of DPI scaling,
     windll.user32.SetProcessDPIAware()
     hwnd = get_hwnd("bluestacks")
+
     win32gui.SetForegroundWindow(hwnd)
+
+    win32gui.MoveWindow(hwnd, 100, 100, 1260, 725, True)
 
     obstacle_clearer = ObstacleClearer(.97)
 
@@ -21,12 +27,12 @@ def main():
         obstacle_clearer.find_obstacle_rectangles(screenshot)
         obstacle_clearer.show_obstacle_locations(screenshot)
 
-        cv.imshow('Matches', screenshot)
+        cv.imshow("What the code sees", screenshot)
 
         if cv.waitKey(1) == ord("q"):
             cv.destroyWindow()
             break
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
