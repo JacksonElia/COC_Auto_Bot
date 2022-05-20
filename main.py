@@ -13,9 +13,8 @@ def main():
     windll.user32.SetProcessDPIAware()
     hwnd = get_hwnd("bluestacks")
 
+    win32gui.MoveWindow(hwnd, 100, 100, 1400, 805, True)
     win32gui.SetForegroundWindow(hwnd)
-
-    win32gui.MoveWindow(hwnd, 100, 100, 1260, 725, True)
 
     obstacle_clearer = ObstacleClearer(.97)
 
