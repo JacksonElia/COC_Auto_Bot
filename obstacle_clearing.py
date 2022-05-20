@@ -4,29 +4,28 @@ import numpy as np
 
 
 class ObstacleClearer:
-    threshold = 0.1
-    obstacle_list = []
+    obstacle_list = ()
     obstacle_rectangles = []
 
-    def __init__(self, confidence):
-        self.obstacle_list = [
-            cv.imread("assets/obstacles/jpg/bush.jpg", cv.IMREAD_UNCHANGED),
-            cv.imread("assets/obstacles/jpg/large_tree.jpg", cv.IMREAD_UNCHANGED),
-            cv.imread("assets/obstacles/jpg/left_trunk.jpg", cv.IMREAD_UNCHANGED),
-            cv.imread("assets/obstacles/jpg/log.jpg", cv.IMREAD_UNCHANGED),
-            cv.imread("assets/obstacles/jpg/medium_tree.jpg", cv.IMREAD_UNCHANGED),
-            cv.imread("assets/obstacles/jpg/mushroom.jpg", cv.IMREAD_UNCHANGED),
-            cv.imread("assets/obstacles/jpg/right_trunk.jpg", cv.IMREAD_UNCHANGED),
-            cv.imread("assets/obstacles/jpg/small_tree.jpg", cv.IMREAD_UNCHANGED)
-        ]
-        # Threshold is confidence inverted because of cv.TM_SQDIFF_NORMED
-        self.threshold = 1 - confidence
+    def __init__(self):
+        self.obstacle_list = (
+            (cv.imread("assets/obstacles/jpg/bush.jpg", cv.IMREAD_UNCHANGED), .97),
+            (cv.imread("assets/obstacles/jpg/large_tree.jpg", cv.IMREAD_UNCHANGED), .96),
+            (cv.imread("assets/obstacles/jpg/left_trunk.jpg", cv.IMREAD_UNCHANGED), .96),
+            (cv.imread("assets/obstacles/jpg/log.jpg", cv.IMREAD_UNCHANGED), .95),
+            (cv.imread("assets/obstacles/jpg/medium_tree.jpg", cv.IMREAD_UNCHANGED), .96),
+            (cv.imread("assets/obstacles/jpg/mushroom.jpg", cv.IMREAD_UNCHANGED), .95),
+            (cv.imread("assets/obstacles/jpg/right_trunk.jpg", cv.IMREAD_UNCHANGED), .96),
+            (cv.imread("assets/obstacles/jpg/small_tree.jpg", cv.IMREAD_UNCHANGED), .93)
+    )
 
     def find_obstacle_rectangles(self, screenshot: Image):
         self.obstacle_rectangles = []
-        for obstacle in self.obstacle_list:
+        for obstacle, confidence in self.obstacle_list:
+            # Threshold is confidence inverted because of cv.TM_SQDIFF_NORMED
+            threshold = 1 - confidence
             result = cv.matchTemplate(screenshot, obstacle, cv.TM_SQDIFF_NORMED)
-            locations = np.where(result <= self.threshold)
+            locations = np.where(result <= threshold)
             # Makes a list of (x, y) tuples for the pixel coordinates
             locations = list(zip(*locations[::-1]))
 

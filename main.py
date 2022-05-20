@@ -16,7 +16,7 @@ def main():
     win32gui.MoveWindow(hwnd, 100, 100, 1400, 805, True)
     win32gui.SetForegroundWindow(hwnd)
 
-    obstacle_clearer = ObstacleClearer(.97)
+    obstacle_clearer = ObstacleClearer()
 
     while True:
         screenshot = get_screenshot(hwnd)
