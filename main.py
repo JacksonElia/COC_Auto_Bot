@@ -1,20 +1,20 @@
 from ctypes import windll
 
-from obstacle_clearing import *
+from village_clearing import *
 from interaction_functions import *
 import cv2 as cv
 import numpy as np
 
 
 def main():
-    # Make program aware of DPI scaling,
+    # Makes program aware of DPI scaling,
     windll.user32.SetProcessDPIAware()
     hwnd = get_hwnd("bluestacks")
 
     win32gui.MoveWindow(hwnd, 100, 100, 1400, 805, True)
     win32gui.SetForegroundWindow(hwnd)
 
-    obstacle_clearer = ObstacleClearer()
+    village_clearer = VillageClearer(win32gui.GetWindowRect(hwnd))
 
     while True:
         screenshot = get_screenshot(hwnd)
@@ -22,8 +22,12 @@ def main():
         screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2BGR)
 
         zoom_out()
-        obstacle_clearer.find_obstacle_rectangles(screenshot)
-        obstacle_clearer.show_obstacle_locations(screenshot)
+        village_clearer.window_rectangle = win32gui.GetWindowRect(hwnd)
+        village_clearer.find_obstacle_rectangles(screenshot)
+        village_clearer.show_obstacles(screenshot)
+        village_clearer.find_resources(screenshot)
+        village_clearer.show_resources(screenshot)
+        village_clearer.collect_resources()
 
         cv.imshow("What the code sees", screenshot)
 

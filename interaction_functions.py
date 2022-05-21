@@ -5,14 +5,15 @@ import win32con
 import win32gui
 
 
-def click(x, y):
+def click(x: int, y: int, window_rectangle: list):
     """
-    Clicks at the specified pixel coordinates.
+    Clicks at the specified pixel coordinates relative to the window.
     :param x: x pixel
     :param y: y pixel
+    :param window_rectangle: the list with the rectangle for the window
     :return:
     """
-    win32api.SetCursorPos((x, y))
+    win32api.SetCursorPos((x + window_rectangle[0], y + window_rectangle[1]))
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
     time.sleep(.01)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
