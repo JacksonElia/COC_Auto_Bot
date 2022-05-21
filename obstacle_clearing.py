@@ -48,12 +48,16 @@ class ObstacleClearer:
     def show_obstacle_locations(self, screenshot: Image):
         line_color = (255, 0, 0)
         line_type = cv.LINE_4
+        marker_color = (255, 0, 255)
+        marker_type = cv.MARKER_CROSS
 
         for rectangle in self.obstacle_rectangles:
             # Draw the box
             top_left = (rectangle[0], rectangle[1])
             bottom_right = (rectangle[0] + rectangle[2], rectangle[1] + rectangle[3])
+            center = (int(rectangle[0] + rectangle[2] / 2), int(rectangle[1] + rectangle[3] / 2))
             cv.rectangle(screenshot, top_left, bottom_right, line_color, line_type)
+            cv.drawMarker(screenshot, center, marker_color, marker_type)
 
     def clear_obstacles(self):
         pass
