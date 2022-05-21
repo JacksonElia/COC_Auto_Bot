@@ -1,7 +1,5 @@
 from ctypes import windll
 
-import win32gui
-
 from obstacle_clearing import *
 from interaction_functions import *
 import cv2 as cv
@@ -23,6 +21,7 @@ def main():
         screenshot = np.array(screenshot)
         screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2BGR)
 
+        zoom_out()
         obstacle_clearer.find_obstacle_rectangles(screenshot)
         obstacle_clearer.show_obstacle_locations(screenshot)
 

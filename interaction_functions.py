@@ -18,6 +18,16 @@ def click(x, y):
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
 
 
+def zoom_out():
+    """
+    Zooms out the village
+    :return:
+    """
+    win32api.keybd_event(40, 0, 0, 0)
+    time.sleep(.1)
+    win32api.keybd_event(40, 0, win32con.KEYEVENTF_KEYUP, 0)
+
+
 def get_hwnd(window_title: str):
     """
     Gets the window handle of the specified application.
