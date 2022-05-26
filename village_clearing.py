@@ -17,7 +17,7 @@ class VillageClearer:
 
     OBSTACLES = ()
     RESOURCES = ()
-    BUTTONS = ()
+    MISC = ()
     NOT_ENOUGH_RESOURCES_COLOR = [127, 137, 254]  # In [B, G, R]
 
     def __init__(self, window_rectangle: list):
@@ -41,9 +41,9 @@ class VillageClearer:
             # TODO: Add dark elixir icon, presents, and grave
         )
 
-        self.BUTTONS = (
-            (cv.imread("assets/buttons/remove_button.jpg", cv.IMREAD_UNCHANGED), .9),
-            ()
+        self.MISC = (
+            (cv.imread("assets/buttons/remove_button.jpg", cv.IMREAD_UNCHANGED), .95),
+            (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .93)
         )
 
     def show_rectangles(self, screenshot: Image):
@@ -77,8 +77,8 @@ class VillageClearer:
             self.obstacle_rectangles += list(cv.groupRectangles(rectangle_list, 1, .5)[0])
 
     def clear_obstacle(self, screenshot: Image):
-        if self.obstacle_rectangles:
-            remove_button_image, confidence = self.BUTTONS[0]
+        if self.obstacle_rectangles and self.check_for_builders(screenshot):
+            remove_button_image, confidence = self.MISC[0]
             threshold = 1 - confidence
             result = cv.matchTemplate(screenshot, remove_button_image, cv.TM_SQDIFF_NORMED)
             location = np.where(result <= threshold)
@@ -99,7 +99,7 @@ class VillageClearer:
                 if not detect_if_color_present(self.NOT_ENOUGH_RESOURCES_COLOR, cropped_screenshot):
                     print("Enough Resources")
                     x, y = (int(rectangle[0] + rectangle[1] / 2), int(rectangle[2] + rectangle[3] / 2))
-                    # click(x, y, self.window_rectangle)
+                    click(x, y, self.window_rectangle)
                     return
                 else:
                     print("Not Enough")
@@ -127,9 +127,7 @@ class VillageClearer:
                 self.obstacles_attempted_to_remove.append(rectangle)
                 x, y = (int(rectangle[0] + rectangle[2] / 2), int(rectangle[1] + rectangle[3] / 2))
                 click(x, y, self.window_rectangle)
-                sleep(.5)  # The remove button takes a little bit of time to appear
-
-        # TODO: Check if there are builders
+                sleep(1)  # The remove button takes a little bit of time to appear
 
     def show_obstacles(self, screenshot: Image):
         line_color = (255, 0, 0)
@@ -191,3 +189,17 @@ class VillageClearer:
 
     def collect_loot_cart(self):
         pass
+
+    # TODO: Only check the top of the screen
+    def check_for_builders(self, screenshot) -> bool:
+        """
+        Checks for if there are available builders
+        :param screenshot: Screenshot of bluestacks
+        :return: True if there are builders, False if there aren't
+        """
+        zero_builders_image, confidence = self.MISC[1]
+        threshold = 1 - confidence
+        result = cv.matchTemplate(screenshot, zero_builders_image, cv.TM_SQDIFF_NORMED)
+        location = np.where(result <= threshold)
+        location = list(zip(*location[::-1]))
+        return not bool(location)

@@ -27,7 +27,7 @@ def main():
         village_clearer.show_obstacles(screenshot)
         village_clearer.find_resources(screenshot)
         village_clearer.show_resources(screenshot)
-        # village_clearer.collect_resources()
+        village_clearer.collect_resources()
 
         village_clearer.clear_obstacle(screenshot)
 
