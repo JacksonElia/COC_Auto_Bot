@@ -55,3 +55,20 @@ def get_screenshot(hwnd: int) -> Image:
     """
     bbox = win32gui.GetWindowRect(hwnd)
     return ImageGrab.grab(bbox)
+
+
+def detect_if_color_present(color: list, cropped_screenshot: Image) -> bool:
+    """
+    Returns True if the specified color is in the image
+    :param color: the [r, g, b] list representing the color
+    :param cropped_screenshot: the screenshot of the location where the color might be.
+    :return: if the color is in the image
+    """
+    for y in range(len(cropped_screenshot)):
+        for x in range(len(cropped_screenshot[y])):
+            pixel_color = cropped_screenshot[y][x]
+            if (abs(color[0] - pixel_color[0]) < 10 and
+                abs(color[1] - pixel_color[1]) < 10 and
+                abs(color[2] - pixel_color[2]) < 10):
+                return True
+    return False

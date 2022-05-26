@@ -21,13 +21,15 @@ def main():
         screenshot = np.array(screenshot)
         screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2BGR)
 
-        zoom_out()
+        # zoom_out() # TODO: Find a better way of doing this
         village_clearer.window_rectangle = win32gui.GetWindowRect(hwnd)
         village_clearer.find_obstacle_rectangles(screenshot)
         village_clearer.show_obstacles(screenshot)
         village_clearer.find_resources(screenshot)
         village_clearer.show_resources(screenshot)
-        village_clearer.collect_resources()
+        # village_clearer.collect_resources()
+
+        village_clearer.clear_obstacle(screenshot)
 
         cv.imshow("What the code sees", screenshot)
 
