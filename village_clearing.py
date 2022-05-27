@@ -25,6 +25,7 @@ class VillageClearer:
 
         self.OBSTACLES = (
             (cv.imread("assets/obstacles/jpg/bush.jpg", cv.IMREAD_UNCHANGED), .97),
+            (cv.imread("assets/obstacles/jpg/gem_box.jpg", cv.IMREAD_UNCHANGED), .95),
             (cv.imread("assets/obstacles/jpg/large_tree.jpg", cv.IMREAD_UNCHANGED), .96),
             (cv.imread("assets/obstacles/jpg/left_trunk.jpg", cv.IMREAD_UNCHANGED), .96),
             (cv.imread("assets/obstacles/jpg/log.jpg", cv.IMREAD_UNCHANGED), .95),
@@ -42,7 +43,7 @@ class VillageClearer:
         )
 
         self.MISC = (
-            (cv.imread("assets/buttons/remove_button.jpg", cv.IMREAD_UNCHANGED), .95),
+            (cv.imread("assets/buttons/remove_button.jpg", cv.IMREAD_UNCHANGED), .96),
             (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .93)
         )
 
