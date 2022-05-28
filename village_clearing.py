@@ -15,9 +15,10 @@ class VillageClearer:
 
     obstacles_attempted_to_remove = []
 
-    OBSTACLES = ()
-    RESOURCES = ()
-    MISC = ()
+    OBSTACLES: tuple
+    RESOURCES: tuple
+    REMOVE_BUTTON: tuple
+    ZERO_BUILDERS: tuple
     NOT_ENOUGH_RESOURCES_COLOR = [127, 137, 254]  # In [B, G, R]
 
     def __init__(self, window_rectangle: list):
@@ -42,16 +43,24 @@ class VillageClearer:
             # TODO: Add dark elixir icon, presents, and grave
         )
 
-        self.MISC = (
-            (cv.imread("assets/buttons/remove_button.jpg", cv.IMREAD_UNCHANGED), .96),
-            (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .93)
-        )
+        self.REMOVE_BUTTON = (cv.imread("assets/buttons/remove_button.jpg", cv.IMREAD_UNCHANGED), .96)
+        self.ZERO_BUILDERS = (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .93)
 
     def show_rectangles(self, screenshot: Image):
+        """
+        Shows obstacles and resources
+        :param screenshot: the screenshot of bluestacks
+        :return:
+        """
         self.show_obstacles(screenshot)
         self.show_resources(screenshot)
 
     def find_obstacle_rectangles(self, screenshot: Image):
+        """
+        Finds all of the rectangles for visible obstacles
+        :param screenshot: the screenshot of bluestacks
+        :return:
+        """
         self.obstacle_rectangles = []
         for obstacle, confidence in self.OBSTACLES:
             # Threshold is confidence inverted because of cv.TM_SQDIFF_NORMED
@@ -78,8 +87,13 @@ class VillageClearer:
             self.obstacle_rectangles += list(cv.groupRectangles(rectangle_list, 1, .5)[0])
 
     def clear_obstacle(self, screenshot: Image):
+        """
+        Clears all of the obstacles that are visible if it is able to
+        :param screenshot: the screenshot of bluestacks
+        :return:
+        """
         if self.obstacle_rectangles and self.check_for_builders(screenshot):
-            remove_button_image, confidence = self.MISC[0]
+            remove_button_image, confidence = self.REMOVE_BUTTON
             threshold = 1 - confidence
             result = cv.matchTemplate(screenshot, remove_button_image, cv.TM_SQDIFF_NORMED)
             location = np.where(result <= threshold)
@@ -131,6 +145,11 @@ class VillageClearer:
                 sleep(1)  # The remove button takes a little bit of time to appear
 
     def show_obstacles(self, screenshot: Image):
+        """
+        Shows every obstacle rectangle
+        :param screenshot: the screenshot of bluestacks
+        :return:
+        """
         line_color = (255, 0, 0)
         line_type = cv.LINE_4
         marker_color = (255, 0, 255)
@@ -145,6 +164,11 @@ class VillageClearer:
             cv.drawMarker(screenshot, center, marker_color, marker_type)
 
     def find_resources(self, screenshot: Image):
+        """
+        Finds all of the rectangles for the visible resources
+        :param screenshot: the screenshot of bluestacks
+        :return:
+        """
         self.resource_rectangles = []
         for resource, confidence in self.RESOURCES:
             threshold = 1 - confidence
@@ -170,11 +194,20 @@ class VillageClearer:
             self.resource_rectangles += list(cv.groupRectangles(rectangle_list, 1, .5)[0])
 
     def collect_resources(self):
+        """
+        Collects all of the visible collectors and graves
+        :return:
+        """
         for rectangle in self.resource_rectangles:
             x, y = (int(rectangle[0] + rectangle[2] / 2), int(rectangle[1] + rectangle[3] / 2))
             click(x, y, self.window_rectangle)
 
     def show_resources(self, screenshot: Image):
+        """
+        Shows every resource rectangle
+        :param screenshot:
+        :return:
+        """
         line_color = (0, 255, 0)
         line_type = cv.LINE_4
         marker_color = (255, 0, 255)
@@ -198,7 +231,7 @@ class VillageClearer:
         :param screenshot: Screenshot of bluestacks
         :return: True if there are builders, False if there aren't
         """
-        zero_builders_image, confidence = self.MISC[1]
+        zero_builders_image, confidence = self.ZERO_BUILDERS
         threshold = 1 - confidence
         result = cv.matchTemplate(screenshot, zero_builders_image, cv.TM_SQDIFF_NORMED)
         location = np.where(result <= threshold)
