@@ -34,12 +34,10 @@ def main():
         # village_clearer.collect_resources()
         # village_clearer.clear_obstacle(screenshot)
 
-        # village_upgrader.window_rectangle = win32gui.GetWindowRect(hwnd)
-        # village_upgrader.find_suggested_upgrades(screenshot)
-        # village_upgrader.show_suggested_upgrades(screenshot)
-        # village_upgrader.upgrade_building(screenshot)
-
-        village_upgrader.check_for_builders(screenshot)
+        village_upgrader.window_rectangle = win32gui.GetWindowRect(hwnd)
+        village_upgrader.upgrade_building(screenshot)
+        village_upgrader.find_suggested_upgrades(screenshot)
+        village_upgrader.show_suggested_upgrades(screenshot)
 
         cv.imshow("What the code sees", screenshot)
 

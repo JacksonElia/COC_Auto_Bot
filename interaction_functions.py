@@ -1,4 +1,6 @@
 from PIL import Image, ImageGrab
+import cv2 as cv
+import numpy as np
 import time
 import win32api
 import win32con
@@ -57,12 +59,44 @@ def get_screenshot(hwnd: int) -> Image:
     return ImageGrab.grab(bbox)
 
 
+def find_image_rectangle(image_tuple: tuple, screenshot: Image) -> list:
+    """
+    Attempts to find the rectangle of an image in a screenshot, this is good for when the image only appears in one
+    place on the screen at a time.
+    :param image_tuple: a tuple for the image trying to be found containing (image, confidence)
+    :param screenshot: the screenshot that the image might be in
+    :return: a list with the rectangle for the image in [x, y, w, h] or [] if the image is not found
+    """
+    image, confidence = image_tuple
+    threshold = 1 - confidence
+    result = cv.matchTemplate(screenshot, image, cv.TM_SQDIFF_NORMED)
+    location = np.where(result <= threshold)
+    location = list(zip(*location[::-1]))
+    rectangle = []
+    if location:
+        # Gets the first time the image is found
+        location = location[0]
+        rectangle = [location[0], location[1], image.shape[1], image.shape[0]]
+    return rectangle
+
+
+def get_center_of_rectangle(rectangle: list) -> tuple:
+    """
+    Finds the center of a rectangle
+    :param rectangle: the rectangle list [x, y, w, h]
+    :return: a tuple containing the center in (x, y)
+    """
+    x = int(rectangle[0] + rectangle[2] / 2)
+    y = int(rectangle[1] + rectangle[3] / 2)
+    return x, y
+
+
 def detect_if_color_present(color: list, cropped_screenshot: Image) -> bool:
     """
-    Returns True if the specified color is in the image
+    Returns True if the specified color is in the screenshot
     :param color: the [r, g, b] list representing the color
-    :param cropped_screenshot: the screenshot of the location where the color might be.
-    :return: if the color is in the image
+    :param cropped_screenshot: the screenshot of the location where the color might be
+    :return: a boolean for if the color is in the image
     """
     for y in range(len(cropped_screenshot)):
         for x in range(len(cropped_screenshot[y])):
