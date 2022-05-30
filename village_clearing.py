@@ -100,21 +100,22 @@ class VillageClearer:
             location = list(zip(*location[::-1]))
             if location:
                 location = location[0]
-                rectangle = [location[0], remove_button_image.shape[1], location[1], remove_button_image.shape[0]]
-
+                rectangle = [location[0], location[1], remove_button_image.shape[1], remove_button_image.shape[1]]
                 line_color = (0, 0, 255)
                 line_type = cv.LINE_4
-                top_left = (rectangle[0], rectangle[2])
-                bottom_right = (rectangle[0] + rectangle[1], rectangle[2] + rectangle[3])
+                top_left = (rectangle[0], rectangle[1])
+                bottom_right = (rectangle[0] + rectangle[2], rectangle[1] + rectangle[3])
                 cv.rectangle(screenshot, top_left, bottom_right, line_color, line_type)
 
                 # Check if there are resources to remove the obstacle
-                cropped_screenshot = screenshot[rectangle[2]:rectangle[2] + rectangle[3],
-                                     rectangle[0]:rectangle[0] + rectangle[1]]
+                cropped_screenshot = screenshot[rectangle[1]:rectangle[1] + rectangle[3],
+                                     rectangle[0]:rectangle[0] + rectangle[2]]
                 if not detect_if_color_present(self.NOT_ENOUGH_RESOURCES_COLOR, cropped_screenshot):
                     print("Enough Resources")
-                    x, y = (int(rectangle[0] + rectangle[1] / 2), int(rectangle[2] + rectangle[3] / 2))
+                    x = int(rectangle[0] + rectangle[2] / 2)
+                    y = int(rectangle[1] + rectangle[3] / 2)
                     click(x, y, self.window_rectangle)
+                    sleep(1)
                     return
                 else:
                     print("Not Enough")
@@ -140,7 +141,8 @@ class VillageClearer:
 
             if rectangle is not None:
                 self.obstacles_attempted_to_remove.append(rectangle)
-                x, y = (int(rectangle[0] + rectangle[2] / 2), int(rectangle[1] + rectangle[3] / 2))
+                x = int(rectangle[0] + rectangle[2] / 2)
+                y = int(rectangle[1] + rectangle[3] / 2)
                 click(x, y, self.window_rectangle)
                 sleep(1)  # The remove button takes a little bit of time to appear
 
@@ -199,7 +201,8 @@ class VillageClearer:
         :return:
         """
         for rectangle in self.resource_rectangles:
-            x, y = (int(rectangle[0] + rectangle[2] / 2), int(rectangle[1] + rectangle[3] / 2))
+            x = int(rectangle[0] + rectangle[2] / 2)
+            y = int(rectangle[1] + rectangle[3] / 2)
             click(x, y, self.window_rectangle)
 
     def show_resources(self, screenshot: Image):

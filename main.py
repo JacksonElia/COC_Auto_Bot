@@ -26,19 +26,19 @@ def main():
         screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2BGR)
 
         # zoom_out() # TODO: Find a better way of doing this
-        # village_clearer.window_rectangle = win32gui.GetWindowRect(hwnd)
-        # village_clearer.find_obstacle_rectangles(screenshot)
-        # village_clearer.show_obstacles(screenshot)
-        # village_clearer.find_resources(screenshot)
-        # village_clearer.show_resources(screenshot)
-        # village_clearer.collect_resources()
-        # village_clearer.clear_obstacle(screenshot)
+        village_clearer.window_rectangle = win32gui.GetWindowRect(hwnd)
+        village_clearer.find_obstacle_rectangles(screenshot)
+        village_clearer.show_obstacles(screenshot)
+        village_clearer.find_resources(screenshot)
+        village_clearer.show_resources(screenshot)
+        village_clearer.collect_resources()
+        village_clearer.clear_obstacle(screenshot)
 
-        village_upgrader.window_rectangle = win32gui.GetWindowRect(hwnd)
+        # village_upgrader.window_rectangle = win32gui.GetWindowRect(hwnd)
         # village_upgrader.open_builder_menu(screenshot)
-        village_upgrader.find_suggested_upgrades(screenshot)
-        village_upgrader.show_suggested_upgrades(screenshot)
-
+        # village_upgrader.find_suggested_upgrades(screenshot)
+        # village_upgrader.show_suggested_upgrades(screenshot)
+        # village_upgrader.upgrade_building(screenshot)
 
         cv.imshow("What the code sees", screenshot)
 
