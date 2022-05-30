@@ -100,7 +100,7 @@ class VillageClearer:
             location = list(zip(*location[::-1]))
             if location:
                 location = location[0]
-                rectangle = [location[0], remove_button_image.shape[0], location[1], remove_button_image.shape[1]]
+                rectangle = [location[0], remove_button_image.shape[1], location[1], remove_button_image.shape[0]]
 
                 line_color = (0, 0, 255)
                 line_type = cv.LINE_4
