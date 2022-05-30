@@ -44,7 +44,7 @@ class VillageClearer:
         )
 
         self.REMOVE_BUTTON = (cv.imread("assets/buttons/remove_button.jpg", cv.IMREAD_UNCHANGED), .96)
-        self.ZERO_BUILDERS = (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .93)
+        self.ZERO_BUILDERS = (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .9)
 
     def show_rectangles(self, screenshot: Image):
         """
