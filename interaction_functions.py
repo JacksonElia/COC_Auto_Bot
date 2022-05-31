@@ -21,6 +21,21 @@ def click(x: int, y: int, window_rectangle: list):
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
 
 
+def click_and_hold(x: int, y: int, hold_time: float, window_rectangle: list):
+    """
+    Clicks at the specified pixel coordinates relative to the window.
+    :param x: x pixel
+    :param y: y pixel
+    :param hold_time: how long it holds the click for
+    :param window_rectangle: the list with the rectangle for the window
+    :return:
+    """
+    win32api.SetCursorPos((x + window_rectangle[0], y + window_rectangle[1]))
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
+    time.sleep(hold_time)
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+
+
 def zoom_out():
     """
     Zooms out the village
@@ -29,6 +44,16 @@ def zoom_out():
     win32api.keybd_event(40, 0, 0, 0)
     time.sleep(.1)
     win32api.keybd_event(40, 0, win32con.KEYEVENTF_KEYUP, 0)
+
+
+def x_out():
+    """
+    Zooms out the village
+    :return:
+    """
+    win32api.keybd_event(51, 0, 0, 0)
+    time.sleep(.1)
+    win32api.keybd_event(51, 0, win32con.KEYEVENTF_KEYUP, 0)
 
 
 def get_hwnd(window_title: str):

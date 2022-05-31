@@ -1,5 +1,6 @@
 from ctypes import windll
 
+from training_and_attacking import *
 from village_clearing import *
 from village_upgrading import *
 from interaction_functions import *
@@ -18,6 +19,7 @@ def main():
 
     village_clearer = VillageClearer(win32gui.GetWindowRect(hwnd))
     village_upgrader = VillageUpgrader(win32gui.GetWindowRect(hwnd))
+    trainer_and_attacker = TrainerAndAttacker(win32gui.GetWindowRect(hwnd))
 
     # The main loop of the bot
     while True:
@@ -34,10 +36,13 @@ def main():
         # village_clearer.collect_resources()
         # village_clearer.clear_obstacle(screenshot)
 
-        village_upgrader.window_rectangle = win32gui.GetWindowRect(hwnd)
-        village_upgrader.upgrade_building(screenshot)
-        village_upgrader.find_suggested_upgrades(screenshot)
-        village_upgrader.show_suggested_upgrades(screenshot)
+        # village_upgrader.window_rectangle = win32gui.GetWindowRect(hwnd)
+        # village_upgrader.upgrade_building(screenshot)
+        # village_upgrader.find_suggested_upgrades(screenshot)
+        # village_upgrader.show_suggested_upgrades(screenshot)
+
+        trainer_and_attacker.window_rectangle = win32gui.GetWindowRect(hwnd)
+        trainer_and_attacker.train_troops(screenshot)
 
         cv.imshow("What the code sees", screenshot)
 
