@@ -9,7 +9,8 @@ class TrainerAndAttacker:
     """
 
     window_rectangle = []
-    bases_searched = 0
+    gold_read = 0
+    elixir_read = 0
     total_gold = 0
     total_elixir = 0
     troops_trained = False
@@ -115,41 +116,39 @@ class TrainerAndAttacker:
             # Clicks on the button acknowledging you're breaking your shield or pays for gold if you have none
             click(x + 600, y - 200, self.window_rectangle)
         elif next_button_rectangle:
-            # Loot text is from x: 65-225px y: 135-200px
-            cropped_screenshot = screenshot[135:200, 65:225]
+            # Gold text is from x: 65-225px y: 135-160px
+            gold_cropped_screenshot = screenshot[135:160, 70:225]
+            # Elixir text is from x: 65-225px y: 175-200px
+            elixir_cropped_screenshot = screenshot[175:200, 70:225]
             # Reads the loot numbers
-            loot_text = read_text(cropped_screenshot).split()  # TODO: Train tesseract to read specific font
-            print(loot_text)
+            gold_loot_text = read_text(gold_cropped_screenshot).strip().replace("", "").replace(" ", "")
+            elixir_loot_text = read_text(elixir_cropped_screenshot).strip().replace("", "").replace(" ", "")
+            print("Gold: " + gold_loot_text)
+            print("Elixir: " + elixir_loot_text)
             # Checks to make sure everything was read correctly
-            if len(loot_text) >= 2:
-                gold = loot_text[0]
-                elixir = loot_text[1]
-                if gold.isnumeric() and elixir.isnumeric():
-                    gold = int(gold)
-                    elixir = int(elixir)
-                    # Attacks if the base has a lot of loot
-                    if (self.bases_searched > 5 and (1.25 * gold >= self.total_gold / self.bases_searched and
-                            1.25 * elixir >= self.total_elixir / self.bases_searched * 1.25)) or self.bases_searched > 20:
-                        self.attack()
-                    else:
-                        # Adds the loot read to the total
-                        self.total_gold += gold
-                        self.total_elixir += elixir
-                        self.bases_searched += 1
-                        # Clicks on the next button
-                        x, y = get_center_of_rectangle(next_button_rectangle)
-                        click(x, y, self.window_rectangle)
-                        sleep(2)
-                else:
-                    # Clicks on the find_base_to_attack button
-                    x, y = get_center_of_rectangle(next_button_rectangle)
-                    click(x, y, self.window_rectangle)
-                    sleep(2)
+            gold = 0
+            elixir = 0
+            if gold_loot_text.isnumeric():
+                print("a")
+                gold = int(gold_loot_text)
+                self.total_gold += gold
+                self.gold_read += 1
+            if elixir_loot_text.isnumeric():
+                elixir = int(elixir_loot_text)
+                self.total_elixir = elixir
+                self.elixir_read += 1
+            # Attacks if the base has a lot of loot
+            if ((self.gold_read > 4 and self.elixir_read > 4) and (1.25 * gold >= self.total_gold / self.gold_read and
+                    1.25 * elixir >= self.total_elixir / self.elixir_read * 1.25)) or self.gold_read > 20:
+                self.attack()
             else:
-                # Clicks on the find_base_to_attack button
+                # Adds the loot read to the total
+                self.total_gold += gold
+                self.total_elixir += elixir
+                # Clicks on the next button
                 x, y = get_center_of_rectangle(next_button_rectangle)
                 click(x, y, self.window_rectangle)
-                sleep(1)
+                sleep(2)
         elif popup_x_button:
             # This will appear if you have no gold, so just start the attack
             x, y = get_center_of_rectangle(popup_x_button)

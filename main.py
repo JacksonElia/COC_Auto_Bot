@@ -26,7 +26,7 @@ def main():
     # The main loop of the bot
     while True:
         window_rectangle = win32gui.GetWindowRect(hwnd)
-        win32gui.MoveWindow(hwnd, window_rectangle[0], window_rectangle[1], 1400, 805, True)
+        # win32gui.MoveWindow(hwnd, window_rectangle[0], window_rectangle[1], 1400, 805, True)
 
         screenshot = get_screenshot(hwnd)
         screenshot = np.array(screenshot)
