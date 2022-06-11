@@ -1,3 +1,4 @@
+import pytesseract
 from PIL import Image, ImageGrab
 import cv2 as cv
 import numpy as np
@@ -51,9 +52,9 @@ def x_out():
     Zooms out the village
     :return:
     """
-    win32api.keybd_event(51, 0, 0, 0)
+    win32api.keybd_event(27, 0, 0, 0)
     time.sleep(.1)
-    win32api.keybd_event(51, 0, win32con.KEYEVENTF_KEYUP, 0)
+    win32api.keybd_event(27, 0, win32con.KEYEVENTF_KEYUP, 0)
 
 
 def get_hwnd(window_title: str):
@@ -131,3 +132,30 @@ def detect_if_color_present(color: list, cropped_screenshot: Image) -> bool:
                 abs(color[2] - pixel_color[2]) < 10):
                 return True
     return False
+
+
+def read_text(cropped_screenshot: Image) -> str:
+    """
+    Attempts to read the text in the cropped screenshot
+    :param cropped_screenshot: the screenshot of the location where the text might be
+    :return: the string of the text, "" if no text is found
+    """
+    pytesseract.pytesseract.tesseract_cmd = "Tesseract/tesseract.exe"
+    processed_image = process_image_for_reading(cropped_screenshot)
+    text = pytesseract.image_to_string(processed_image, lang="eng", config="-c tessedit_char_whitelist=0123456789 --psm 6")
+    return text
+
+
+def process_image_for_reading(image: Image) -> Image:
+    cv.imshow("B", image)
+    hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
+    # define range of text color in HSV
+    lower_value = np.array([0, 0, 100])
+    upper_value = np.array([179, 120, 255])
+    # filters the HSV image to get only the text color
+    mask = cv.inRange(hsv, lower_value, upper_value)
+    # kernel = cv.getStructuringElement(cv.MORPH_RECT, (3, 3))
+    # opening = cv.morphologyEx(mask, cv.MORPH_OPEN, kernel, iterations=1)
+    invert = 255 - mask
+    cv.imshow("A", invert)
+    return invert

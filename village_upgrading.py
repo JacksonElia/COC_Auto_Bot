@@ -11,6 +11,7 @@ class VillageUpgrader:
     window_rectangle = []
     suggested_upgrades_rectangle = []
     suggested_upgrades = []
+    upgrading_building = False
 
     ZERO_BUILDERS: tuple
     BUILDER_FACE: tuple
@@ -24,12 +25,12 @@ class VillageUpgrader:
     def __init__(self, window_rectangle: list):
         self.window_rectangle = window_rectangle
 
-        self.ZERO_BUILDERS = (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .9)
+        self.ZERO_BUILDERS = (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .89)
         self.BUILDER_FACE = (cv.imread("assets/misc/builder_face.jpg", cv.IMREAD_UNCHANGED), .96)
-        self.SUGGESTED_UPGRADES = (cv.imread("assets/misc/suggested_upgrades.jpg", cv.IMREAD_UNCHANGED), .93)
+        self.SUGGESTED_UPGRADES = (cv.imread("assets/misc/suggested_upgrades.jpg", cv.IMREAD_UNCHANGED), .87)
         self.UPGRADE_BUTTON = (cv.imread("assets/buttons/upgrade_button.jpg", cv.IMREAD_UNCHANGED), .95)
         self.ARROW = (cv.imread("assets/misc/arrow.jpg", cv.IMREAD_UNCHANGED), .85)
-        self.CHECK_BUTTON = (cv.imread("assets/buttons/check_button.jpg", cv.IMREAD_UNCHANGED), .93)
+        self.CHECK_BUTTON = (cv.imread("assets/buttons/check_button.jpg", cv.IMREAD_UNCHANGED), .9)
 
     def open_builder_menu(self, screenshot):
         """
@@ -42,7 +43,7 @@ class VillageUpgrader:
             if builder_face_rectangle:
                 x, y = get_center_of_rectangle(builder_face_rectangle)
                 click(x, y, self.window_rectangle)
-                sleep(1)
+                sleep(1.5)
 
     def find_suggested_upgrades(self, screenshot):
         self.suggested_upgrades = []
@@ -66,7 +67,7 @@ class VillageUpgrader:
                 bottom_right = (rectangle[0] + rectangle[2], rectangle[1] + rectangle[3])
                 cv.rectangle(screenshot, top_left, bottom_right, (255, 0, 255), cv.LINE_4)
 
-    def upgrade_building(self, screenshot):
+    def upgrade_building(self, screenshot) -> bool:
         upgrade_button_rectangle = find_image_rectangle(self.UPGRADE_BUTTON, screenshot)
         arrow_rectangle = find_image_rectangle(self.ARROW, screenshot)
         check_button_rectangle = find_image_rectangle(self.CHECK_BUTTON, screenshot)
@@ -78,13 +79,18 @@ class VillageUpgrader:
             sleep(.3)
             click(x - 40, y, self.window_rectangle)
             sleep(.3)
+            self.upgrading_building = False
+            return True
         elif upgrade_button_rectangle:
             x, y = get_center_of_rectangle(upgrade_button_rectangle)
-            # Clicks the upgrade button, then the confirmation button
+            # Clicks the upgrade button
             click(x, y, self.window_rectangle)
             sleep(.3)
-            click(x, y, self.window_rectangle)
+            # Clicks the confirmation button
+            click(705, 685, self.window_rectangle)
             sleep(.3)
+            self.upgrading_building = False
+            return True
         elif arrow_rectangle:
             x = arrow_rectangle[0]
             y = arrow_rectangle[1] + arrow_rectangle[3]
@@ -102,8 +108,10 @@ class VillageUpgrader:
                     x, y = get_center_of_rectangle(suggested_upgrade)
                     # Clicks on the building to be upgraded
                     click(x, y, self.window_rectangle)
+                    self.upgrading_building = True
                     sleep(1)
                     break
+        return False
 
     def check_for_builders(self, screenshot) -> bool:
         """

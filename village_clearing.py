@@ -43,7 +43,7 @@ class VillageClearer:
             # TODO: Add dark elixir icon, presents, and grave
         )
 
-        self.REMOVE_BUTTON = (cv.imread("assets/buttons/remove_button.jpg", cv.IMREAD_UNCHANGED), .96)
+        self.REMOVE_BUTTON = (cv.imread("assets/buttons/remove_button.jpg", cv.IMREAD_UNCHANGED), .94)
         self.ZERO_BUILDERS = (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .9)
 
     def show_rectangles(self, screenshot: Image):
@@ -86,11 +86,11 @@ class VillageClearer:
             # Gets rid of rectangles too close together
             self.obstacle_rectangles += list(cv.groupRectangles(rectangle_list, 1, .5)[0])
 
-    def clear_obstacle(self, screenshot: Image):
+    def clear_obstacle(self, screenshot: Image) -> bool:
         """
         Clears all of the obstacles that are visible if it is able to
         :param screenshot: the screenshot of bluestacks
-        :return:
+        :return: True if it removes an obstacle
         """
         if self.obstacle_rectangles and self.check_for_builders(screenshot):
             remove_button_image, confidence = self.REMOVE_BUTTON
@@ -116,14 +116,14 @@ class VillageClearer:
                     y = int(rectangle[1] + rectangle[3] / 2)
                     click(x, y, self.window_rectangle)
                     sleep(1)
-                    return
+                    return True
                 else:
                     print("Not Enough")
 
             rectangle = None
             obstacle_attempted = False
 
-            # Checks to make sure that there hasn't already been an attempt to remove the obstacle
+            # Checks to make sure that there hasn't already been an attempt to remove the obstacle FIXME
             while True:
                 # Makes sure there are still obstacles to check
                 if self.obstacle_rectangles:
@@ -145,6 +145,8 @@ class VillageClearer:
                 y = int(rectangle[1] + rectangle[3] / 2)
                 click(x, y, self.window_rectangle)
                 sleep(1)  # The remove button takes a little bit of time to appear
+
+        return False
 
     def show_obstacles(self, screenshot: Image):
         """
