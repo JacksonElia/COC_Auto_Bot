@@ -115,7 +115,7 @@ class TrainerAndAttacker:
             # Clicks on the button acknowledging you're breaking your shield or pays for gold if you have none
             click(x + 600, y - 200, self.window_rectangle)
         elif next_button_rectangle:
-            # Loot text is from x: 65-225px y: 95-170px 135-200px
+            # Loot text is from x: 65-225px y: 135-200px
             cropped_screenshot = screenshot[135:200, 65:225]
             # Reads the loot numbers
             loot_text = read_text(cropped_screenshot).split()  # TODO: Train tesseract to read specific font

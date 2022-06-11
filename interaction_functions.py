@@ -140,7 +140,7 @@ def read_text(cropped_screenshot: Image) -> str:
     :param cropped_screenshot: the screenshot of the location where the text might be
     :return: the string of the text, "" if no text is found
     """
-    pytesseract.pytesseract.tesseract_cmd = "Tesseract/tesseract.exe"
+    pytesseract.pytesseract.tesseract_cmd = "Tesseract-OCR/tesseract.exe"
     processed_image = process_image_for_reading(cropped_screenshot)
     text = pytesseract.image_to_string(processed_image, lang="eng", config="-c tessedit_char_whitelist=0123456789 --psm 6")
     return text
