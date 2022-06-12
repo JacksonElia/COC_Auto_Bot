@@ -15,6 +15,7 @@ class TrainerAndAttacker:
     total_elixir = 0
     troops_trained = False
     troops_training = False
+    # TODO: Store information about bases in a csv file including their login info and if their cc has been upgraded and their th level
 
     ATTACK_BUTTON: tuple
     ARMY_BUTTON: tuple
@@ -36,6 +37,7 @@ class TrainerAndAttacker:
         self.POPUP_X_BUTTON = (cv.imread("assets/buttons/popup_x_button.jpg", cv.IMREAD_UNCHANGED), .94)
         self.RETURN_HOME_BUTTON = (cv.imread("assets/buttons/return_home_button.jpg", cv.IMREAD_UNCHANGED), .9)
         self.FINISH_TRAINING = (cv.imread("assets/misc/finish_training.jpg", cv.IMREAD_UNCHANGED), .97)
+        self.AVAILABLE_LOOT = (cv.imread("assets/misc/available_loot.jpg", cv.IMREAD_UNCHANGED), .91)
 
     def train_troops(self, screenshot: Image):
         # Doesn't try to train troops if they have already been trained
@@ -104,7 +106,8 @@ class TrainerAndAttacker:
             return False
         attack_button_rectangle = find_image_rectangle(self.ATTACK_BUTTON, screenshot)
         next_button_rectangle = find_image_rectangle(self.NEXT_BUTTON, screenshot)
-        popup_x_button = find_image_rectangle(self.POPUP_X_BUTTON, screenshot)
+        popup_x_button_rectangle = find_image_rectangle(self.POPUP_X_BUTTON, screenshot)
+        available_loot_rectangle = find_image_rectangle(self.AVAILABLE_LOOT, screenshot)
         if attack_button_rectangle:
             # Clicks on the find_base_to_attack button
             x, y = get_center_of_rectangle(attack_button_rectangle)
@@ -116,10 +119,17 @@ class TrainerAndAttacker:
             # Clicks on the button acknowledging you're breaking your shield or pays for gold if you have none
             click(x + 600, y - 200, self.window_rectangle)
         elif next_button_rectangle:
-            # Gold text is from x: 65-225px y: 135-160px
-            gold_cropped_screenshot = screenshot[136:160, 70:225]
-            # Elixir text is from x: 65-225px y: 175-200px
-            elixir_cropped_screenshot = screenshot[176:200, 70:225]
+            if available_loot_rectangle:
+                x = available_loot_rectangle[0]
+                y = available_loot_rectangle[1]
+                # Gets the loot text relative to the available loot text
+                gold_cropped_screenshot = screenshot[y + 24:y + 24 + 24, x:x + 155]
+                elixir_cropped_screenshot = screenshot[y + 64:y + 64 + 24, x:x + 155]
+            else:
+                # Gold text is from x: 65-225px y: 135-160px
+                gold_cropped_screenshot = screenshot[136:160, 70:225]
+                # Elixir text is from x: 65-225px y: 175-200px
+                elixir_cropped_screenshot = screenshot[176:200, 70:225]
             # Reads the loot numbers and clears everything except the numbers
             gold_loot_text = read_text(gold_cropped_screenshot).strip().replace("", "").replace(" ", "")
             elixir_loot_text = read_text(elixir_cropped_screenshot).strip().replace("", "").replace(" ", "")
@@ -129,7 +139,6 @@ class TrainerAndAttacker:
             gold = 0
             elixir = 0
             if gold_loot_text.isnumeric():
-                print("a")
                 gold = int(gold_loot_text)
                 self.total_gold += gold
                 self.gold_read += 1
@@ -149,9 +158,9 @@ class TrainerAndAttacker:
                 x, y = get_center_of_rectangle(next_button_rectangle)
                 click(x, y, self.window_rectangle)
                 sleep(2)
-        elif popup_x_button:
+        elif popup_x_button_rectangle:
             # This will appear if you have no gold, so just start the attack
-            x, y = get_center_of_rectangle(popup_x_button)
+            x, y = get_center_of_rectangle(popup_x_button_rectangle)
             click(x, y, self.window_rectangle)
             sleep(1)
             self.attack()

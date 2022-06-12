@@ -146,17 +146,24 @@ def read_text(cropped_screenshot: Image) -> str:
     return text
 
 
-def process_image_for_reading(image: Image) -> Image:
-    cv.imshow("B", image)
-    hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
+def process_image_for_reading(cropped_screenshot: Image) -> Image:
+    """
+    Processes an image so that the text on it can be read easily
+    :param cropped_screenshot: the image with text on it that needs to be processed
+    :return: the processed image
+    """
+    cv.imshow("B", cropped_screenshot)
+    hsv = cv.cvtColor(cropped_screenshot, cv.COLOR_BGR2HSV)
     # define range of text color in HSV
     lower_value = np.array([0, 0, 100])
     upper_value = np.array([179, 120, 255])
-    # filters the HSV image to get only the text color
+    # filters the HSV image to get only the text color, returns white text on a black background
     mask = cv.inRange(hsv, lower_value, upper_value)
     # kernel = cv.getStructuringElement(cv.MORPH_RECT, (3, 3))
-    # opening = cv.morphologyEx(mask, cv.MORPH_OPEN, kernel, iterations=1)
+    # opening = cv.morphologyEx(mask, cv.MORPH_OPEN, kernel, iterations=1)  # Gets rid of small dots
+    # Inverts the image to black text on white background
     invert = 255 - mask
+    # Adds gaps in between characters so that they can be more easily recognized
     processed_image = add_space_between_characters(invert, 5)
     cv.imshow("A", processed_image)
     return processed_image
@@ -177,7 +184,6 @@ def add_space_between_characters(cropped_screenshot: Image, gap: int) -> Image:
         next_column_black_pixels = 0
         for y in range(len(cropped_screenshot)):  # Each row
             color = cropped_screenshot[y][x]
-            print(color)
             last_color = cropped_screenshot[y][x - 2]
             next_color = cropped_screenshot[y][x + 2]
             # Checks if it is black
@@ -209,4 +215,3 @@ def add_space_between_characters(cropped_screenshot: Image, gap: int) -> Image:
             cropped_screenshot = np.insert(cropped_screenshot, column, [255] * len(cropped_screenshot), axis=1)
 
     return cropped_screenshot
-

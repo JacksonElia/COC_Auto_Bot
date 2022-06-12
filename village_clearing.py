@@ -40,7 +40,7 @@ class VillageClearer:
             (cv.imread("assets/resources/elixir_icon.jpg", cv.IMREAD_UNCHANGED), .93),
             (cv.imread("assets/resources/gold_icon.jpg", cv.IMREAD_UNCHANGED), .93),
             (cv.imread("assets/resources/normal_grave.jpg", cv.IMREAD_UNCHANGED), .94)
-            # TODO: Add dark elixir icon, presents, and grave
+            # TODO: Add dark elixir icon, presents, and graves
         )
 
         self.REMOVE_BUTTON = (cv.imread("assets/buttons/remove_button.jpg", cv.IMREAD_UNCHANGED), .94)
@@ -57,7 +57,7 @@ class VillageClearer:
 
     def find_obstacle_rectangles(self, screenshot: Image):
         """
-        Finds all of the rectangles for visible obstacles
+        Finds all the rectangles for visible obstacles
         :param screenshot: the screenshot of bluestacks
         :return:
         """
@@ -88,7 +88,7 @@ class VillageClearer:
 
     def clear_obstacle(self, screenshot: Image) -> bool:
         """
-        Clears all of the obstacles that are visible if it is able to
+        Clears all the obstacles that are visible if it is able to
         :param screenshot: the screenshot of bluestacks
         :return: True if it removes an obstacle
         """
@@ -169,7 +169,7 @@ class VillageClearer:
 
     def find_resources(self, screenshot: Image):
         """
-        Finds all of the rectangles for the visible resources
+        Finds all the rectangles for the visible resources
         :param screenshot: the screenshot of bluestacks
         :return:
         """
@@ -199,12 +199,11 @@ class VillageClearer:
 
     def collect_resources(self):
         """
-        Collects all of the visible collectors and graves
+        Collects all the visible collectors and graves
         :return:
         """
         for rectangle in self.resource_rectangles:
-            x = int(rectangle[0] + rectangle[2] / 2)
-            y = int(rectangle[1] + rectangle[3] / 2)
+            x, y = get_center_of_rectangle(rectangle)
             click(x, y, self.window_rectangle)
 
     def show_resources(self, screenshot: Image):
@@ -222,7 +221,7 @@ class VillageClearer:
             # Draw the box
             top_left = (rectangle[0], rectangle[1])
             bottom_right = (rectangle[0] + rectangle[2], rectangle[1] + rectangle[3])
-            center = (int(rectangle[0] + rectangle[2] / 2), int(rectangle[1] + rectangle[3] / 2))
+            center = get_center_of_rectangle(rectangle)
             cv.rectangle(screenshot, top_left, bottom_right, line_color, line_type)
             cv.drawMarker(screenshot, center, marker_color, marker_type)
 
