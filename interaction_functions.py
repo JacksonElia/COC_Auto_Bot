@@ -157,5 +157,56 @@ def process_image_for_reading(image: Image) -> Image:
     # kernel = cv.getStructuringElement(cv.MORPH_RECT, (3, 3))
     # opening = cv.morphologyEx(mask, cv.MORPH_OPEN, kernel, iterations=1)
     invert = 255 - mask
-    cv.imshow("A", invert)
-    return invert
+    processed_image = add_space_between_characters(invert, 5)
+    cv.imshow("A", processed_image)
+    return processed_image
+
+
+def add_space_between_characters(cropped_screenshot: Image, gap: int) -> Image:
+    """
+    Adds a gap in between characters so that they can be read more easily
+    :param cropped_screenshot: The image with the characters, the characters are black, the background is white
+    :param gap: The amount of pixels added in between the characters
+    :return: The processed image with added gaps
+    """
+    columns_to_be_added = [0]  # List storing the indexes of each gap to be added
+    # Iterates through the image by column then row
+    for x in range(2, len(cropped_screenshot[0]) - 2):  # Each column
+        column_black_pixels = 0
+        last_column_black_pixels = 0
+        next_column_black_pixels = 0
+        for y in range(len(cropped_screenshot)):  # Each row
+            color = cropped_screenshot[y][x]
+            print(color)
+            last_color = cropped_screenshot[y][x - 2]
+            next_color = cropped_screenshot[y][x + 2]
+            # Checks if it is black
+            if color < 50:
+                column_black_pixels += 1
+                # Makes the pixel completely black
+                cropped_screenshot[y, x] = 0
+            else:
+                # Makes the pixel completely white
+                cropped_screenshot[y, x] = 255
+            if last_color < 50:
+                last_column_black_pixels += 1
+            if next_color < 50:
+                next_column_black_pixels += 1
+        # Gets the percentage of black pixels in the column
+        percentage_of_black_pixels = column_black_pixels / cropped_screenshot.shape[0]
+        percentage_of_last_black_pixels = last_column_black_pixels / cropped_screenshot.shape[0]
+        percentage_of_next_black_pixels = next_column_black_pixels / cropped_screenshot.shape[0]
+        # Checks if a gap should be added
+        if percentage_of_last_black_pixels > .3 and percentage_of_black_pixels < .22 and percentage_of_next_black_pixels > .3:
+            if (x - columns_to_be_added[-1]) > 3:
+                columns_to_be_added.append(x)
+            else:
+                columns_to_be_added[-1] = x
+
+    # Adds the gaps
+    for column in columns_to_be_added[::-1]:
+        for i in range(gap):
+            cropped_screenshot = np.insert(cropped_screenshot, column, [255] * len(cropped_screenshot), axis=1)
+
+    return cropped_screenshot
+

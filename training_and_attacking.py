@@ -117,10 +117,10 @@ class TrainerAndAttacker:
             click(x + 600, y - 200, self.window_rectangle)
         elif next_button_rectangle:
             # Gold text is from x: 65-225px y: 135-160px
-            gold_cropped_screenshot = screenshot[135:160, 70:225]
+            gold_cropped_screenshot = screenshot[136:160, 70:225]
             # Elixir text is from x: 65-225px y: 175-200px
-            elixir_cropped_screenshot = screenshot[175:200, 70:225]
-            # Reads the loot numbers
+            elixir_cropped_screenshot = screenshot[176:200, 70:225]
+            # Reads the loot numbers and clears everything except the numbers
             gold_loot_text = read_text(gold_cropped_screenshot).strip().replace("", "").replace(" ", "")
             elixir_loot_text = read_text(elixir_cropped_screenshot).strip().replace("", "").replace(" ", "")
             print("Gold: " + gold_loot_text)

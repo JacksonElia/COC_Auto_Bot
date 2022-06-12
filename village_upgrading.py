@@ -27,7 +27,7 @@ class VillageUpgrader:
 
         self.ZERO_BUILDERS = (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .89)
         self.BUILDER_FACE = (cv.imread("assets/misc/builder_face.jpg", cv.IMREAD_UNCHANGED), .96)
-        self.SUGGESTED_UPGRADES = (cv.imread("assets/misc/suggested_upgrades.jpg", cv.IMREAD_UNCHANGED), .87)
+        self.SUGGESTED_UPGRADES = (cv.imread("assets/misc/suggested_upgrades.jpg", cv.IMREAD_UNCHANGED), .8)
         self.UPGRADE_BUTTON = (cv.imread("assets/buttons/upgrade_button.jpg", cv.IMREAD_UNCHANGED), .95)
         self.ARROW = (cv.imread("assets/misc/arrow.jpg", cv.IMREAD_UNCHANGED), .85)
         self.CHECK_BUTTON = (cv.imread("assets/buttons/check_button.jpg", cv.IMREAD_UNCHANGED), .9)
