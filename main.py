@@ -43,9 +43,7 @@ def main():
         if mode == 1:
             village_clearer.window_rectangle = win32gui.GetWindowRect(hwnd)
             village_clearer.find_obstacle_rectangles(screenshot)
-            village_clearer.show_obstacles(screenshot)
             village_clearer.find_resources(screenshot)
-            village_clearer.show_resources(screenshot)
             village_clearer.collect_resources()
             if village_clearer.clear_obstacle(screenshot) or tries == 6:
                 mode += 1

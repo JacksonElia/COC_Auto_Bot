@@ -91,6 +91,7 @@ class VillageUpgrader:
             # Clicks the check button
             click(x, y, self.window_rectangle)
             sleep(.3)
+            # Clicks the X button (for if there are more things e.g. walls)
             click(x - 40, y, self.window_rectangle)
             sleep(.3)
             self.upgrading_building = False
@@ -101,6 +102,8 @@ class VillageUpgrader:
                 x, y = get_center_of_rectangle(upgrade_button_rectangle)
                 # Clicks the upgrade button
                 click(x, y, self.window_rectangle)
+                sleep(.3)
+                click(1000, 580, self.window_rectangle)  # FIXME: This upgrades the clan castle
                 sleep(.3)
                 # Clicks the confirmation button
                 click(705, 685, self.window_rectangle)

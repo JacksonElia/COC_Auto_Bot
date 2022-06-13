@@ -93,29 +93,16 @@ class VillageClearer:
         :return: True if it removes an obstacle
         """
         if self.obstacle_rectangles and self.check_for_builders(screenshot):
-            remove_button_image, confidence = self.REMOVE_BUTTON
-            threshold = 1 - confidence
-            result = cv.matchTemplate(screenshot, remove_button_image, cv.TM_SQDIFF_NORMED)
-            location = np.where(result <= threshold)
-            location = list(zip(*location[::-1]))
-            if location:
-                location = location[0]
-                rectangle = [location[0], location[1], remove_button_image.shape[1], remove_button_image.shape[1]]
-                line_color = (0, 0, 255)
-                line_type = cv.LINE_4
-                top_left = (rectangle[0], rectangle[1])
-                bottom_right = (rectangle[0] + rectangle[2], rectangle[1] + rectangle[3])
-                cv.rectangle(screenshot, top_left, bottom_right, line_color, line_type)
-
+            remove_button_rectangle = find_image_rectangle(self.REMOVE_BUTTON, screenshot)
+            if remove_button_rectangle:
                 # Check if there are resources to remove the obstacle
-                cropped_screenshot = screenshot[rectangle[1]:rectangle[1] + rectangle[3],
-                                     rectangle[0]:rectangle[0] + rectangle[2]]
+                cropped_screenshot = screenshot[remove_button_rectangle[1]:remove_button_rectangle[1] + remove_button_rectangle[3],
+                                     remove_button_rectangle[0]:remove_button_rectangle[0] + remove_button_rectangle[2]]
                 if not detect_if_color_present(self.NOT_ENOUGH_RESOURCES_COLOR, cropped_screenshot):
                     print("Enough Resources")
-                    x = int(rectangle[0] + rectangle[2] / 2)
-                    y = int(rectangle[1] + rectangle[3] / 2)
+                    x, y = get_center_of_rectangle(remove_button_rectangle)
                     click(x, y, self.window_rectangle)
-                    sleep(1)
+                    sleep(.3)
                     return True
                 else:
                     print("Not Enough")
@@ -141,10 +128,9 @@ class VillageClearer:
 
             if rectangle is not None:
                 self.obstacles_attempted_to_remove.append(rectangle)
-                x = int(rectangle[0] + rectangle[2] / 2)
-                y = int(rectangle[1] + rectangle[3] / 2)
+                x, y = get_center_of_rectangle(rectangle)
                 click(x, y, self.window_rectangle)
-                sleep(1)  # The remove button takes a little bit of time to appear
+                sleep(1)  # The remove button takes a little of time to appear
 
         return False
 
