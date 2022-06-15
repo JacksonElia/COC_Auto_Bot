@@ -72,6 +72,9 @@ class TrainerAndAttacker:
                     if not finish_training_rectangle:
                         self.troops_trained = True
                         self.troops_training = False
+                    else:
+                        self.troops_trained = False
+                        self.troops_training = True
                     # Closes out of the troop menu
                     x_out()
                     sleep(1)
@@ -90,15 +93,20 @@ class TrainerAndAttacker:
                         sleep(1)
                         self.troops_training = True
                     else:
-                        popup_x_button = find_image_rectangle(self.POPUP_X_BUTTON, screenshot)
-                        if popup_x_button:
+                        popup_x_button_rectangle = find_image_rectangle(self.POPUP_X_BUTTON, screenshot)
+                        if popup_x_button_rectangle:
                             self.troops_trained = True
                             self.troops_training = False
-                            x_out()
                             sleep(.5)
-                            x_out()
 
     def find_base_to_attack(self, screenshot: Image) -> bool:
+        return_home_button_rectangle = find_image_rectangle(self.RETURN_HOME_BUTTON, screenshot)
+        if return_home_button_rectangle:
+            # Appears once the attack is finished
+            x, y = get_center_of_rectangle(return_home_button_rectangle)
+            click(x, y, self.window_rectangle)
+            sleep(1)
+            return True
         # Makes sure troops have been trained
         if not self.troops_trained:
             return False
@@ -160,22 +168,13 @@ class TrainerAndAttacker:
                 click(x + 600, y - 200, self.window_rectangle)
 
             else:
-                return_home_button_rectangle = find_image_rectangle(self.RETURN_HOME_BUTTON, screenshot)
-                if return_home_button_rectangle:
-                    # Appears once the attack is finished
-                    x, y = get_center_of_rectangle(return_home_button_rectangle)
+                popup_x_button_rectangle = find_image_rectangle(self.POPUP_X_BUTTON, screenshot)
+                if popup_x_button_rectangle:
+                    # This will appear if you have no gold, so just start the attack
+                    x, y = get_center_of_rectangle(popup_x_button_rectangle)
                     click(x, y, self.window_rectangle)
                     sleep(1)
-                    return True
-
-                else:
-                    popup_x_button_rectangle = find_image_rectangle(self.POPUP_X_BUTTON, screenshot)
-                    if popup_x_button_rectangle:
-                        # This will appear if you have no gold, so just start the attack
-                        x, y = get_center_of_rectangle(popup_x_button_rectangle)
-                        click(x, y, self.window_rectangle)
-                        sleep(1)
-                        self.attack()
+                    self.attack()
         return False
 
     def attack(self):

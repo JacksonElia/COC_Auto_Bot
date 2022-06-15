@@ -28,7 +28,7 @@ class VillageUpgrader:
 
         self.ZERO_BUILDERS = (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .89)
         self.BUILDER_FACE = (cv.imread("assets/misc/builder_face.jpg", cv.IMREAD_UNCHANGED), .96)
-        self.SUGGESTED_UPGRADES = (cv.imread("assets/misc/suggested_upgrades.jpg", cv.IMREAD_UNCHANGED), .8)
+        self.SUGGESTED_UPGRADES = (cv.imread("assets/misc/suggested_upgrades.jpg", cv.IMREAD_UNCHANGED), .75)
         self.UPGRADE_BUTTON = (cv.imread("assets/buttons/upgrade_button.jpg", cv.IMREAD_UNCHANGED), .91)
         self.ARROW = (cv.imread("assets/misc/arrow.jpg", cv.IMREAD_UNCHANGED), .85)
         self.CHECK_BUTTON = (cv.imread("assets/buttons/check_button.jpg", cv.IMREAD_UNCHANGED), .9)
@@ -98,7 +98,7 @@ class VillageUpgrader:
             return True
         else:
             upgrade_button_rectangle = find_image_rectangle(self.UPGRADE_BUTTON, screenshot)
-            if upgrade_button_rectangle:
+            if upgrade_button_rectangle and self.upgrading_building:
                 x, y = get_center_of_rectangle(upgrade_button_rectangle)
                 # Clicks the upgrade button
                 click(x, y, self.window_rectangle)

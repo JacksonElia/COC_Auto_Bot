@@ -16,12 +16,19 @@ def main():
     win32gui.MoveWindow(hwnd, 100, 100, 1400, 805, True)
     win32gui.SetForegroundWindow(hwnd)
 
+    # The classes that carry out the main functions of the bot
     village_clearer = VillageClearer(win32gui.GetWindowRect(hwnd))
     village_upgrader = VillageUpgrader(win32gui.GetWindowRect(hwnd))
     trainer_and_attacker = TrainerAndAttacker(win32gui.GetWindowRect(hwnd))
 
+    # Variables used to smoothly move between the functions of the bot
     mode = 1
     tries = 0
+
+    # The pop-up images
+    reload_game_button = (cv.imread("assets/buttons/reload_game_button.jpg", cv.IMREAD_UNCHANGED), .95)
+    okay_button = (cv.imread("assets/buttons/okay_button.jpg", cv.IMREAD_UNCHANGED), .95)
+    okay_button_2 = (cv.imread("assets/buttons/okay_button_2.jpg", cv.IMREAD_UNCHANGED), .95)
 
     # The main loop of the bot
     while True:
@@ -33,12 +40,23 @@ def main():
         screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2BGR)
 
         # zoom_out() # TODO: Find a better way of doing this
-        # Reloads the game if the client and game get de-synced
-        reload_game = (cv.imread("assets/buttons/return_home_button.jpg", cv.IMREAD_UNCHANGED), .95)
-        reload_game_button = find_image_rectangle(reload_game, screenshot)
-        if reload_game_button:
-            x, y = get_center_of_rectangle(reload_game_button)
-            click(x, y, win32gui.GetWindowRect(hwnd))
+        # Deals with various pop-ups that can happen
+        okay_button_rectangle = find_image_rectangle(okay_button, screenshot)
+        if okay_button_rectangle:
+            x, y = get_center_of_rectangle(okay_button_rectangle)
+            click(x, y, window_rectangle)
+        else:
+            # Reloads the game if the client and game get de-synced
+            reload_game_button_rectangle = find_image_rectangle(reload_game_button, screenshot)
+            if reload_game_button_rectangle:
+                x, y = get_center_of_rectangle(reload_game_button_rectangle)
+                click(x, y, window_rectangle)
+            else:
+                # Clicks the okay button that appears when you open an account with recently finished upgrades
+                okay_button_2_rectangle = find_image_rectangle(okay_button_2, screenshot)
+                if okay_button_2_rectangle:
+                    x, y = get_center_of_rectangle(okay_button_2_rectangle)
+                    click(x, y, window_rectangle)
 
         if mode == 1:
             village_clearer.window_rectangle = win32gui.GetWindowRect(hwnd)
