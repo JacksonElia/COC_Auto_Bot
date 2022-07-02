@@ -22,13 +22,14 @@ def main():
     trainer_and_attacker = TrainerAndAttacker(win32gui.GetWindowRect(hwnd))
 
     # Variables used to smoothly move between the functions of the bot
-    mode = 1
+    mode = 3
     tries = 0
 
     # The pop-up images
     reload_game_button = (cv.imread("assets/buttons/reload_game_button.jpg", cv.IMREAD_UNCHANGED), .95)
     okay_button = (cv.imread("assets/buttons/okay_button.jpg", cv.IMREAD_UNCHANGED), .95)
     okay_button_2 = (cv.imread("assets/buttons/okay_button_2.jpg", cv.IMREAD_UNCHANGED), .95)
+    okay_button_3 = (cv.imread("assets/buttons/okay_button_3.jpg", cv.IMREAD_UNCHANGED), .95)
 
     # The main loop of the bot
     while True:
@@ -57,6 +58,13 @@ def main():
                 if okay_button_2_rectangle:
                     x, y = get_center_of_rectangle(okay_button_2_rectangle)
                     click(x, y, window_rectangle)
+                else:
+                    # Clicks on the okay button that acknowledges you breaking your shield
+                    # okay_button_3_rectangle = find_image_rectangle(okay_button_3, screenshot)
+                    # if okay_button_3_rectangle:
+                    #     x, y = get_center_of_rectangle(okay_button_3_rectangle)
+                    #     click(x, y, window_rectangle)
+                    pass
 
         if mode == 1:
             village_clearer.window_rectangle = win32gui.GetWindowRect(hwnd)
@@ -80,6 +88,10 @@ def main():
                 mode += 1
                 tries = 0
             elif trainer_and_attacker.find_base_to_attack(screenshot) or tries == 150:
+                mode += 1
+                tries = 0
+            elif trainer_and_attacker.attacked:
+                trainer_and_attacker.attacked = False
                 mode += 1
                 tries = 0
         else:

@@ -15,6 +15,7 @@ class TrainerAndAttacker:
     total_elixir = 0
     troops_trained = False
     troops_training = False
+    attacked = False
     # TODO: Store information about bases in a csv file including their login info and if their cc has been upgraded and their th level
 
     ATTACK_BUTTON: tuple
@@ -37,7 +38,8 @@ class TrainerAndAttacker:
         self.POPUP_X_BUTTON = (cv.imread("assets/buttons/popup_x_button.jpg", cv.IMREAD_UNCHANGED), .94)
         self.RETURN_HOME_BUTTON = (cv.imread("assets/buttons/return_home_button.jpg", cv.IMREAD_UNCHANGED), .9)
         self.FINISH_TRAINING = (cv.imread("assets/misc/finish_training.jpg", cv.IMREAD_UNCHANGED), .97)
-        self.AVAILABLE_LOOT = (cv.imread("assets/misc/available_loot.jpg", cv.IMREAD_UNCHANGED), .91)
+        self.AVAILABLE_LOOT = (cv.imread("assets/misc/available_loot.jpg", cv.IMREAD_UNCHANGED), .8)
+        self.AVAILABLE_LOOT_2 = (cv.imread("assets/misc/available_loot_2.jpg", cv.IMREAD_UNCHANGED), .8)
 
     def train_troops(self, screenshot: Image):
         # Doesn't try to train troops if they have already been trained
@@ -65,33 +67,33 @@ class TrainerAndAttacker:
                 x_out()
                 self.troops_training = True
             else:
-                grey_goblin_button_rectangle = find_image_rectangle(self.GREY_GOBLIN_BUTTON, screenshot)
-                if grey_goblin_button_rectangle:
-                    # Checks if troops have been trained
-                    finish_training_rectangle = find_image_rectangle(self.FINISH_TRAINING, screenshot)
-                    if not finish_training_rectangle:
-                        self.troops_trained = True
-                        self.troops_training = False
-                    else:
-                        self.troops_trained = False
-                        self.troops_training = True
+                barbarian_button_rectangle = find_image_rectangle(self.BARBARIAN_BUTTON, screenshot)
+                if barbarian_button_rectangle:
+                    x, y = get_center_of_rectangle(barbarian_button_rectangle)
+                    click_and_hold(x, y, 3.5, self.window_rectangle)
+                    sleep(.3)
+                    # Clicks two more times to make there is no pop up in the way
+                    click(x, y + 100, self.window_rectangle)
+                    click(x, y + 100, self.window_rectangle)
+                    sleep(.3)
                     # Closes out of the troop menu
                     x_out()
                     sleep(1)
+                    self.troops_training = True
                 else:
-                    barbarian_button_rectangle = find_image_rectangle(self.BARBARIAN_BUTTON, screenshot)
-                    if barbarian_button_rectangle:
-                        x, y = get_center_of_rectangle(barbarian_button_rectangle)
-                        click_and_hold(x, y, 3.5, self.window_rectangle)
-                        sleep(.3)
-                        # Clicks two more times to make there is no pop up in the way
-                        click(x, y + 100, self.window_rectangle)
-                        click(x, y + 100, self.window_rectangle)
-                        sleep(.3)
+                    grey_goblin_button_rectangle = find_image_rectangle(self.GREY_GOBLIN_BUTTON, screenshot)
+                    if grey_goblin_button_rectangle:
+                        # Checks if troops have been trained
+                        finish_training_rectangle = find_image_rectangle(self.FINISH_TRAINING, screenshot)
+                        if not finish_training_rectangle:
+                            self.troops_trained = True
+                            self.troops_training = False
+                        else:
+                            self.troops_trained = False
+                            self.troops_training = True
                         # Closes out of the troop menu
                         x_out()
                         sleep(1)
-                        self.troops_training = True
                     else:
                         popup_x_button_rectangle = find_image_rectangle(self.POPUP_X_BUTTON, screenshot)
                         if popup_x_button_rectangle:
@@ -105,7 +107,7 @@ class TrainerAndAttacker:
             # Appears once the attack is finished
             x, y = get_center_of_rectangle(return_home_button_rectangle)
             click(x, y, self.window_rectangle)
-            sleep(1)
+            sleep(2)
             return True
         # Makes sure troops have been trained
         if not self.troops_trained:
@@ -114,6 +116,8 @@ class TrainerAndAttacker:
         next_button_rectangle = find_image_rectangle(self.NEXT_BUTTON, screenshot)
         if next_button_rectangle:
             available_loot_rectangle = find_image_rectangle(self.AVAILABLE_LOOT, screenshot)
+            if not available_loot_rectangle:
+                available_loot_rectangle = find_image_rectangle(self.AVAILABLE_LOOT_2, screenshot)
             if available_loot_rectangle:
                 x = available_loot_rectangle[0]
                 y = available_loot_rectangle[1]
@@ -143,8 +147,8 @@ class TrainerAndAttacker:
                 self.elixir_read += 1
             # Attacks if the base has a lot of loot
             if ((self.gold_read > 4 and self.elixir_read > 4) and (1.25 * gold >= self.total_gold / self.gold_read and
-                    1.25 * elixir >= self.total_elixir / self.elixir_read * 1.25)) or self.gold_read > 20:
-                self.attack()
+                                                                   1.25 * elixir >= self.total_elixir / self.elixir_read * 1.25)) or self.gold_read > 20:
+                self.attack(screenshot)
             else:
                 # Adds the loot read to the total
                 self.total_gold += gold
@@ -166,7 +170,7 @@ class TrainerAndAttacker:
                 sleep(1)
                 # Clicks on the button acknowledging you're breaking your shield or pays for gold if you have none
                 click(x + 600, y - 200, self.window_rectangle)
-
+                sleep(2)
             else:
                 popup_x_button_rectangle = find_image_rectangle(self.POPUP_X_BUTTON, screenshot)
                 if popup_x_button_rectangle:
@@ -174,18 +178,15 @@ class TrainerAndAttacker:
                     x, y = get_center_of_rectangle(popup_x_button_rectangle)
                     click(x, y, self.window_rectangle)
                     sleep(1)
-                    self.attack()
+                    self.attack(0)
         return False
 
-    def attack(self):
+    def attack(self, screenshot):
         self.troops_trained = False
-        # Coords for attacking
-        # x: 450 y: 590
-        # x: 935 y: 590
-        # x: 450 y: 115
-        # x: 935 y: 115
-        # Coords of goblin
-        # x: 230 y: 715
+        if screenshot != 0:
+            if not (find_image_rectangle(self.AVAILABLE_LOOT, screenshot) or find_image_rectangle(self.AVAILABLE_LOOT_2, screenshot)):
+                self.attacked = True
+                return
         click(230, 715, self.window_rectangle)
         for i in range(20):
             click(450, 590, self.window_rectangle)

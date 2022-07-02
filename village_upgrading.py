@@ -28,7 +28,8 @@ class VillageUpgrader:
 
         self.ZERO_BUILDERS = (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .89)
         self.BUILDER_FACE = (cv.imread("assets/misc/builder_face.jpg", cv.IMREAD_UNCHANGED), .96)
-        self.SUGGESTED_UPGRADES = (cv.imread("assets/misc/suggested_upgrades.jpg", cv.IMREAD_UNCHANGED), .75)
+        self.SUGGESTED_UPGRADES = (cv.imread("assets/misc/suggested_upgrades.jpg", cv.IMREAD_UNCHANGED), .8)
+        self.SUGGESTED_UPGRADES_2 = (cv.imread("assets/misc/suggested_upgrades_2.jpg", cv.IMREAD_UNCHANGED), .8)
         self.UPGRADE_BUTTON = (cv.imread("assets/buttons/upgrade_button.jpg", cv.IMREAD_UNCHANGED), .91)
         self.ARROW = (cv.imread("assets/misc/arrow.jpg", cv.IMREAD_UNCHANGED), .85)
         self.CHECK_BUTTON = (cv.imread("assets/buttons/check_button.jpg", cv.IMREAD_UNCHANGED), .9)
@@ -43,6 +44,7 @@ class VillageUpgrader:
             if builder_face_rectangle:
                 x, y = get_center_of_rectangle(builder_face_rectangle)
                 click(x, y, self.window_rectangle)
+                self.upgrading_building = False
                 sleep(1.5)
 
     def find_suggested_upgrades(self, screenshot):
@@ -59,9 +61,17 @@ class VillageUpgrader:
                                                 int(self.suggested_upgrades_rectangle[1] + i * 41.5),
                                                 self.suggested_upgrades_rectangle[2],
                                                 self.suggested_upgrades_rectangle[3]])
-        elif self.check_for_builders(screenshot):
-            # Opens the builder menu if suggested upgrades text cannot be found
-            self.open_builder_menu(screenshot)
+        else:
+            self.suggested_upgrades_rectangle = find_image_rectangle(self.SUGGESTED_UPGRADES_2, screenshot)
+            if self.suggested_upgrades_rectangle:
+                for i in range(1, 4):
+                    self.suggested_upgrades.append([self.suggested_upgrades_rectangle[0],
+                                                    int(self.suggested_upgrades_rectangle[1] + i * 41.5),
+                                                    self.suggested_upgrades_rectangle[2],
+                                                    self.suggested_upgrades_rectangle[3]])
+            elif self.check_for_builders(screenshot):
+                # Opens the builder menu if suggested upgrades text cannot be found
+                self.open_builder_menu(screenshot)
 
     def show_suggested_upgrades(self, screenshot):
         """
@@ -125,7 +135,7 @@ class VillageUpgrader:
                         cropped_screenshot = screenshot[suggested_upgrade[1]:suggested_upgrade[1] + suggested_upgrade[3],
                                              suggested_upgrade[0] + 300:suggested_upgrade[0] + suggested_upgrade[2]]
                         # Makes sure there are enough resources for upgrading
-                        if detect_if_color_present(self.ENOUGH_RESOURCES_COLOR, cropped_screenshot):
+                        if detect_if_color_present(self.ENOUGH_RESOURCES_COLOR, cropped_screenshot) and not self.upgrading_building:
                             x, y = get_center_of_rectangle(suggested_upgrade)
                             # Clicks on the building to be upgraded
                             click(x, y, self.window_rectangle)
