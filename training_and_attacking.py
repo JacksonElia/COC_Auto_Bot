@@ -178,12 +178,12 @@ class TrainerAndAttacker:
                     x, y = get_center_of_rectangle(popup_x_button_rectangle)
                     click(x, y, self.window_rectangle)
                     sleep(1)
-                    self.attack(0)
+                    self.attack(1.1)
         return False
 
     def attack(self, screenshot):
         self.troops_trained = False
-        if screenshot != 0:
+        if type(screenshot) != float:
             if not (find_image_rectangle(self.AVAILABLE_LOOT, screenshot) or find_image_rectangle(self.AVAILABLE_LOOT_2, screenshot)):
                 self.attacked = True
                 return
