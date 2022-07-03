@@ -201,7 +201,9 @@ class TrainerAndAttacker:
             if not (find_image_rectangle(self.AVAILABLE_LOOT, screenshot) or find_image_rectangle(self.AVAILABLE_LOOT_2, screenshot)):
                 self.attacked = True
                 return
+        # Selects the troops to deploy
         click(230, 715, self.window_rectangle)
+        # Deploys the troops
         for i in range(20):
             click(450, 590, self.window_rectangle)
             sleep(.1)
