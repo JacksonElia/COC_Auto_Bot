@@ -42,6 +42,10 @@ class TrainerAndAttacker:
         self.AVAILABLE_LOOT_2 = (cv.imread("assets/misc/available_loot_2.jpg", cv.IMREAD_UNCHANGED), .8)
 
     def train_troops(self, screenshot: Image):
+        """
+        Trains either goblins or barbarians for attacking
+        :param screenshot: Screenshot of bluestacks
+        """
         # Doesn't try to train troops if they have already been trained
         if self.troops_trained:
             return
@@ -102,6 +106,11 @@ class TrainerAndAttacker:
                             sleep(.5)
 
     def find_base_to_attack(self, screenshot: Image) -> bool:
+        """
+        Finds a base to attack by reading how much loot there is
+        :param screenshot: Screenshot of bluestacks
+        :return: True if the attack has been finished
+        """
         return_home_button_rectangle = find_image_rectangle(self.RETURN_HOME_BUTTON, screenshot)
         if return_home_button_rectangle:
             # Appears once the attack is finished
@@ -182,6 +191,11 @@ class TrainerAndAttacker:
         return False
 
     def attack(self, screenshot):
+        """
+        Attacks by placing troops on each side of the base
+        :param screenshot: Screenshot of bluestacks
+        :return:
+        """
         self.troops_trained = False
         if type(screenshot) != float:
             if not (find_image_rectangle(self.AVAILABLE_LOOT, screenshot) or find_image_rectangle(self.AVAILABLE_LOOT_2, screenshot)):
