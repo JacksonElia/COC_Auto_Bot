@@ -1,8 +1,8 @@
-import pytesseract
 from PIL import Image, ImageGrab
+from time import sleep
+import pytesseract
 import cv2 as cv
 import numpy as np
-import time
 import win32api
 import win32con
 import win32gui
@@ -18,7 +18,7 @@ def click(x: int, y: int, window_rectangle: list):
     """
     win32api.SetCursorPos((x + window_rectangle[0], y + window_rectangle[1]))
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
-    time.sleep(.01)
+    sleep(.01)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
 
 
@@ -33,7 +33,44 @@ def click_and_hold(x: int, y: int, hold_time: float, window_rectangle: list):
     """
     win32api.SetCursorPos((x + window_rectangle[0], y + window_rectangle[1]))
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
-    time.sleep(hold_time)
+    sleep(hold_time)
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+
+
+def click_and_drag(first_x: int, first_y: int, second_x: int, second_y: int, drag_time: float, window_rectangle: list):
+    """
+    Clicks and drags the cursor from one position to another position using pixel coordinates relative to the window
+    :param first_x: the first location's x pixel
+    :param first_y: the first location's y pixel
+    :param second_x: the second location's x pixel
+    :param second_y: the second location's y pixel
+    :param drag_time: how many seconds it takes to drag the cursor per pixel
+    :param window_rectangle: the list with the rectangle for the window
+    :return:
+    """
+    win32api.SetCursorPos((first_x + window_rectangle[0], first_y + window_rectangle[1]))
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
+
+    while True:
+        cursor_x, cursor_y = win32api.GetCursorPos()
+        print(cursor_x, cursor_y)
+
+        # Ends the dragging if the cursor has made it to the second position
+        if cursor_x == second_x + window_rectangle[0] and cursor_y == second_y + window_rectangle[1]:
+            break
+
+        if cursor_x < second_x + window_rectangle[0]:
+            win32api.SetCursorPos((cursor_x + 1, cursor_y))
+        elif cursor_x > second_x + window_rectangle[0]:
+            win32api.SetCursorPos((cursor_x - 1, cursor_y))
+
+        if cursor_y < second_y + window_rectangle[1]:
+            win32api.SetCursorPos((cursor_x, cursor_y + 1))
+        elif cursor_y > second_y + window_rectangle[1]:
+            win32api.SetCursorPos((cursor_x, cursor_y - 1))
+
+        sleep(drag_time)
+
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
 
 
@@ -43,7 +80,7 @@ def zoom_out():
     :return:
     """
     win32api.keybd_event(40, 0, 0, 0)
-    time.sleep(.1)
+    sleep(.1)
     win32api.keybd_event(40, 0, win32con.KEYEVENTF_KEYUP, 0)
 
 
@@ -53,7 +90,7 @@ def x_out():
     :return:
     """
     win32api.keybd_event(27, 0, 0, 0)
-    time.sleep(.1)
+    sleep(.1)
     win32api.keybd_event(27, 0, win32con.KEYEVENTF_KEYUP, 0)
 
 
@@ -104,6 +141,38 @@ def find_image_rectangle(image_tuple: tuple, screenshot: Image) -> list:
         location = location[0]
         rectangle = [location[0], location[1], image.shape[1], image.shape[0]]
     return rectangle
+
+
+def find_image_rectangles(image_tuple: tuple, screenshot: Image) -> list:
+    """
+    Attempts to find the rectangleS of an image in a screenshot, this is good for when the image only appears in one
+    place on the screen at a time.
+    :param image_tuple: a tuple for the image trying to be found containing (image, confidence)
+    :param screenshot: the screenshot that the image might be in
+    :return: a list OF rectangleS for the image in [x, y, w, h] or [] if the image is not found
+    """
+    image, confidence = image_tuple
+    threshold = 1 - confidence
+    result = cv.matchTemplate(screenshot, image, cv.TM_SQDIFF_NORMED)
+    locations = np.where(result <= threshold)
+    locations = list(zip(*locations[::-1]))
+
+    image_width = image.shape[1]
+    image_height = image.shape[0]
+
+    # Makes a list of rectangle lists that go [x, y, w, h]
+    rectangle_list = []
+    for location in locations:
+        rectangle_list.append([
+            int(location[0]),
+            int(location[1]),
+            image_width,
+            image_height
+        ])
+
+    # Gets rid of rectangles too close together
+    rectangles = list(cv.groupRectangles(rectangle_list, 1, .5)[0])
+    return rectangles
 
 
 def get_center_of_rectangle(rectangle: list) -> tuple:

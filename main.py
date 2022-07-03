@@ -2,6 +2,7 @@ from ctypes import windll
 from training_and_attacking import *
 from village_clearing import *
 from village_upgrading import *
+from account_changing import *
 from interaction_functions import *
 import cv2 as cv
 import numpy as np
@@ -20,9 +21,10 @@ def main():
     village_clearer = VillageClearer(win32gui.GetWindowRect(hwnd))
     village_upgrader = VillageUpgrader(win32gui.GetWindowRect(hwnd))
     trainer_and_attacker = TrainerAndAttacker(win32gui.GetWindowRect(hwnd))
+    account_changer = AccountChanger(win32gui.GetWindowRect(hwnd), 9)
 
     # Variables used to smoothly move between the functions of the bot
-    mode = 3
+    mode = 4
     tries = 0
 
     # The pop-up images
@@ -94,6 +96,11 @@ def main():
                 trainer_and_attacker.attacked = False
                 mode += 1
                 tries = 0
+        elif mode == 4:
+            account_changer.window_rectangle = win32gui.GetWindowRect(hwnd)
+            account_changer.open_account_menu(screenshot)
+            account_changer.select_next_account(screenshot)
+
         else:
             mode = 1
 
