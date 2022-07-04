@@ -53,7 +53,6 @@ def click_and_drag(first_x: int, first_y: int, second_x: int, second_y: int, dra
 
     while True:
         cursor_x, cursor_y = win32api.GetCursorPos()
-        print(cursor_x, cursor_y)
 
         # Ends the dragging if the cursor has made it to the second position
         if cursor_x == second_x + window_rectangle[0] and cursor_y == second_y + window_rectangle[1]:
