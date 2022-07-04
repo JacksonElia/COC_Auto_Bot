@@ -24,7 +24,7 @@ def main():
     account_changer = AccountChanger(win32gui.GetWindowRect(hwnd), 9)
 
     # Variables used to smoothly move between the functions of the bot
-    mode = 4
+    mode = 1
     tries = 0
 
     # The pop-up images
@@ -73,12 +73,12 @@ def main():
             village_clearer.find_obstacle_rectangles(screenshot)
             village_clearer.find_resources(screenshot)
             village_clearer.collect_resources()
-            if village_clearer.clear_obstacle(screenshot) or tries == 6:
+            if village_clearer.clear_obstacle(screenshot) or tries >= 6:
                 mode += 1
                 tries = 0
         elif mode == 2:
             village_upgrader.window_rectangle = win32gui.GetWindowRect(hwnd)
-            if (village_upgrader.upgrade_building(screenshot) or tries == 5) and not village_upgrader.upgrading_building:
+            if (village_upgrader.upgrade_building(screenshot) or tries >= 5) and not village_upgrader.upgrading_building:
                 mode += 1
                 tries = 0
             village_upgrader.find_suggested_upgrades(screenshot)
@@ -89,7 +89,7 @@ def main():
             if trainer_and_attacker.troops_training and tries > 1:
                 mode += 1
                 tries = 0
-            elif trainer_and_attacker.find_base_to_attack(screenshot) or tries == 150:
+            elif trainer_and_attacker.find_base_to_attack(screenshot) or tries >= 150:
                 mode += 1
                 tries = 0
             elif trainer_and_attacker.attacked:
@@ -100,7 +100,9 @@ def main():
             account_changer.window_rectangle = win32gui.GetWindowRect(hwnd)
             account_changer.open_account_menu(screenshot)
             account_changer.select_next_account(screenshot)
-
+            if account_changer.scrolled_to_account or tries > 10:
+                mode += 1
+                tries = 0
         else:
             mode = 1
 
