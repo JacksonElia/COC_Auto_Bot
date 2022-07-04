@@ -62,10 +62,10 @@ def main():
                     click(x, y, window_rectangle)
                 else:
                     # Clicks on the okay button that acknowledges you breaking your shield
-                    # okay_button_3_rectangle = find_image_rectangle(okay_button_3, screenshot)
-                    # if okay_button_3_rectangle:
-                    #     x, y = get_center_of_rectangle(okay_button_3_rectangle)
-                    #     click(x, y, window_rectangle)
+                    okay_button_3_rectangle = find_image_rectangle(okay_button_3, screenshot)
+                    if okay_button_3_rectangle:
+                        x, y = get_center_of_rectangle(okay_button_3_rectangle)
+                        click(x, y, window_rectangle)
                     pass
 
         if mode == 1:
@@ -81,7 +81,6 @@ def main():
             if (village_upgrader.upgrade_building(screenshot) or tries >= 5) and not village_upgrader.upgrading_building:
                 mode += 1
                 tries = 0
-            village_upgrader.find_suggested_upgrades(screenshot)
             village_upgrader.show_suggested_upgrades(screenshot)
         elif mode == 3:
             trainer_and_attacker.window_rectangle = win32gui.GetWindowRect(hwnd)
@@ -100,7 +99,8 @@ def main():
             account_changer.window_rectangle = win32gui.GetWindowRect(hwnd)
             account_changer.open_account_menu(screenshot)
             account_changer.select_next_account(screenshot)
-            if account_changer.scrolled_to_account or tries > 10:
+            if account_changer.account_changed or tries > 100:
+                account_changer.account_changed = False
                 mode += 1
                 tries = 0
         else:

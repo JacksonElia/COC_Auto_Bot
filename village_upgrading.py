@@ -129,6 +129,7 @@ class VillageUpgrader:
                     click(x, y, self.window_rectangle)
                     sleep(1)
                 else:
+                    self.find_suggested_upgrades(screenshot)
                     # If the upgrade button or arrow are not present, it checks to see if there are any available upgrades
                     for suggested_upgrade in self.suggested_upgrades:
                         # Crops the screenshot for efficiency in color detection
