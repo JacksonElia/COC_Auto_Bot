@@ -204,7 +204,7 @@ class TrainerAndAttacker:
         # Selects the troops to deploy
         click(230, 715, self.window_rectangle)
         # Deploys the troops
-        for i in range(20):
+        for i in range(80):
             click(450, 590, self.window_rectangle)
             sleep(.1)
             click(935, 590, self.window_rectangle)
