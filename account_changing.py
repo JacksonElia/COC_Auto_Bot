@@ -69,6 +69,7 @@ class AccountChanger:
                 for i in range(1, self.account_number):
                     # Scrolls by clicking and holding on the 2nd icon and moving the mouse to the first icon
                     click_and_drag(coc_icon_rectangles[1][0], coc_icon_rectangles[1][1], coc_icon_rectangles[0][0],
-                                   coc_icon_rectangles[0][1], .003, self.window_rectangle)
+                                   coc_icon_rectangles[0][1], .004, self.window_rectangle)
+                    sleep(.1)
                 sleep(2)
                 self.scrolled_to_account = True
