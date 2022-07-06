@@ -87,6 +87,7 @@ def main():
             trainer_and_attacker.window_rectangle = win32gui.GetWindowRect(hwnd)
             trainer_and_attacker.train_troops(screenshot)
             if trainer_and_attacker.troops_training and tries > 1:
+                trainer_and_attacker.troops_training = False
                 mode += 1
                 tries = 0
             elif trainer_and_attacker.find_base_to_attack(screenshot) or tries >= 150:

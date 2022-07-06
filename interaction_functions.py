@@ -220,7 +220,6 @@ def process_image_for_reading(cropped_screenshot: Image) -> Image:
     :param cropped_screenshot: the image with text on it that needs to be processed
     :return: the processed image
     """
-    cv.imshow("B", cropped_screenshot)
     hsv = cv.cvtColor(cropped_screenshot, cv.COLOR_BGR2HSV)
     # define range of text color in HSV
     lower_value = np.array([0, 0, 100])
@@ -233,7 +232,6 @@ def process_image_for_reading(cropped_screenshot: Image) -> Image:
     invert = 255 - mask
     # Adds gaps in between characters so that they can be more easily recognized
     processed_image = add_space_between_characters(invert, 5)
-    cv.imshow("A", processed_image)
     return processed_image
 
 
