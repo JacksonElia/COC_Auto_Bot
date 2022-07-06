@@ -25,15 +25,22 @@ class AccountChanger:
         self.COC_ICON = (cv.imread("assets/misc/coc_icon.jpg", cv.IMREAD_UNCHANGED), .9)
 
     def open_account_menu(self, screenshot: Image):
+        """
+        Opens the menu where Supercell ID accounts are displayed
+        :param screenshot: Screenshot of Bluestacks
+        :return:
+        """
         # Doesn't try to open the menu if it is already opened
         if self.accounts_menu_opened:
             return
+        # Opens the settings menu
         settings_button_rectangle = find_image_rectangle(self.SETTINGS_BUTTON, screenshot)
         if settings_button_rectangle:
             x, y = get_center_of_rectangle(settings_button_rectangle)
             click(x, y, self.window_rectangle)
             sleep(1.5)
         else:
+            # Opens the account menu
             switch_accounts_button_rectangle = find_image_rectangle(self.SWITCH_ACCOUNTS_BUTTON, screenshot)
             if switch_accounts_button_rectangle:
                 x, y = get_center_of_rectangle(switch_accounts_button_rectangle)
@@ -42,6 +49,11 @@ class AccountChanger:
                 self.accounts_menu_opened = True
 
     def select_next_account(self, screenshot: Image):
+        """
+        Switches to the next Supercell ID account by scrolling to the correct account number and clicking it
+        :param screenshot: Screenshot of Bluestacks
+        :return:
+        """
         # The rectangles are sorted by y (lowest first)
         print(self.scrolled_to_account)
         coc_icon_rectangles = find_image_rectangles(self.COC_ICON, screenshot)

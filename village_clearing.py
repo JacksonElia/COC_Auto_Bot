@@ -43,7 +43,9 @@ class VillageClearer:
             # TODO: Add dark elixir icon, presents, and graves
         )
 
+        self.LOOT_CART = (cv.imread("assets/resources/loot_cart.jpg", cv.IMREAD_UNCHANGED), .94)
         self.REMOVE_BUTTON = (cv.imread("assets/buttons/remove_button.jpg", cv.IMREAD_UNCHANGED), .94)
+        self.COLLECT_BUTTON = (cv.imread("assets/buttons/collect_button.jpg", cv.IMREAD_UNCHANGED), .94)
         self.ZERO_BUILDERS = (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .9)
 
     def show_rectangles(self, screenshot: Image):
@@ -211,14 +213,29 @@ class VillageClearer:
             cv.rectangle(screenshot, top_left, bottom_right, line_color, line_type)
             cv.drawMarker(screenshot, center, marker_color, marker_type)
 
-    def collect_loot_cart(self):
-        pass
+    def collect_loot_cart(self, screenshot):
+        """
+        Collects the loot cart if it's on the screen
+        :param screenshot: Screenshot of Bluestacks
+        :return:
+        """
+        collect_button_rectangle = find_image_rectangle(self.LOOT_CART, screenshot)
+        if collect_button_rectangle:
+            x, y = get_center_of_rectangle(collect_button_rectangle)
+            click(x, y, self.window_rectangle)
+            sleep(1.5)
+        else:
+            loot_cart_rectangle = find_image_rectangle(self.LOOT_CART, screenshot)
+            if loot_cart_rectangle:
+                x, y = get_center_of_rectangle(loot_cart_rectangle)
+                click(x, y, self.window_rectangle)
+                sleep(1.5)
 
     # TODO: Only check the top of the screen
     def check_for_builders(self, screenshot) -> bool:
         """
         Checks for if there are available builders
-        :param screenshot: Screenshot of bluestacks
+        :param screenshot: Screenshot of Bluestacks
         :return: True if there are builders, False if there aren't
         """
         zero_builders_image, confidence = self.ZERO_BUILDERS
