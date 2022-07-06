@@ -57,43 +57,15 @@ class VillageClearer:
         self.show_obstacles(screenshot)
         self.show_resources(screenshot)
 
-    def find_obstacle_rectangles(self, screenshot: Image):
-        """
-        Finds all the rectangles for visible obstacles
-        :param screenshot: the screenshot of bluestacks
-        :return:
-        """
-        self.obstacle_rectangles = []
-        for obstacle, confidence in self.OBSTACLES:
-            # Threshold is confidence inverted because of cv.TM_SQDIFF_NORMED
-            threshold = 1 - confidence
-            result = cv.matchTemplate(screenshot, obstacle, cv.TM_SQDIFF_NORMED)
-            locations = np.where(result <= threshold)
-            # Makes a list of (x, y) tuples for the pixel coordinates
-            locations = list(zip(*locations[::-1]))
-
-            obstacle_width = obstacle.shape[1]
-            obstacle_height = obstacle.shape[0]
-
-            # Makes a list of rectangle lists that go [x, y, w, h]
-            rectangle_list = []
-            for location in locations:
-                rectangle_list.append([
-                    int(location[0]),
-                    int(location[1]),
-                    obstacle_width,
-                    obstacle_height
-                ])
-
-            # Gets rid of rectangles too close together
-            self.obstacle_rectangles += list(cv.groupRectangles(rectangle_list, 1, .5)[0])
-
     def clear_obstacle(self, screenshot: Image) -> bool:
         """
         Clears all the obstacles that are visible if it is able to
         :param screenshot: the screenshot of bluestacks
         :return: True if it removes an obstacle
         """
+        self.obstacle_rectangles = []
+        for obstacle in self.OBSTACLES:
+            self.obstacle_rectangles += find_image_rectangles(obstacle, screenshot)
         if self.obstacle_rectangles and self.check_for_builders(screenshot):
             remove_button_rectangle = find_image_rectangle(self.REMOVE_BUTTON, screenshot)
             if remove_button_rectangle:
