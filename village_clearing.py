@@ -64,9 +64,12 @@ class VillageClearer:
         :return: True if it removes an obstacle
         """
         self.obstacle_rectangles = []
+        # Doesn't try to remove any obstacles if there are no builders
+        if not self.check_for_builders(screenshot):
+            return True
         for obstacle in self.OBSTACLES:
             self.obstacle_rectangles += find_image_rectangles(obstacle, screenshot)
-        if self.obstacle_rectangles and self.check_for_builders(screenshot):
+        if self.obstacle_rectangles:
             remove_button_rectangle = find_image_rectangle(self.REMOVE_BUTTON, screenshot)
             if remove_button_rectangle:
                 # Check if there are resources to remove the obstacle
@@ -84,7 +87,6 @@ class VillageClearer:
             rectangle = None
             obstacle_attempted = False
 
-            # Checks to make sure that there hasn't already been an attempt to remove the obstacle FIXME
             while True:
                 # Makes sure there are still obstacles to check
                 if self.obstacle_rectangles:
@@ -203,16 +205,11 @@ class VillageClearer:
                 click(x, y, self.window_rectangle)
                 sleep(1.5)
 
-    # TODO: Only check the top of the screen
     def check_for_builders(self, screenshot) -> bool:
         """
         Checks for if there are available builders
-        :param screenshot: Screenshot of Bluestacks
+        :param screenshot: screenshot of bluestacks
         :return: True if there are builders, False if there aren't
         """
-        zero_builders_image, confidence = self.ZERO_BUILDERS
-        threshold = 1 - confidence
-        result = cv.matchTemplate(screenshot, zero_builders_image, cv.TM_SQDIFF_NORMED)
-        location = np.where(result <= threshold)
-        location = list(zip(*location[::-1]))
-        return not bool(location)
+        cropped_screenshot = screenshot[0:145, 0:]
+        return not bool(find_image_rectangle(self.ZERO_BUILDERS, cropped_screenshot))

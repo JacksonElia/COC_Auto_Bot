@@ -113,7 +113,7 @@ class VillageUpgrader:
                 # Clicks the upgrade button
                 click(x, y, self.window_rectangle)
                 sleep(.3)
-                click(1000, 580, self.window_rectangle)  # FIXME: This upgrades the clan castle
+                click(1000, 580, self.window_rectangle)
                 sleep(.3)
                 # Clicks the confirmation button
                 click(705, 685, self.window_rectangle)
@@ -151,4 +151,5 @@ class VillageUpgrader:
         :param screenshot: screenshot of bluestacks
         :return: True if there are builders, False if there aren't
         """
-        return not bool(find_image_rectangle(self.ZERO_BUILDERS, screenshot))
+        cropped_screenshot = screenshot[0:145, 0:]
+        return not bool(find_image_rectangle(self.ZERO_BUILDERS, cropped_screenshot))
