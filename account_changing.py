@@ -12,7 +12,7 @@ class AccountChanger:
     number_of_accounts = 1
 
     accounts_menu_opened = False
-    account_number = 1
+    account_number = 0
     scrolled_to_account = False
     account_changed = False
 
@@ -68,7 +68,7 @@ class AccountChanger:
                     sleep(3)
                 else:
                     # The last 3 accounts cannot be scrolled to the top of the screem
-                    account_index = self.account_number - self.number_of_accounts - 1  # This gets the account index in order from top to bottom
+                    account_index = self.account_number - self.number_of_accounts  # This gets the account index in order from top to bottom
                     click(coc_icon_rectangles[account_index][0], coc_icon_rectangles[account_index][1], self.window_rectangle)
                     self.accounts_menu_opened = False
                     self.scrolled_to_account = False
@@ -76,9 +76,9 @@ class AccountChanger:
                     sleep(3)
             else:
                 self.account_number += 1
-                if self.account_number > self.number_of_accounts:
-                    self.account_number = 1
-                for i in range(1, self.account_number):
+                if self.account_number >= self.number_of_accounts:
+                    self.account_number = 0
+                for i in range(self.account_number):
                     # Scrolls by clicking and holding on the 2nd icon and moving the mouse to the first icon
                     click_and_drag(coc_icon_rectangles[1][0], coc_icon_rectangles[1][1], coc_icon_rectangles[0][0],
                                    coc_icon_rectangles[0][1], .004, self.window_rectangle)

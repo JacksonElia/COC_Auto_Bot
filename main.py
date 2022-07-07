@@ -24,7 +24,7 @@ def main():
     account_changer = AccountChanger(win32gui.GetWindowRect(hwnd), 9)
 
     # Variables used to smoothly move between the functions of the bot
-    mode = 1
+    mode = 4
     tries = 0
 
     # The images used to deal with various pop-ups
@@ -86,7 +86,7 @@ def main():
             account_changer.select_next_account(screenshot)
             if account_changer.account_changed or tries > 100:
                 account_changer.account_changed = False
-                mode += 1
+                # mode += 1
                 tries = 0
         else:
             mode = 1
