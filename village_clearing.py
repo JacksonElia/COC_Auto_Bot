@@ -131,41 +131,15 @@ class VillageClearer:
             cv.rectangle(screenshot, top_left, bottom_right, line_color, line_type)
             cv.drawMarker(screenshot, center, marker_color, marker_type)
 
-    def find_resources(self, screenshot: Image):
-        """
-        Finds all the rectangles for the visible resources
-        :param screenshot: the screenshot of bluestacks
-        :return:
-        """
-        self.resource_rectangles = []
-        for resource, confidence in self.RESOURCES:
-            threshold = 1 - confidence
-            result = cv.matchTemplate(screenshot, resource, cv.TM_SQDIFF_NORMED)
-            locations = np.where(result <= threshold)
-            # Makes a list of (x, y) tuples for the pixel coordinates
-            locations = list(zip(*locations[::-1]))
-
-            resource_width = resource.shape[1]
-            resource_height = resource.shape[0]
-
-            # Makes a list of rectangle lists that go [x, y, w, h]
-            rectangle_list = []
-            for location in locations:
-                rectangle_list.append([
-                    int(location[0]),
-                    int(location[1]),
-                    resource_width,
-                    resource_height
-                ])
-
-            # Gets rid of rectangles too close together
-            self.resource_rectangles += list(cv.groupRectangles(rectangle_list, 1, .5)[0])
-
-    def collect_resources(self):
+    def collect_resources(self, screenshot):
         """
         Collects all the visible collectors and graves
         :return:
         """
+        self.resource_rectangles = []
+        cropped_screenshot = screenshot[145:screenshot.shape[0] - 60, 100:screenshot.shape[1] - 100]
+        for resource in self.RESOURCES:
+            self.resource_rectangles += find_image_rectangles(resource, cropped_screenshot)
         for rectangle in self.resource_rectangles:
             x, y = get_center_of_rectangle(rectangle)
             click(x, y, self.window_rectangle)
