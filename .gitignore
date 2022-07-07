@@ -9,6 +9,7 @@
 .idea/**/dictionaries
 .idea/**/shelf
 Tesseract-OCR/
+account_changing.py
 
 # Generated files
 .idea/**/contentModel.xml

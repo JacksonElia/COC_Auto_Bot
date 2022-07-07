@@ -4,6 +4,7 @@ from village_clearing import *
 from village_upgrading import *
 from account_changing import *
 from interaction_functions import *
+from data_storing import *
 import cv2 as cv
 import numpy as np
 
@@ -17,11 +18,17 @@ def main():
     win32gui.MoveWindow(hwnd, 10, 10, 1400, 805, True)
     win32gui.SetForegroundWindow(hwnd)
 
+    # This is how many accounts the bot operates, max is 50
+    number_of_accounts = 9
+
     # The classes that carry out the main functions of the bot
     village_clearer = VillageClearer(win32gui.GetWindowRect(hwnd))
     village_upgrader = VillageUpgrader(win32gui.GetWindowRect(hwnd))
     trainer_and_attacker = TrainerAndAttacker(win32gui.GetWindowRect(hwnd))
-    account_changer = AccountChanger(win32gui.GetWindowRect(hwnd), 9)
+    account_changer = AccountChanger(win32gui.GetWindowRect(hwnd), number_of_accounts)
+    data_storer = DataStorer(number_of_accounts)
+
+    data_storer.add_new_accounts(number_of_accounts)
 
     # Variables used to smoothly move between the functions of the bot
     mode = 4
