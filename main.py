@@ -14,7 +14,7 @@ def main():
     hwnd = get_hwnd("bluestacks")
 
     # Resizes and moves the window to the front
-    win32gui.MoveWindow(hwnd, 100, 100, 1400, 805, True)
+    win32gui.MoveWindow(hwnd, 10, 10, 1400, 805, True)
     win32gui.SetForegroundWindow(hwnd)
 
     # The classes that carry out the main functions of the bot
@@ -94,7 +94,7 @@ def main():
         print(mode)
         tries += 1
 
-        # cv.imshow("What the code sees", screenshot)
+        cv.imshow("What the code sees", screenshot)
 
         if cv.waitKey(1) == ord("q"):
             cv.destroyWindow()

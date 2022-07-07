@@ -142,7 +142,7 @@ class VillageClearer:
             self.resource_rectangles += find_image_rectangles(resource, cropped_screenshot)
         for rectangle in self.resource_rectangles:
             x, y = get_center_of_rectangle(rectangle)
-            click(x, y, self.window_rectangle)
+            click(x + 100, y + 145, self.window_rectangle)
 
     def show_resources(self, screenshot: Image):
         """
@@ -169,7 +169,7 @@ class VillageClearer:
         :param screenshot: Screenshot of Bluestacks
         :return:
         """
-        collect_button_rectangle = find_image_rectangle(self.LOOT_CART, screenshot)
+        collect_button_rectangle = find_image_rectangle(self.COLLECT_BUTTON, screenshot)
         if collect_button_rectangle:
             x, y = get_center_of_rectangle(collect_button_rectangle)
             click(x, y, self.window_rectangle)
