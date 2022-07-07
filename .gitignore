@@ -9,7 +9,7 @@
 .idea/**/dictionaries
 .idea/**/shelf
 Tesseract-OCR/
-account_changing.csv
+account_data.csv
 
 # Generated files
 .idea/**/contentModel.xml
