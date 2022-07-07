@@ -57,7 +57,7 @@ def main():
             village_clearer.window_rectangle = window_rectangle
             village_clearer.collect_loot_cart(screenshot)
             village_clearer.collect_resources(screenshot)
-            if village_clearer.clear_obstacle(screenshot) or tries >= 6:
+            if village_clearer.clear_obstacle(screenshot) or tries >= 60:
                 mode += 1
                 tries = 0
         elif mode == 2:
@@ -94,7 +94,7 @@ def main():
         print(mode)
         tries += 1
 
-        cv.imshow("What the code sees", screenshot)
+        # cv.imshow("What the code sees", screenshot)
 
         if cv.waitKey(1) == ord("q"):
             cv.destroyWindow()

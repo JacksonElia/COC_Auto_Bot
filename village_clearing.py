@@ -87,17 +87,17 @@ class VillageClearer:
                     print("Not Enough")
 
             rectangle = None
-            obstacle_attempted = False
 
             while True:
                 # Makes sure there are still obstacles to check
                 if self.obstacle_rectangles:
                     # Gets the first obstacle in the list to remove
                     rectangle = self.obstacle_rectangles.pop(0)
+                    obstacle_attempted = False
                     # Checks if the obstacle has already been checked
                     for attempted_obstacle in self.obstacles_attempted_to_remove:
-                        if (abs(attempted_obstacle[0] - rectangle[0]) < 5 and
-                                abs(attempted_obstacle[1] - rectangle[1]) < 5):
+                        if (abs(attempted_obstacle[0] - rectangle[0]) < 10 and
+                                abs(attempted_obstacle[1] - rectangle[1]) < 10):
                             obstacle_attempted = True
                     if not obstacle_attempted:
                         break
