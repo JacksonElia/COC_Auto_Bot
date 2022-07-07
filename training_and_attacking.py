@@ -6,6 +6,7 @@ import cv2 as cv
 class TrainerAndAttacker:
     """
     Trains and attacks to get loot
+    :param window_rectangle: The rectangle of the application window gotten with GetWindowRect
     """
 
     window_rectangle = []
