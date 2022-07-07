@@ -77,8 +77,8 @@ class DataStorer:
                     rows.append(row)
 
             # Adds new rows to the csv file for newly added Supercell ID accounts
-            if len(row) < self.number_of_accounts:
+            if len(rows) < self.number_of_accounts:
                 with open(self.file_path, "w", newline="") as file:
                     writer = csv.writer(file)
                     writer.writerows(rows)
-                    writer.writerows([[2, False, 0, 0, 0]] * (self.number_of_accounts - len(row)))
+                    writer.writerows([[2, False, 0, 0, 0]] * (self.number_of_accounts - len(rows)))
