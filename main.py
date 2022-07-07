@@ -37,16 +37,20 @@ def main():
 
     # The images used to deal with various pop-ups
     pop_up_buttons = (
-        (cv.imread("assets/buttons/reload_game_button.jpg", cv.IMREAD_UNCHANGED), .95),
         # Reloads the game if the client and game get de-synced
-        (cv.imread("assets/buttons/try_again_button.jpg", cv.IMREAD_UNCHANGED), .95),
+        (cv.imread("assets/buttons/reload_game_button.jpg", cv.IMREAD_UNCHANGED), .95),
         # Reconnects to the game if connection is lost
+        (cv.imread("assets/buttons/try_again_button.jpg", cv.IMREAD_UNCHANGED), .95),
         (cv.imread("assets/buttons/okay_button.jpg", cv.IMREAD_UNCHANGED), .95),
-        (cv.imread("assets/buttons/okay_button_2.jpg", cv.IMREAD_UNCHANGED), .95),
         # Clicks the okay button that appears when you open an account with recently finished upgrades
+        (cv.imread("assets/buttons/okay_button_2.jpg", cv.IMREAD_UNCHANGED), .95),
+        # Clicks on the okay button that acknowledges you breaking your shield
         (cv.imread("assets/buttons/okay_button_3.jpg", cv.IMREAD_UNCHANGED), .95),
-    # Clicks on the okay button that acknowledges you breaking your shield
+        # Clicks on the okay button when you get treasury loot
+        (cv.imread("assets/buttons/okay_button_4.jpg", cv.IMREAD_UNCHANGED), .95),
     )
+
+    pop_up_button_i = 0
 
     # The main loop of the bot
     while True:
@@ -57,19 +61,21 @@ def main():
         screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2BGR)
 
         # zoom_out() # TODO: Find a better way of doing this
-        # Deals with various pop-ups that can happen
-        for button in pop_up_buttons:
-            button_rectangle = find_image_rectangle(button, screenshot)
-            if button_rectangle:
-                x, y = get_center_of_rectangle(button_rectangle)
-                click(x, y, window_rectangle)
-                break
+        # Deals with various pop-ups that can happen, only does one per frame rather than all of them every frame
+        pop_up_button_i += 1
+        if pop_up_button_i >= len(pop_up_buttons):
+            pop_up_button_i = 0
+        button = pop_up_buttons[pop_up_button_i]
+        button_rectangle = find_image_rectangle(button, screenshot)
+        if button_rectangle:
+            x, y = get_center_of_rectangle(button_rectangle)
+            click(x, y, window_rectangle)
 
         if mode == 1:
             village_clearer.window_rectangle = window_rectangle
             village_clearer.collect_loot_cart(screenshot)
             village_clearer.collect_resources(screenshot)
-            if village_clearer.clear_obstacle(screenshot) or tries >= 60:
+            if village_clearer.clear_obstacle(screenshot) or tries >= 6:
                 mode += 1
                 tries = 0
         elif mode == 2:
@@ -113,10 +119,10 @@ def main():
             if account_changer.account_changed or tries > 100:
                 account_changer.account_changed = False
                 # Reads values from csv file for the new account
-                trainer_and_attacker.total_gold = data_storer.get_account_info(account_changer.account_number)[2]
-                trainer_and_attacker.total_elixir = data_storer.get_account_info(account_changer.account_number)[3]
-                trainer_and_attacker.gold_read = data_storer.get_account_info(account_changer.account_number)[4]
-                trainer_and_attacker.elixir_read = data_storer.get_account_info(account_changer.account_number)[5]
+                trainer_and_attacker.total_gold = int(data_storer.get_account_info(account_changer.account_number)[2])
+                trainer_and_attacker.total_elixir = int(data_storer.get_account_info(account_changer.account_number)[3])
+                trainer_and_attacker.gold_read = int(data_storer.get_account_info(account_changer.account_number)[4])
+                trainer_and_attacker.elixir_read = int(data_storer.get_account_info(account_changer.account_number)[5])
                 mode += 1
                 tries = 0
         else:
