@@ -195,7 +195,6 @@ class VillageClearer:
         :param screenshot: Screenshot of Bluestacks
         :return:
         """
-        return
         collect_button_rectangle = find_image_rectangle(self.LOOT_CART, screenshot)
         if collect_button_rectangle:
             x, y = get_center_of_rectangle(collect_button_rectangle)
