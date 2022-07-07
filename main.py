@@ -32,16 +32,20 @@ def main():
     data_storer.add_new_accounts()
 
     # Variables used to smoothly move between the functions of the bot
-    mode = 4
+    mode = 1
     tries = 0
 
     # The images used to deal with various pop-ups
     pop_up_buttons = (
-        (cv.imread("assets/buttons/reload_game_button.jpg", cv.IMREAD_UNCHANGED), .95),  # Reloads the game if the client and game get de-synced
-        (cv.imread("assets/buttons/try_again_button.jpg", cv.IMREAD_UNCHANGED), .95),  # Reconnects to the game if connection is lost
+        (cv.imread("assets/buttons/reload_game_button.jpg", cv.IMREAD_UNCHANGED), .95),
+        # Reloads the game if the client and game get de-synced
+        (cv.imread("assets/buttons/try_again_button.jpg", cv.IMREAD_UNCHANGED), .95),
+        # Reconnects to the game if connection is lost
         (cv.imread("assets/buttons/okay_button.jpg", cv.IMREAD_UNCHANGED), .95),
-        (cv.imread("assets/buttons/okay_button_2.jpg", cv.IMREAD_UNCHANGED), .95),  # Clicks the okay button that appears when you open an account with recently finished upgrades
-        (cv.imread("assets/buttons/okay_button_3.jpg", cv.IMREAD_UNCHANGED), .95),  # Clicks on the okay button that acknowledges you breaking your shield
+        (cv.imread("assets/buttons/okay_button_2.jpg", cv.IMREAD_UNCHANGED), .95),
+        # Clicks the okay button that appears when you open an account with recently finished upgrades
+        (cv.imread("assets/buttons/okay_button_3.jpg", cv.IMREAD_UNCHANGED), .95),
+    # Clicks on the okay button that acknowledges you breaking your shield
     )
 
     # The main loop of the bot
@@ -70,7 +74,8 @@ def main():
                 tries = 0
         elif mode == 2:
             village_upgrader.window_rectangle = window_rectangle
-            if (village_upgrader.upgrade_building(screenshot) or tries >= 5) and not village_upgrader.upgrading_building:
+            if (village_upgrader.upgrade_building(
+                    screenshot) or tries >= 5) and not village_upgrader.upgrading_building:
                 mode += 1
                 tries = 0
             village_upgrader.show_suggested_upgrades(screenshot)
@@ -82,10 +87,23 @@ def main():
                 mode += 1
                 tries = 0
             elif trainer_and_attacker.find_base_to_attack(screenshot) or tries >= 150:
+                # Stores the collected account data in a csv file
+                data_storer.update_account_info(account_changer.account_number,
+                                                total_gold=trainer_and_attacker.total_gold,
+                                                total_elixir=trainer_and_attacker.total_elixir,
+                                                gold_read=trainer_and_attacker.gold_read,
+                                                elixir_read=trainer_and_attacker.elixir_read,
+                                                )
                 mode += 1
                 tries = 0
             elif trainer_and_attacker.attacked:
                 trainer_and_attacker.attacked = False
+                data_storer.update_account_info(account_changer.account_number,
+                                                total_gold=trainer_and_attacker.total_gold,
+                                                total_elixir=trainer_and_attacker.total_elixir,
+                                                gold_read=trainer_and_attacker.gold_read,
+                                                elixir_read=trainer_and_attacker.elixir_read,
+                                                )
                 mode += 1
                 tries = 0
         elif mode == 4:
@@ -94,7 +112,12 @@ def main():
             account_changer.select_next_account(screenshot)
             if account_changer.account_changed or tries > 100:
                 account_changer.account_changed = False
-                # mode += 1
+                # Reads values from csv file for the new account
+                trainer_and_attacker.total_gold = data_storer.get_account_info(account_changer.account_number)[2]
+                trainer_and_attacker.total_elixir = data_storer.get_account_info(account_changer.account_number)[3]
+                trainer_and_attacker.gold_read = data_storer.get_account_info(account_changer.account_number)[4]
+                trainer_and_attacker.elixir_read = data_storer.get_account_info(account_changer.account_number)[5]
+                mode += 1
                 tries = 0
         else:
             mode = 1

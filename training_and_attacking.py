@@ -17,7 +17,6 @@ class TrainerAndAttacker:
     troops_trained = False
     troops_training = False
     attacked = False
-    # TODO: Store information about bases in a csv file including their login info and if their cc has been upgraded and their th level
 
     ATTACK_BUTTON: tuple
     ARMY_BUTTON: tuple
@@ -157,7 +156,7 @@ class TrainerAndAttacker:
                 self.elixir_read += 1
             # Attacks if the base has a lot of loot
             if ((self.gold_read > 4 and self.elixir_read > 4) and (1.25 * gold >= self.total_gold / self.gold_read and
-                                                                   1.25 * elixir >= self.total_elixir / self.elixir_read * 1.25)) or self.gold_read > 20:
+                    1.25 * elixir >= self.total_elixir / self.elixir_read * 1.25)) or self.gold_read > 20:
                 self.attack(screenshot)
             else:
                 # Adds the loot read to the total

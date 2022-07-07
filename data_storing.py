@@ -50,8 +50,10 @@ class DataStorer:
                     new_row[2] = value
                 elif key == "total_elixir":
                     new_row[3] = value
-                elif key == "bases_searched":
+                elif key == "gold_read":
                     new_row[4] = value
+                elif key == "elixir_read":
+                    new_row[5] = value
                 else:
                     writer.writerows(rows[account_number:])  # Saves the rest of the data before raising the error
                     raise KeyError("Parameter does not exist")
@@ -63,7 +65,7 @@ class DataStorer:
     def get_account_info(self, account_number: int) -> list:
         """
         Returns the stored data about an account given its number in the list
-        [town hall level, if the rocks have been removed, total gold read, total elixir read, total bases searched]
+        [town hall level, if the rocks have been removed, total gold, total elixir, gold read, elixir read]
         :param account_number: The number corresponding to where the account is in the Supercell ID account menu
         :return: A list containing the corresponding data for the account number
         """
@@ -84,7 +86,7 @@ class DataStorer:
             # Makes the csv file rows to the csv file assuming each newly added account is a Town hall 2 with no rocks removed
             with open(self.file_path, "w", newline="") as file:
                 writer = csv.writer(file)
-                writer.writerows([[2, False, 0, 0, 0]] * self.number_of_accounts)
+                writer.writerows([[2, False, 0, 0, 0, 0]] * self.number_of_accounts)
         else:
             # Reads all the rows
             rows = []
@@ -98,4 +100,4 @@ class DataStorer:
                 with open(self.file_path, "w", newline="") as file:
                     writer = csv.writer(file)
                     writer.writerows(rows)
-                    writer.writerows([[2, False, 0, 0, 0]] * (self.number_of_accounts - len(rows)))
+                    writer.writerows([[2, False, 0, 0, 0, 0]] * (self.number_of_accounts - len(rows)))
