@@ -27,16 +27,18 @@ def main():
     mode = 1
     tries = 0
 
-    # The pop-up images
-    reload_game_button = (cv.imread("assets/buttons/reload_game_button.jpg", cv.IMREAD_UNCHANGED), .95)
-    okay_button = (cv.imread("assets/buttons/okay_button.jpg", cv.IMREAD_UNCHANGED), .95)
-    okay_button_2 = (cv.imread("assets/buttons/okay_button_2.jpg", cv.IMREAD_UNCHANGED), .95)
-    okay_button_3 = (cv.imread("assets/buttons/okay_button_3.jpg", cv.IMREAD_UNCHANGED), .95)
+    # The images used to deal with various pop-ups
+    pop_up_buttons = (
+        (cv.imread("assets/buttons/reload_game_button.jpg", cv.IMREAD_UNCHANGED), .95),  # Reloads the game if the client and game get de-synced
+        (cv.imread("assets/buttons/try_again_button.jpg", cv.IMREAD_UNCHANGED), .95),  # Reconnects to the game if connection is lost
+        (cv.imread("assets/buttons/okay_button.jpg", cv.IMREAD_UNCHANGED), .95),
+        (cv.imread("assets/buttons/okay_button_2.jpg", cv.IMREAD_UNCHANGED), .95),  # Clicks the okay button that appears when you open an account with recently finished upgrades
+        (cv.imread("assets/buttons/okay_button_3.jpg", cv.IMREAD_UNCHANGED), .95),  # Clicks on the okay button that acknowledges you breaking your shield
+    )
 
     # The main loop of the bot
     while True:
         window_rectangle = win32gui.GetWindowRect(hwnd)
-        # win32gui.MoveWindow(hwnd, window_rectangle[0], window_rectangle[1], 1400, 805, True)
 
         screenshot = get_screenshot(hwnd)
         screenshot = np.array(screenshot)
@@ -44,45 +46,28 @@ def main():
 
         # zoom_out() # TODO: Find a better way of doing this
         # Deals with various pop-ups that can happen
-        okay_button_rectangle = find_image_rectangle(okay_button, screenshot)
-        if okay_button_rectangle:
-            x, y = get_center_of_rectangle(okay_button_rectangle)
-            click(x, y, window_rectangle)
-        else:
-            # Reloads the game if the client and game get de-synced
-            reload_game_button_rectangle = find_image_rectangle(reload_game_button, screenshot)
-            if reload_game_button_rectangle:
-                x, y = get_center_of_rectangle(reload_game_button_rectangle)
+        for button in pop_up_buttons:
+            button_rectangle = find_image_rectangle(button, screenshot)
+            if button_rectangle:
+                x, y = get_center_of_rectangle(button_rectangle)
                 click(x, y, window_rectangle)
-            else:
-                # Clicks the okay button that appears when you open an account with recently finished upgrades
-                okay_button_2_rectangle = find_image_rectangle(okay_button_2, screenshot)
-                if okay_button_2_rectangle:
-                    x, y = get_center_of_rectangle(okay_button_2_rectangle)
-                    click(x, y, window_rectangle)
-                else:
-                    # Clicks on the okay button that acknowledges you breaking your shield
-                    okay_button_3_rectangle = find_image_rectangle(okay_button_3, screenshot)
-                    if okay_button_3_rectangle:
-                        x, y = get_center_of_rectangle(okay_button_3_rectangle)
-                        click(x, y, window_rectangle)
-                    pass
+                break
 
         if mode == 1:
-            village_clearer.window_rectangle = win32gui.GetWindowRect(hwnd)
+            village_clearer.window_rectangle = window_rectangle
             village_clearer.collect_loot_cart(screenshot)
             village_clearer.collect_resources(screenshot)
             if village_clearer.clear_obstacle(screenshot) or tries >= 6:
                 mode += 1
                 tries = 0
         elif mode == 2:
-            village_upgrader.window_rectangle = win32gui.GetWindowRect(hwnd)
+            village_upgrader.window_rectangle = window_rectangle
             if (village_upgrader.upgrade_building(screenshot) or tries >= 5) and not village_upgrader.upgrading_building:
                 mode += 1
                 tries = 0
             village_upgrader.show_suggested_upgrades(screenshot)
         elif mode == 3:
-            trainer_and_attacker.window_rectangle = win32gui.GetWindowRect(hwnd)
+            trainer_and_attacker.window_rectangle = window_rectangle
             trainer_and_attacker.train_troops(screenshot)
             if trainer_and_attacker.troops_training and tries > 1:
                 trainer_and_attacker.troops_training = False
@@ -96,7 +81,7 @@ def main():
                 mode += 1
                 tries = 0
         elif mode == 4:
-            account_changer.window_rectangle = win32gui.GetWindowRect(hwnd)
+            account_changer.window_rectangle = window_rectangle
             account_changer.open_account_menu(screenshot)
             account_changer.select_next_account(screenshot)
             if account_changer.account_changed or tries > 100:
