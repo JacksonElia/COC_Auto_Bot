@@ -16,10 +16,13 @@ class VillageClearer:
     obstacles_attempted_to_remove = []
 
     OBSTACLES: tuple
+    STONES: tuple
     RESOURCES: tuple
     REMOVE_BUTTON: tuple
     ZERO_BUILDERS: tuple
     NOT_ENOUGH_RESOURCES_COLOR = [127, 137, 254]  # In [B, G, R]
+
+    rocks_removed = False
 
     def __init__(self, window_rectangle: list):
         self.window_rectangle = window_rectangle
@@ -34,6 +37,15 @@ class VillageClearer:
             (cv.imread("assets/obstacles/jpg/mushroom.jpg", cv.IMREAD_UNCHANGED), .95),
             (cv.imread("assets/obstacles/jpg/right_trunk.jpg", cv.IMREAD_UNCHANGED), .96),
             (cv.imread("assets/obstacles/jpg/small_tree.jpg", cv.IMREAD_UNCHANGED), .93)
+        )
+
+        self.STONES = (
+            (cv.imread("assets/obstacles/jpg/small_stone_1.jpg", cv.IMREAD_UNCHANGED), .95),
+            (cv.imread("assets/obstacles/jpg/small_stone_2.jpg", cv.IMREAD_UNCHANGED), .95),
+            (cv.imread("assets/obstacles/jpg/small_stone_3.jpg", cv.IMREAD_UNCHANGED), .95),
+            (cv.imread("assets/obstacles/jpg/small_stone_4.jpg", cv.IMREAD_UNCHANGED), .95),
+            (cv.imread("assets/obstacles/jpg/large_stone.jpg", cv.IMREAD_UNCHANGED), .95),
+            (cv.imread("assets/obstacles/jpg/medium_stone.jpg", cv.IMREAD_UNCHANGED), .95),
         )
 
         self.RESOURCES = (
@@ -69,8 +81,15 @@ class VillageClearer:
         if not self.check_for_builders(screenshot):
             return True
         cropped_screenshot = screenshot[145:screenshot.shape[0] - 60, 100:screenshot.shape[1] - 100]
-        for obstacle in self.OBSTACLES:
-            self.obstacle_rectangles += find_image_rectangles(obstacle, cropped_screenshot)
+        # for obstacle in self.OBSTACLES:
+        #     self.obstacle_rectangles += find_image_rectangles(obstacle, cropped_screenshot)
+        if not self.rocks_removed:
+            stones = []
+            for stone in self.STONES:
+                stones += find_image_rectangles(stone, cropped_screenshot)
+            if self.check_for_builders(screenshot) and not stones and not self.rocks_removed:
+                self.rocks_removed = False
+            self.obstacle_rectangles += stones
         if self.obstacle_rectangles:
             remove_button_rectangle = find_image_rectangle(self.REMOVE_BUTTON, screenshot)
             if remove_button_rectangle:

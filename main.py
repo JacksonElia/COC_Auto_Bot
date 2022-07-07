@@ -1,4 +1,5 @@
 from ctypes import windll
+from ast import literal_eval
 from training_and_attacking import *
 from village_clearing import *
 from village_upgrading import *
@@ -76,6 +77,7 @@ def main():
             village_clearer.collect_loot_cart(screenshot)
             village_clearer.collect_resources(screenshot)
             if village_clearer.clear_obstacle(screenshot) or tries >= 6:
+                data_storer.update_account_info(account_changer.account_number, rocks_removed=village_clearer.rocks_removed)
                 mode += 1
                 tries = 0
         elif mode == 2:
@@ -119,6 +121,7 @@ def main():
             if account_changer.account_changed or tries > 100:
                 account_changer.account_changed = False
                 # Reads values from csv file for the new account
+                village_clearer.rocks_removed = literal_eval(data_storer.get_account_info(account_changer.account_number)[1])
                 trainer_and_attacker.total_gold = int(data_storer.get_account_info(account_changer.account_number)[2])
                 trainer_and_attacker.total_elixir = int(data_storer.get_account_info(account_changer.account_number)[3])
                 trainer_and_attacker.gold_read = int(data_storer.get_account_info(account_changer.account_number)[4])
