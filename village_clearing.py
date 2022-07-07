@@ -63,12 +63,14 @@ class VillageClearer:
         :param screenshot: the screenshot of bluestacks
         :return: True if it removes an obstacle
         """
+        # Cropped screenshot for better efficiency and so that the bot doesn't click on buttons by accident
         self.obstacle_rectangles = []
         # Doesn't try to remove any obstacles if there are no builders
         if not self.check_for_builders(screenshot):
             return True
+        cropped_screenshot = screenshot[145:screenshot.shape[0] - 60, 100:screenshot.shape[1] - 100]
         for obstacle in self.OBSTACLES:
-            self.obstacle_rectangles += find_image_rectangles(obstacle, screenshot)
+            self.obstacle_rectangles += find_image_rectangles(obstacle, cropped_screenshot)
         if self.obstacle_rectangles:
             remove_button_rectangle = find_image_rectangle(self.REMOVE_BUTTON, screenshot)
             if remove_button_rectangle:
@@ -105,8 +107,8 @@ class VillageClearer:
             if rectangle is not None:
                 self.obstacles_attempted_to_remove.append(rectangle)
                 x, y = get_center_of_rectangle(rectangle)
-                click(x, y, self.window_rectangle)
-                sleep(1)  # The remove button takes a little of time to appear
+                click(x + 100, y + 145, self.window_rectangle)
+                sleep(1.3)  # The remove button takes a little of time to appear
 
         return False
 
@@ -193,6 +195,7 @@ class VillageClearer:
         :param screenshot: Screenshot of Bluestacks
         :return:
         """
+        return
         collect_button_rectangle = find_image_rectangle(self.LOOT_CART, screenshot)
         if collect_button_rectangle:
             x, y = get_center_of_rectangle(collect_button_rectangle)
