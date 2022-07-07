@@ -26,22 +26,39 @@ class DataStorer:
         bases_searched: int
         :return:
         """
-        with open(self.file_path, "w", newline="") as file:
-            writer = csv.writer(file)
+        # Reads all the rows
+        rows = []
+        with open(self.file_path, "r") as file:
+            reader = csv.reader(file)
+            for row in reader:
+                rows.append(row)
 
-            for key in kwargs:
+        # Updates the value in the row based on the key
+        for key, value in kwargs.items():
+            with open(self.file_path, "w", newline="") as file:
+                writer = csv.writer(file)
+                # Gets the writer to the correct row without changing the previous rows
+                writer.writerows(rows[:account_number])
+
+                new_row = rows[account_number]
+
                 if key == "town_hall":
-                    pass
+                    new_row[0] = value
                 elif key == "rocks_removed":
-                    pass
+                    new_row[1] = value
                 elif key == "total_gold":
-                    pass
+                    new_row[2] = value
                 elif key == "total_elixir":
-                    pass
+                    new_row[3] = value
                 elif key == "bases_searched":
-                    pass
+                    new_row[4] = value
                 else:
+                    writer.writerows(rows[account_number:])  # Saves the rest of the data before raising the error
                     raise KeyError("Parameter does not exist")
+
+                # Writes the rest of the file
+                writer.writerow(new_row)
+                writer.writerows(rows[account_number + 1:])
 
     def get_account_info(self, account_number: int) -> list:
         """
@@ -52,11 +69,10 @@ class DataStorer:
         """
         with open(self.file_path, "r") as file:
             reader = csv.reader(file)
-            i = 0
-            for row in reader:
+            # Gets the specific row, then returns it
+            for i, row in enumerate(reader):
                 if i == account_number:
                     return row
-                i += 1
 
     def add_new_accounts(self):
         """
@@ -70,6 +86,7 @@ class DataStorer:
                 writer = csv.writer(file)
                 writer.writerows([[2, False, 0, 0, 0]] * self.number_of_accounts)
         else:
+            # Reads all the rows
             rows = []
             with open(self.file_path, "r") as file:
                 reader = csv.reader(file)

@@ -28,6 +28,7 @@ def main():
     account_changer = AccountChanger(win32gui.GetWindowRect(hwnd), number_of_accounts)
     data_storer = DataStorer(number_of_accounts)
 
+    # Makes sure the csv file has rows for each account
     data_storer.add_new_accounts()
 
     # Variables used to smoothly move between the functions of the bot
