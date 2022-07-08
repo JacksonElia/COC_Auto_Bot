@@ -201,6 +201,8 @@ class TrainerAndAttacker:
             if not (find_image_rectangle(self.AVAILABLE_LOOT, screenshot) or find_image_rectangle(self.AVAILABLE_LOOT_2, screenshot)):
                 self.attacked = True
                 return
+        # Zooms out the pov
+        zoom_out()
         # Selects the troops to deploy
         click(230, 715, self.window_rectangle)
         # Deploys the troops

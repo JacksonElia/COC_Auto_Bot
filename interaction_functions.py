@@ -1,5 +1,6 @@
 from PIL import Image, ImageGrab
 from time import sleep
+from pydirectinput import keyDown, keyUp
 import pytesseract
 import cv2 as cv
 import numpy as np
@@ -78,9 +79,11 @@ def zoom_out():
     Zooms out the village
     :return:
     """
-    win32api.keybd_event(40, 0, 0, 0)
-    sleep(.1)
-    win32api.keybd_event(40, 0, win32con.KEYEVENTF_KEYUP, 0)
+    keyDown("ctrl")
+    keyDown("-")
+    sleep(.5)
+    keyUp("ctrl")
+    keyUp("-")
 
 
 def x_out():

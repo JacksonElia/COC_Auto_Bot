@@ -80,6 +80,7 @@ class VillageClearer:
         # Doesn't try to remove any obstacles if there are no builders
         if not self.check_for_builders(screenshot):
             return True
+        zoom_out()
         cropped_screenshot = screenshot[145:screenshot.shape[0] - 60, 100:screenshot.shape[1] - 100]
         # for obstacle in self.OBSTACLES:
         #     self.obstacle_rectangles += find_image_rectangles(obstacle, cropped_screenshot)
