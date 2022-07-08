@@ -79,6 +79,7 @@ def zoom_out():
     Zooms out the village
     :return:
     """
+    # Uses pydirectinput because win32api wasn't working for keyboard inputs here
     keyDown("ctrl")
     keyDown("-")
     sleep(.5)
