@@ -136,17 +136,17 @@ class VillageBuilder:
                     self.canceling_edit = False
                     return True
             else:
-                cancel_button_rectangle = find_image_rectangle(self.CANCEL_BUTTON, screenshot)
-                if cancel_button_rectangle:
-                    x, y = get_center_of_rectangle(cancel_button_rectangle)
+                save_button_rectangle = find_image_rectangle(self.SAVE_BUTTON, screenshot)
+                if save_button_rectangle:
+                    x, y = get_center_of_rectangle(save_button_rectangle)
                     click(x, y, self.window_rectangle)
                     sleep(1.5)
-                    self.canceling_edit = True
+                    return True
                 else:
-                    save_button_rectangle = find_image_rectangle(self.SAVE_BUTTON, screenshot)
-                    if save_button_rectangle:
-                        x, y = get_center_of_rectangle(save_button_rectangle)
+                    cancel_button_rectangle = find_image_rectangle(self.CANCEL_BUTTON, screenshot)
+                    if cancel_button_rectangle:
+                        x, y = get_center_of_rectangle(cancel_button_rectangle)
                         click(x, y, self.window_rectangle)
                         sleep(1.5)
-                        return True
+                        self.canceling_edit = True
         return False
