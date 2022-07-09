@@ -12,7 +12,7 @@ class VillageBuilder:
     """
 
     window_rectangle = []
-    town_hall_level = 4
+    town_hall_level = 2
     base_link_entered = False
     base_copied = False
     canceling_edit = False
