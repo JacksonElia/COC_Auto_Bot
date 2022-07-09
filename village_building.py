@@ -42,8 +42,8 @@ class VillageBuilder:
         self.TOWN_HALLS = (
             (cv.imread("assets/townhalls/th2.jpg", cv.IMREAD_UNCHANGED), .93),
             (cv.imread("assets/townhalls/th3.jpg", cv.IMREAD_UNCHANGED), .93),
-            (cv.imread("assets/townhalls/th4.jpg", cv.IMREAD_UNCHANGED), .96),
-            (cv.imread("assets/townhalls/th5.jpg", cv.IMREAD_UNCHANGED), .96),
+            (cv.imread("assets/townhalls/th4.jpg", cv.IMREAD_UNCHANGED), .97),
+            (cv.imread("assets/townhalls/th5.jpg", cv.IMREAD_UNCHANGED), .97),
             (cv.imread("assets/townhalls/th6.jpg", cv.IMREAD_UNCHANGED), .96),
             (cv.imread("assets/townhalls/th7.jpg", cv.IMREAD_UNCHANGED), .95),
             (cv.imread("assets/townhalls/th8.jpg", cv.IMREAD_UNCHANGED), .93),
@@ -65,11 +65,13 @@ class VillageBuilder:
         self.OKAY_BUTTON = (cv.imread("assets/buttons/okay_button_edit_mode.jpg", cv.IMREAD_UNCHANGED), .95)
         self.CANCEL_BUTTON = (cv.imread("assets/buttons/cancel_button.jpg", cv.IMREAD_UNCHANGED), .95)
 
-    def get_town_hall_level(self, screenshot: Image):
+    def get_town_hall_level(self, screenshot: Image) -> int:
         zoom_out()
         for i, th in enumerate(self.TOWN_HALLS):
             if find_image_rectangle(th, screenshot):
                 print("TH" + str(i + 2) + " Found")
+                return i + 2
+        return 0
 
     def copy_base_layout(self, screenshot: Image):
         i_have_clash_button_rectangle = find_image_rectangle(self.I_HAVE_CLASH_BUTTON, screenshot)

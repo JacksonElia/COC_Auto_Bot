@@ -36,7 +36,7 @@ def main():
     data_storer.add_new_accounts()
 
     # Variables used to smoothly move between the functions of the bot
-    mode = 1
+    mode = 5
     tries = 0
 
     # The images used to deal with various pop-ups
@@ -121,8 +121,10 @@ def main():
                 tries = 0
         elif mode == 4:  # Sets base layouts
             # Stores the town hall level for the account in a csv file
-            data_storer.update_account_info(account_changer.account_number,
-                                            town_hall=village_builder.get_town_hall_level(screenshot))
+            town_hall_level = village_builder.get_town_hall_level(screenshot)
+            if town_hall_level > 0:
+                data_storer.update_account_info(account_changer.account_number,
+                                                town_hall=village_builder.get_town_hall_level(screenshot))
             village_builder.town_hall_level = int(data_storer.get_account_info(account_changer.account_number)[0])
             if village_builder.town_hall_level >= 4:
                 village_builder.window_rectangle = window_rectangle
