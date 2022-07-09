@@ -88,6 +88,7 @@ class VillageClearer:
             stones = []
             for stone in self.STONES:
                 stones += find_image_rectangles(stone, cropped_screenshot)
+            # Assumes that all the stones have been removed if no stones were found but another obstacle was found
             if self.obstacle_rectangles and not stones:
                 self.rocks_removed = False
             self.obstacle_rectangles += stones
