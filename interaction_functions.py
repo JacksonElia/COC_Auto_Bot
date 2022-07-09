@@ -89,12 +89,12 @@ def zoom_out():
 
 def x_out():
     """
-    Zooms out the village
+    Closes out of menus
     :return:
     """
-    win32api.keybd_event(27, 0, 0, 0)
+    keyDown("esc")
     sleep(.1)
-    win32api.keybd_event(27, 0, win32con.KEYEVENTF_KEYUP, 0)
+    keyUp("esc")
 
 
 def get_hwnd(window_title: str):
