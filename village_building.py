@@ -26,7 +26,14 @@ class VillageBuilder:
         "https://link.clashofclans.com/en?action=OpenLayout&id=TH4%3AHV%3AAAAALQAAAAHkquOpivBodm0qRz1DaEbD",
         "https://link.clashofclans.com/en?action=OpenLayout&id=TH5%3AHV%3AAAAARwAAAAGRO7_IiFECUbLA7vJGxz9e",
         "https://link.clashofclans.com/en?action=OpenLayout&id=TH6%3AHV%3AAAAALgAAAAHsNlLRw9Ed-W7oXj9YjukP",
-        "https://link.clashofclans.com/en?action=OpenLayout&id=TH7%3AHV%3AAAAAWAAAAAFZmfC1lPx30LHaZ5OGyOCG"
+        "https://link.clashofclans.com/en?action=OpenLayout&id=TH7%3AHV%3AAAAAWAAAAAFZmfC1lPx30LHaZ5OGyOCG",
+        "https://link.clashofclans.com/en?action=OpenLayout&id=TH8%3AHV%3AAAAAIAAAAAH84TzqPnUD7I4WSBls_KYZ",
+        "https://link.clashofclans.com/en?action=OpenLayout&id=TH9%3AHV%3AAAAAEQAAAAIcAOeCtge-W2UNbAZJ3K7g",
+        "https://link.clashofclans.com/en?action=OpenLayout&id=TH10%3AHV%3AAAAAVgAAAAFZjxWSqIPS1ULAqQpocogk",
+        "https://link.clashofclans.com/en?action=OpenLayout&id=TH11%3AHV%3AAAAAMwAAAAGseEXdKmvf_Sljb8p5Xpdp",
+        "https://link.clashofclans.com/en?action=OpenLayout&id=TH12%3AHV%3AAAAAIQAAAAH8MlHeqvETps2HjiM9nzao",
+        "https://link.clashofclans.com/en?action=OpenLayout&id=TH13%3AHV%3AAAAAAQAAAAH1vRXQwkkxF-AuqcsNE34B",
+        "https://link.clashofclans.com/en?action=OpenLayout&id=TH14%3AHV%3AAAAALAAAAAHuYCXPQ0h8bzRVZv93-6Zc"
     )
 
     def __init__(self, window_rectangle: list):
