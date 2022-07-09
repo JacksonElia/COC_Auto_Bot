@@ -36,7 +36,7 @@ def main():
     data_storer.add_new_accounts()
 
     # Variables used to smoothly move between the functions of the bot
-    mode = 4
+    mode = 1
     tries = 0
 
     # The images used to deal with various pop-ups
@@ -141,6 +141,9 @@ def main():
                 else:
                     # Opens chrome and enters the base link
                     village_builder.copy_base_layout(screenshot)
+            else:
+                mode += 1
+                tries = 0
         elif mode == 5:  # Changes Supercell ID accounts
             account_changer.window_rectangle = window_rectangle
             account_changer.open_account_menu(screenshot)
