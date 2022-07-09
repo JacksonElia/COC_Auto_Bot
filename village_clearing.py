@@ -82,13 +82,13 @@ class VillageClearer:
             return True
         zoom_out()
         cropped_screenshot = screenshot[145:screenshot.shape[0] - 60, 100:screenshot.shape[1] - 100]
-        # for obstacle in self.OBSTACLES:
-        #     self.obstacle_rectangles += find_image_rectangles(obstacle, cropped_screenshot)
+        for obstacle in self.OBSTACLES:
+            self.obstacle_rectangles += find_image_rectangles(obstacle, cropped_screenshot)
         if not self.rocks_removed:
             stones = []
             for stone in self.STONES:
                 stones += find_image_rectangles(stone, cropped_screenshot)
-            if self.check_for_builders(screenshot) and not stones and not self.rocks_removed:
+            if self.obstacle_rectangles and not stones:
                 self.rocks_removed = False
             self.obstacle_rectangles += stones
         if self.obstacle_rectangles:
