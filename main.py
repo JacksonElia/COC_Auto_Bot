@@ -1,9 +1,11 @@
 from ctypes import windll
 from ast import literal_eval
+from random import randrange
 from training_and_attacking import *
 from village_clearing import *
 from village_upgrading import *
 from account_changing import *
+from village_building import *
 from interaction_functions import *
 from data_storing import *
 import cv2 as cv
@@ -27,6 +29,7 @@ def main():
     village_upgrader = VillageUpgrader(win32gui.GetWindowRect(hwnd))
     trainer_and_attacker = TrainerAndAttacker(win32gui.GetWindowRect(hwnd))
     account_changer = AccountChanger(win32gui.GetWindowRect(hwnd), number_of_accounts)
+    village_builder = VillageBuilder(win32gui.GetWindowRect(hwnd))
     data_storer = DataStorer(number_of_accounts)
 
     # Makes sure the csv file has rows for each account
@@ -53,6 +56,8 @@ def main():
 
     pop_up_button_i = 0
 
+    sleep(3)
+
     # The main loop of the bot
     while True:
         window_rectangle = win32gui.GetWindowRect(hwnd)
@@ -61,7 +66,6 @@ def main():
         screenshot = np.array(screenshot)
         screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2BGR)
 
-        # zoom_out() # TODO: Find a better way of doing this
         # Deals with various pop-ups that can happen, only does one per frame rather than all of them every frame
         pop_up_button_i += 1
         if pop_up_button_i >= len(pop_up_buttons):
@@ -72,22 +76,23 @@ def main():
             x, y = get_center_of_rectangle(button_rectangle)
             click(x, y, window_rectangle)
 
-        if mode == 1:
+        if mode == 1:  # Clears the village of obstacles and collects loot
             village_clearer.window_rectangle = window_rectangle
             village_clearer.collect_loot_cart(screenshot)
             village_clearer.collect_resources(screenshot)
             if village_clearer.clear_obstacle(screenshot) or tries >= 6:
-                data_storer.update_account_info(account_changer.account_number, rocks_removed=village_clearer.rocks_removed)
+                data_storer.update_account_info(account_changer.account_number,
+                                                rocks_removed=village_clearer.rocks_removed)
                 mode += 1
                 tries = 0
-        elif mode == 2:
+        elif mode == 2:  # Upgrades and purchases buildings
             village_upgrader.window_rectangle = window_rectangle
             if (village_upgrader.upgrade_building(
                     screenshot) or tries >= 5) and not village_upgrader.upgrading_building:
                 mode += 1
                 tries = 0
             village_upgrader.show_suggested_upgrades(screenshot)
-        elif mode == 3:
+        elif mode == 3:  # Trains troops and attacks for loot
             trainer_and_attacker.window_rectangle = window_rectangle
             trainer_and_attacker.train_troops(screenshot)
             if trainer_and_attacker.troops_training and tries > 1:
@@ -114,14 +119,35 @@ def main():
                                                 )
                 mode += 1
                 tries = 0
-        elif mode == 4:
+        elif mode == 4:  # Sets base layouts
+            # Stores the town hall level for the account in a csv file
+            data_storer.update_account_info(account_changer.account_number,
+                                            town_hall=village_builder.get_town_hall_level(screenshot))
+            village_builder.town_hall_level = int(data_storer.get_account_info(account_changer.account_number)[0])
+            if village_builder.town_hall_level >= 4:
+                village_builder.window_rectangle = window_rectangle
+                if village_builder.base_link_entered:
+                    # Handles base editing and saving
+                    if village_builder.handle_base_edit(screenshot):
+                        village_builder.base_link_entered = False
+                        sleep(1)
+                        # Once the process is done, it closes out of the base window
+                        x_out()
+                        sleep(.5)
+                        mode += 1
+                        tries = 0
+                else:
+                    # Opens chrome and enters the base link
+                    village_builder.copy_base_layout(screenshot)
+        elif mode == 5:  # Changes Supercell ID accounts
             account_changer.window_rectangle = window_rectangle
             account_changer.open_account_menu(screenshot)
             account_changer.select_next_account(screenshot)
             if account_changer.account_changed or tries > 100:
                 account_changer.account_changed = False
                 # Reads values from csv file for the new account
-                village_clearer.rocks_removed = literal_eval(data_storer.get_account_info(account_changer.account_number)[1])
+                village_clearer.rocks_removed = literal_eval(
+                    data_storer.get_account_info(account_changer.account_number)[1])
                 trainer_and_attacker.total_gold = int(data_storer.get_account_info(account_changer.account_number)[2])
                 trainer_and_attacker.total_elixir = int(data_storer.get_account_info(account_changer.account_number)[3])
                 trainer_and_attacker.gold_read = int(data_storer.get_account_info(account_changer.account_number)[4])
