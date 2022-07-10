@@ -206,7 +206,7 @@ def detect_if_color_present(color: list, cropped_screenshot: Image) -> bool:
     return False
 
 
-def read_text(cropped_screenshot: Image) -> str:
+def read_text(cropped_screenshot: Image, a) -> str:
     """
     Attempts to read the text in the cropped screenshot
     :param cropped_screenshot: the screenshot of the location where the text might be
@@ -215,6 +215,8 @@ def read_text(cropped_screenshot: Image) -> str:
     pytesseract.pytesseract.tesseract_cmd = "Tesseract-OCR/tesseract.exe"
     processed_image = process_image_for_reading(cropped_screenshot)
     text = pytesseract.image_to_string(processed_image, lang="eng", config="-c tessedit_char_whitelist=0123456789 --psm 6")
+    cv.imshow(a, processed_image)
+    print(f"{a}: {text}")
     return text
 
 
@@ -227,16 +229,19 @@ def process_image_for_reading(cropped_screenshot: Image) -> Image:
     hsv = cv.cvtColor(cropped_screenshot, cv.COLOR_BGR2HSV)
     # define range of text color in HSV
     lower_value = np.array([0, 0, 100])
-    upper_value = np.array([179, 120, 255])
+    upper_value = np.array([179, 105, 255])
     # filters the HSV image to get only the text color, returns white text on a black background
     mask = cv.inRange(hsv, lower_value, upper_value)
-    # kernel = cv.getStructuringElement(cv.MORPH_RECT, (3, 3))
-    # opening = cv.morphologyEx(mask, cv.MORPH_OPEN, kernel, iterations=1)  # Gets rid of small dots
+    kernel = cv.getStructuringElement(cv.MORPH_RECT, (3, 3))
+    opening = cv.morphologyEx(mask, cv.MORPH_OPEN, kernel, iterations=1)  # Gets rid of small dots
     # Inverts the image to black text on white background
-    invert = 255 - mask
+    invert = 255 - opening
     # Adds gaps in between characters so that they can be more easily recognized
     processed_image = add_space_between_characters(invert, 5)
-    return processed_image
+
+    opening = cv.morphologyEx(processed_image, cv.MORPH_CLOSE, kernel, iterations=1)  # Gets rid of small lines caused by adding gaps
+
+    return opening
 
 
 def add_space_between_characters(cropped_screenshot: Image, gap: int) -> Image:

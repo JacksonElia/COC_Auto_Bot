@@ -132,17 +132,15 @@ class TrainerAndAttacker:
                 y = available_loot_rectangle[1]
                 # Gets the loot text relative to the available loot text
                 gold_cropped_screenshot = screenshot[y + 24:y + 24 + 24, x:x + 155]
-                elixir_cropped_screenshot = screenshot[y + 64:y + 64 + 24, x:x + 155]
+                elixir_cropped_screenshot = screenshot[y + 66:y + 66 + 24, x:x + 155]
             else:
                 # Gold text is from x: 65-225px y: 135-160px
                 gold_cropped_screenshot = screenshot[136:160, 70:225]
                 # Elixir text is from x: 65-225px y: 175-200px
-                elixir_cropped_screenshot = screenshot[176:200, 70:225]
+                elixir_cropped_screenshot = screenshot[178:202, 70:225]
             # Reads the loot numbers and clears everything except the numbers
-            gold_loot_text = read_text(gold_cropped_screenshot).strip().replace("", "").replace(" ", "")
-            elixir_loot_text = read_text(elixir_cropped_screenshot).strip().replace("", "").replace(" ", "")
-            print("Gold: " + gold_loot_text)
-            print("Elixir: " + elixir_loot_text)
+            gold_loot_text = read_text(gold_cropped_screenshot, "Gold").strip().replace("", "").replace(" ", "")
+            elixir_loot_text = read_text(elixir_cropped_screenshot, "Elixir").strip().replace("", "").replace(" ", "")
             # Checks to make sure everything was read correctly
             gold = 0
             elixir = 0
