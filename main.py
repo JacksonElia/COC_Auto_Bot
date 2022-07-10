@@ -36,7 +36,7 @@ def main():
     data_storer.add_new_accounts()
 
     # Variables used to smoothly move between the functions of the bot
-    mode = 3
+    mode = 1
     tries = 0
 
     # The images used to deal with various pop-ups
@@ -125,7 +125,8 @@ def main():
             if town_hall_level > 0:
                 data_storer.update_account_info(account_changer.account_number,
                                                 town_hall=village_builder.get_town_hall_level(screenshot))
-            village_builder.town_hall_level = int(data_storer.get_account_info(account_changer.account_number)[0])
+            if int(data_storer.get_account_info(account_changer.account_number)[0]) > 2:
+                village_builder.town_hall_level = int(data_storer.get_account_info(account_changer.account_number)[0])
             if village_builder.town_hall_level >= 4 and randrange(0, 11) == 10:
                 village_builder.window_rectangle = window_rectangle
                 if village_builder.base_link_entered:
