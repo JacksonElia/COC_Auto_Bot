@@ -128,6 +128,8 @@ def main():
             if int(data_storer.get_account_info(account_changer.account_number)[0]) > 2:
                 village_builder.town_hall_level = int(data_storer.get_account_info(account_changer.account_number)[0])
             if village_builder.town_hall_level >= 4 and randrange(0, 11) == 10:
+                village_builder.building_base = True
+            if village_builder.building_base:
                 village_builder.window_rectangle = window_rectangle
                 if village_builder.base_link_entered:
                     # Handles base editing and saving
@@ -143,6 +145,7 @@ def main():
                     # Opens chrome and enters the base link
                     village_builder.copy_base_layout(screenshot)
             else:
+                village_builder.building_base = False
                 mode += 1
                 tries = 0
         elif mode == 5:  # Changes Supercell ID accounts
