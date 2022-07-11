@@ -55,7 +55,6 @@ class AccountChanger:
         :return:
         """
         # The rectangles are sorted by y (lowest first)
-        print(self.scrolled_to_account)
         coc_icon_rectangles = find_image_rectangles(self.COC_ICON, screenshot)
         if coc_icon_rectangles:
             if self.scrolled_to_account:
