@@ -36,7 +36,7 @@ def main():
     data_storer.add_new_accounts()
 
     # Variables used to smoothly move between the functions of the bot
-    mode = 1
+    mode = 0
     tries = 0
 
     # The images used to deal with various pop-ups
@@ -78,8 +78,10 @@ def main():
 
         if mode == 1:  # Clears the village of obstacles and collects loot
             village_clearer.window_rectangle = window_rectangle
-            village_clearer.collect_loot_cart(screenshot)
             village_clearer.collect_resources(screenshot)
+            # Only collects the loot cart if the account is TH5 or above
+            if int(data_storer.get_account_info(account_changer.account_number)[0]) > 4:
+                village_clearer.collect_loot_cart(screenshot)
             if village_clearer.clear_obstacle(screenshot) or tries >= 6:
                 data_storer.update_account_info(account_changer.account_number,
                                                 rocks_removed=village_clearer.rocks_removed)
@@ -99,7 +101,7 @@ def main():
                 trainer_and_attacker.troops_training = False
                 mode += 1
                 tries = 0
-            elif trainer_and_attacker.find_base_to_attack(screenshot) or tries >= 150:
+            elif trainer_and_attacker.find_base_to_attack(screenshot) or tries >= 200:
                 # Stores the collected account data in a csv file
                 data_storer.update_account_info(account_changer.account_number,
                                                 total_gold=trainer_and_attacker.total_gold,
@@ -130,22 +132,26 @@ def main():
             if village_builder.town_hall_level >= 4 and randrange(0, 11) == 10:
                 village_builder.building_base = True
             if village_builder.building_base:
+                print("if")
                 village_builder.window_rectangle = window_rectangle
                 if village_builder.base_link_entered:
                     # Handles base editing and saving
                     if village_builder.handle_base_edit(screenshot):
+                        print("handle")
                         village_builder.base_link_entered = False
                         sleep(1)
                         # Once the process is done, it closes out of the base window
                         x_out()
                         sleep(.5)
+                        village_builder.building_base = False
                         mode += 1
                         tries = 0
                 else:
+                    print("chrome")
                     # Opens chrome and enters the base link
                     village_builder.copy_base_layout(screenshot)
             else:
-                village_builder.building_base = False
+                print("else")
                 mode += 1
                 tries = 0
         elif mode == 5:  # Changes Supercell ID accounts
