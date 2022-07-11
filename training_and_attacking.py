@@ -24,6 +24,7 @@ class TrainerAndAttacker:
     GOBLIN_BUTTON: tuple
     NEXT_BUTTON: tuple
     POPUP_X_BUTTON: tuple
+    ARMY_X_BUTTON: tuple
     RETURN_HOME_BUTTON: tuple
 
     def __init__(self, window_rectangle: list):
@@ -36,6 +37,7 @@ class TrainerAndAttacker:
         self.GREY_GOBLIN_BUTTON = (cv.imread("assets/buttons/grey_goblin_button.jpg", cv.IMREAD_UNCHANGED), .94)
         self.NEXT_BUTTON = (cv.imread("assets/buttons/next_button.jpg", cv.IMREAD_UNCHANGED), .9)
         self.POPUP_X_BUTTON = (cv.imread("assets/buttons/popup_x_button.jpg", cv.IMREAD_UNCHANGED), .94)
+        self.ARMY_X_BUTTON = (cv.imread("assets/buttons/army_x_button.jpg", cv.IMREAD_UNCHANGED), .94)
         self.RETURN_HOME_BUTTON = (cv.imread("assets/buttons/return_home_button.jpg", cv.IMREAD_UNCHANGED), .9)
         self.FINISH_TRAINING = (cv.imread("assets/misc/finish_training.jpg", cv.IMREAD_UNCHANGED), .97)
         self.AVAILABLE_LOOT = (cv.imread("assets/misc/available_loot.jpg", cv.IMREAD_UNCHANGED), .8)
@@ -53,8 +55,10 @@ class TrainerAndAttacker:
         army_button_rectangle = find_image_rectangle(self.ARMY_BUTTON, screenshot)
         if army_button_rectangle:
             x, y = get_center_of_rectangle(army_button_rectangle)
+            # Clicks the army button
             click(x, y, self.window_rectangle)
             sleep(1)
+            # Clicks the train troops tab
             click(x + 330, y - 520, self.window_rectangle)
             sleep(1)
         else:
@@ -68,7 +72,13 @@ class TrainerAndAttacker:
                 click(x, y + 100, self.window_rectangle)
                 sleep(.3)
                 # Closes out of the troop menu
-                x_out()
+                army_x_button_rectangle = find_image_rectangle(self.ARMY_X_BUTTON, screenshot)
+                if army_x_button_rectangle:
+                    x, y = get_center_of_rectangle(army_x_button_rectangle)
+                    click(x, y, self.window_rectangle)
+                    sleep(.3)
+                else:
+                    click(1300, 40, self.window_rectangle)
                 self.troops_training = True
             else:
                 barbarian_button_rectangle = find_image_rectangle(self.BARBARIAN_BUTTON, screenshot)
@@ -81,7 +91,13 @@ class TrainerAndAttacker:
                     click(x, y + 100, self.window_rectangle)
                     sleep(.3)
                     # Closes out of the troop menu
-                    x_out()
+                    army_x_button_rectangle = find_image_rectangle(self.ARMY_X_BUTTON, screenshot)
+                    if army_x_button_rectangle:
+                        x, y = get_center_of_rectangle(army_x_button_rectangle)
+                        click(x, y, self.window_rectangle)
+                        sleep(.3)
+                    else:
+                        click(1300, 40, self.window_rectangle)
                     sleep(1)
                     self.troops_training = True
                 else:
@@ -96,7 +112,13 @@ class TrainerAndAttacker:
                             self.troops_trained = False
                             self.troops_training = True
                         # Closes out of the troop menu
-                        x_out()
+                        army_x_button_rectangle = find_image_rectangle(self.ARMY_X_BUTTON, screenshot)
+                        if army_x_button_rectangle:
+                            x, y = get_center_of_rectangle(army_x_button_rectangle)
+                            click(x, y, self.window_rectangle)
+                            sleep(.3)
+                        else:
+                            click(1300, 40, self.window_rectangle)
                         sleep(1)
                     else:
                         popup_x_button_rectangle = find_image_rectangle(self.POPUP_X_BUTTON, screenshot)
