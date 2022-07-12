@@ -1,5 +1,6 @@
 from PIL import Image, ImageGrab
 from time import sleep
+from pyautogui import scroll
 from pydirectinput import keyDown, keyUp
 import pytesseract
 import cv2 as cv
@@ -17,7 +18,7 @@ def click(x: int, y: int, window_rectangle: list):
     :param window_rectangle: the list with the rectangle for the window
     :return:
     """
-    win32api.SetCursorPos((x + window_rectangle[0], y + window_rectangle[1]))
+    move_mouse_to_position(x, y, window_rectangle)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
     sleep(.01)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
@@ -25,14 +26,14 @@ def click(x: int, y: int, window_rectangle: list):
 
 def click_and_hold(x: int, y: int, hold_time: float, window_rectangle: list):
     """
-    Clicks at the specified pixel coordinates relative to the window.
+    Clicks and holds at the specified pixel coordinates relative to the window.
     :param x: x pixel
     :param y: y pixel
     :param hold_time: how long it holds the click for
     :param window_rectangle: the list with the rectangle for the window
     :return:
     """
-    win32api.SetCursorPos((x + window_rectangle[0], y + window_rectangle[1]))
+    move_mouse_to_position(x, y, window_rectangle)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
     sleep(hold_time)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
@@ -49,7 +50,7 @@ def click_and_drag(first_x: int, first_y: int, second_x: int, second_y: int, dra
     :param window_rectangle: the list with the rectangle for the window
     :return:
     """
-    win32api.SetCursorPos((first_x + window_rectangle[0], first_y + window_rectangle[1]))
+    move_mouse_to_position(first_x, first_y, window_rectangle)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
 
     while True:
@@ -74,6 +75,17 @@ def click_and_drag(first_x: int, first_y: int, second_x: int, second_y: int, dra
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
 
 
+def move_mouse_to_position(x: int, y: int, window_rectangle: list):
+    """
+    Moves the mouse to the specified pixel coordinates relative to the window.
+    :param x: x pixel
+    :param y: y pixel
+    :param window_rectangle: the list with the rectangle for the window
+    :return:
+    """
+    win32api.SetCursorPos((x + window_rectangle[0], y + window_rectangle[1]))
+
+
 def zoom_out():
     """
     Zooms out the village
@@ -95,6 +107,16 @@ def x_out():
     keyDown("esc")
     sleep(.1)
     keyUp("esc")
+
+
+def scroll_up(clicks: int):
+    """
+    Scrolls a specified amount up
+    :param clicks: How many times it scrolls up
+    :return:
+    """
+    for _ in range(clicks):
+        scroll(200)
 
 
 def get_hwnd(window_title: str):

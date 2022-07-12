@@ -1,3 +1,5 @@
+import win32api
+
 from interaction_functions import *
 from time import sleep
 import cv2 as cv
@@ -81,6 +83,8 @@ class AccountChanger:
                 self.account_number += 1
                 if self.account_number >= self.number_of_accounts:
                     self.account_number = 0
+                move_mouse_to_position(coc_icon_rectangles[0][0], coc_icon_rectangles[0][1], self.window_rectangle)
+                scroll_up(20)
                 for i in range(self.account_number):
                     # Scrolls by clicking and holding on the 2nd icon and moving the mouse to the first icon
                     click_and_drag(coc_icon_rectangles[1][0], coc_icon_rectangles[1][1], coc_icon_rectangles[0][0],
