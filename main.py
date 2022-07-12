@@ -36,7 +36,7 @@ def main():
     data_storer.add_new_accounts()
 
     # Variables used to smoothly move between the functions of the bot
-    mode = 0
+    mode = 5
     tries = 0
 
     # The images used to deal with various pop-ups
@@ -154,6 +154,7 @@ def main():
             account_changer.open_account_menu(screenshot)
             account_changer.select_next_account(screenshot)
             if account_changer.account_changed or tries > 100:
+                account_changer.accounts_menu_opened = False
                 account_changer.account_changed = False
                 # Reads values from csv file for the new account
                 village_clearer.rocks_removed = literal_eval(
