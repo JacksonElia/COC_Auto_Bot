@@ -19,6 +19,7 @@ class VillageClearer:
     STONES: tuple
     RESOURCES: tuple
     REMOVE_BUTTON: tuple
+    REMOVE_BUTTON_2: tuple
     ZERO_BUILDERS: tuple
     NOT_ENOUGH_RESOURCES_COLOR = [127, 137, 254]  # In [B, G, R]
 
@@ -57,6 +58,7 @@ class VillageClearer:
 
         self.LOOT_CART = (cv.imread("assets/resources/loot_cart.jpg", cv.IMREAD_UNCHANGED), .94)
         self.REMOVE_BUTTON = (cv.imread("assets/buttons/remove_button.jpg", cv.IMREAD_UNCHANGED), .94)
+        self.REMOVE_BUTTON_2 = (cv.imread("assets/buttons/remove_button_2.jpg", cv.IMREAD_UNCHANGED), .94)
         self.COLLECT_BUTTON = (cv.imread("assets/buttons/collect_button.jpg", cv.IMREAD_UNCHANGED), .94)
         self.ZERO_BUILDERS = (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .9)
 
@@ -94,6 +96,10 @@ class VillageClearer:
             self.obstacle_rectangles += stones
         if self.obstacle_rectangles:
             remove_button_rectangle = find_image_rectangle(self.REMOVE_BUTTON, screenshot)
+            # Tries to find the remove button used for gold obstacles if it can't find the one used for normal elixir obstacles
+            # Does this rather than making the confidence lower to avoid it clicking the cancel button
+            if not remove_button_rectangle:
+                remove_button_rectangle = find_image_rectangle(self.REMOVE_BUTTON_2, screenshot)
             if remove_button_rectangle:
                 # Check if there are resources to remove the obstacle
                 cropped_screenshot = screenshot[remove_button_rectangle[1]:remove_button_rectangle[1] + remove_button_rectangle[3],
