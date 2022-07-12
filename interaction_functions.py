@@ -241,11 +241,13 @@ def get_pixels_with_color(color: list, cropped_screenshot: Image, x_offset: int 
     for y in range(len(cropped_screenshot)):
         for x in range(len(cropped_screenshot[y])):
             pixel_color = cropped_screenshot[y][x]
-            if (abs(color[0] - pixel_color[0]) < 3 and
-                abs(color[1] - pixel_color[1]) < 3 and
-                abs(color[2] - pixel_color[2]) < 3):
+            if (abs(color[0] - pixel_color[0]) < 2 and
+                abs(color[1] - pixel_color[1]) < 2 and
+                abs(color[2] - pixel_color[2]) < 2):
                 pixel_coordinate_list.append((x + x_offset, y + y_offset))
+                cropped_screenshot[y][x] = [0, 0, 255]
     print(pixel_coordinate_list)
+    cv.imshow("s", cropped_screenshot)
     return pixel_coordinate_list
 
 

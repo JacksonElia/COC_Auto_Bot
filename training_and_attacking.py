@@ -22,9 +22,10 @@ class TrainerAndAttacker:
     lab_opened = False
     scroll_count = 0
 
-    UPGRADEABLE_TROOP_COLOR = [255, 255, 255]
+    NOT_ENOUGH_RESOURCES_COLOR = [127, 137, 254]
 
     LABORATORIES: tuple
+    LAB_LOOT_ICONS: tuple
     RESEARCH_BUTTON: tuple
     LABORATORY_MENU_TOP: tuple
     ATTACK_BUTTON: tuple
@@ -41,15 +42,21 @@ class TrainerAndAttacker:
         self.window_rectangle = window_rectangle
 
         self.LABORATORIES = (
-            (cv.imread("assets/laboratories/lab1.jpg", cv.IMREAD_UNCHANGED), .9),
-            (cv.imread("assets/laboratories/lab2.jpg", cv.IMREAD_UNCHANGED), .9),
-            (cv.imread("assets/laboratories/lab3.jpg", cv.IMREAD_UNCHANGED), .9),
-            (cv.imread("assets/laboratories/lab4.jpg", cv.IMREAD_UNCHANGED), .9),
-            (cv.imread("assets/laboratories/lab5.jpg", cv.IMREAD_UNCHANGED), .9),
-            (cv.imread("assets/laboratories/lab6.jpg", cv.IMREAD_UNCHANGED), .9)
+            (cv.imread("assets/laboratories/lab1.jpg", cv.IMREAD_UNCHANGED), .85),
+            (cv.imread("assets/laboratories/lab2.jpg", cv.IMREAD_UNCHANGED), .85),
+            (cv.imread("assets/laboratories/lab3.jpg", cv.IMREAD_UNCHANGED), .85),
+            (cv.imread("assets/laboratories/lab4.jpg", cv.IMREAD_UNCHANGED), .85),
+            (cv.imread("assets/laboratories/lab5.jpg", cv.IMREAD_UNCHANGED), .85),
+            (cv.imread("assets/laboratories/lab6.jpg", cv.IMREAD_UNCHANGED), .85)
         )  # TODO: Add other lab levels
 
-        self.RESEARCH_BUTTON = (cv.imread("assets/buttons/research_button.jpg", cv.IMREAD_UNCHANGED), .94)
+        self.LAB_LOOT_ICONS = (
+            (cv.imread("assets/misc/lab_elixir.jpg", cv.IMREAD_UNCHANGED), .92),
+            # (cv.imread("assets/misc/lab_elixir.jpg", cv.IMREAD_UNCHANGED), .92),
+            # (cv.imread("assets/misc/lab_elixir.jpg", cv.IMREAD_UNCHANGED), .92)
+        )
+
+        self.RESEARCH_BUTTON = (cv.imread("assets/buttons/research_button.jpg", cv.IMREAD_UNCHANGED), .91)
         self.LABORATORY_MENU_TOP = (cv.imread("assets/misc/laboratory_menu_top.jpg", cv.IMREAD_UNCHANGED), .94)
         self.ATTACK_BUTTON = (cv.imread("assets/buttons/attack_button.jpg", cv.IMREAD_UNCHANGED), .85)
         self.ARMY_BUTTON = (cv.imread("assets/buttons/army_button.jpg", cv.IMREAD_UNCHANGED), .9)
@@ -283,16 +290,14 @@ class TrainerAndAttacker:
                 else:
                     return True
         else:
-            if self.scroll_count > 3:
+            if self.scroll_count >= 3:
                 # Closes out of the laboratory menu
                 laboratory_x_button_rectangle = find_image_rectangle(self.LABORATORY_X_BUTTON, screenshot)
                 if laboratory_x_button_rectangle:
                     x, y = get_center_of_rectangle(laboratory_x_button_rectangle)
                     click(x, y, self.window_rectangle)
-                else:
-                    click(1170, 40, self.window_rectangle)
-                sleep(1)
-                return True
+                    sleep(1)
+                    return True
             laboratory_menu_top_rectangle = find_image_rectangle(self.LABORATORY_MENU_TOP, screenshot)
             if laboratory_menu_top_rectangle:
                 # The top menu rectangle is 355px tall, the bottom menu rectangle is 320px tall
@@ -301,32 +306,33 @@ class TrainerAndAttacker:
                                                 laboratory_menu_top_rectangle[1] + laboratory_menu_top_rectangle[3] + 320,
                                                 laboratory_menu_top_rectangle[0]:
                                                 laboratory_menu_top_rectangle[0] + laboratory_menu_top_rectangle[2]]
-                upgradeable_troop_pixel_locations = get_pixels_with_color(self.UPGRADEABLE_TROOP_COLOR, cropped_screenshot,
-                                                                          laboratory_menu_top_rectangle[0], laboratory_menu_top_rectangle[1] + laboratory_menu_top_rectangle[3] + 300)
-                if upgradeable_troop_pixel_locations:
-                    x, y = upgradeable_troop_pixel_locations[0]
-                    # Clicks on the troop icon
-                    click(x, y, self.window_rectangle)
-                    sleep(1)
-                    # Clicks on the upgrade button
-                    click(laboratory_menu_top_rectangle[0] + laboratory_menu_top_rectangle[2] - 50,
-                          laboratory_menu_top_rectangle[1] + laboratory_menu_top_rectangle[3] + 320, self.window_rectangle)
-                    # Closes out of the laboratory menu
-                    laboratory_x_button_rectangle = find_image_rectangle(self.LABORATORY_X_BUTTON, screenshot)
-                    if laboratory_x_button_rectangle:
-                        x, y = get_center_of_rectangle(laboratory_x_button_rectangle)
-                        click(x, y, self.window_rectangle)
-                    else:
-                        click(1170, 40, self.window_rectangle)
-                    sleep(1)
-                    return True
+                # This checks for elixir, dark elixir, and gold upgrades
+                for icon in self.LAB_LOOT_ICONS:
+                    icon_rectangles = find_image_rectangles(icon, cropped_screenshot)
+                    for rectangle in icon_rectangles:
+                        troop_cost_image = cropped_screenshot[rectangle[1]:rectangle[1] + rectangle[3], rectangle[0] - 60:rectangle[0]]
+                        if not detect_if_color_present(self.NOT_ENOUGH_RESOURCES_COLOR, troop_cost_image):
+                            x, y = get_center_of_rectangle(rectangle)
+                            # Clicks on the troop icon
+                            click(x + laboratory_menu_top_rectangle[0], y + laboratory_menu_top_rectangle[1] + laboratory_menu_top_rectangle[3], self.window_rectangle)
+                            sleep(1)
+                            # Clicks on the upgrade button
+                            click(laboratory_menu_top_rectangle[0] + laboratory_menu_top_rectangle[2] - 50,
+                                  laboratory_menu_top_rectangle[1] + laboratory_menu_top_rectangle[3] + 320, self.window_rectangle)
+                            # Closes out of the laboratory menu
+                            laboratory_x_button_rectangle = find_image_rectangle(self.LABORATORY_X_BUTTON, screenshot)
+                            if laboratory_x_button_rectangle:
+                                x, y = get_center_of_rectangle(laboratory_x_button_rectangle)
+                                click(x, y, self.window_rectangle)
+                                sleep(1)
+                                return True
                 else:
                     # Scrolls to the right to see if there are any other available upgrades
                     click_and_drag(laboratory_menu_top_rectangle[0] + laboratory_menu_top_rectangle[2] - 50,
                                    laboratory_menu_top_rectangle[1] + laboratory_menu_top_rectangle[3] + 100,
-                                   laboratory_menu_top_rectangle[0] + 10,
+                                   laboratory_menu_top_rectangle[0] + 250,
                                    laboratory_menu_top_rectangle[1] + laboratory_menu_top_rectangle[3] + 100,
-                                   .004,
+                                   .001,
                                    self.window_rectangle)
                     self.scroll_count += 1
             else:
@@ -335,8 +341,6 @@ class TrainerAndAttacker:
                 if laboratory_x_button_rectangle:
                     x, y = get_center_of_rectangle(laboratory_x_button_rectangle)
                     click(x, y, self.window_rectangle)
-                else:
-                    click(1170, 40, self.window_rectangle)
-                sleep(1)
-                return True
+                    sleep(1)
+                    return True
         return False
