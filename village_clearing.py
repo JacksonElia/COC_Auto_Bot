@@ -1,7 +1,7 @@
 from interaction_functions import *
 from time import sleep
+from random import shuffle
 import cv2 as cv
-import numpy as np
 
 
 class VillageClearer:
@@ -112,7 +112,8 @@ class VillageClearer:
             while True:
                 # Makes sure there are still obstacles to check
                 if self.obstacle_rectangles:
-                    # Gets the first obstacle in the list to remove
+                    # Gets a random obstacle in the list to remove
+                    shuffle(self.obstacle_rectangles)
                     rectangle = self.obstacle_rectangles.pop(0)
                     obstacle_attempted = False
                     # Checks if the obstacle has already been checked
