@@ -41,8 +41,13 @@ class TrainerAndAttacker:
         self.window_rectangle = window_rectangle
 
         self.LABORATORIES = (
-
-        )
+            (cv.imread("assets/laboratories/lab1.jpg", cv.IMREAD_UNCHANGED), .9),
+            (cv.imread("assets/laboratories/lab2.jpg", cv.IMREAD_UNCHANGED), .9),
+            (cv.imread("assets/laboratories/lab3.jpg", cv.IMREAD_UNCHANGED), .9),
+            (cv.imread("assets/laboratories/lab4.jpg", cv.IMREAD_UNCHANGED), .9),
+            (cv.imread("assets/laboratories/lab5.jpg", cv.IMREAD_UNCHANGED), .9),
+            (cv.imread("assets/laboratories/lab6.jpg", cv.IMREAD_UNCHANGED), .9)
+        )  # TODO: Add other lab levels
 
         self.RESEARCH_BUTTON = (cv.imread("assets/buttons/research_button.jpg", cv.IMREAD_UNCHANGED), .94)
         self.LABORATORY_MENU_TOP = (cv.imread("assets/misc/laboratory_menu_top.jpg", cv.IMREAD_UNCHANGED), .94)
@@ -265,6 +270,7 @@ class TrainerAndAttacker:
             if research_button_rectangle:
                 x, y = get_center_of_rectangle(research_button_rectangle)
                 click(x, y, self.window_rectangle)
+                self.lab_opened = True
                 sleep(1.5)
                 return False
             for laboratory in self.LABORATORIES:
@@ -274,9 +280,18 @@ class TrainerAndAttacker:
                     click(x, y, self.window_rectangle)
                     sleep(1.5)
                     return False
+                else:
+                    return True
         else:
             if self.scroll_count > 3:
-
+                # Closes out of the laboratory menu
+                laboratory_x_button_rectangle = find_image_rectangle(self.LABORATORY_X_BUTTON, screenshot)
+                if laboratory_x_button_rectangle:
+                    x, y = get_center_of_rectangle(laboratory_x_button_rectangle)
+                    click(x, y, self.window_rectangle)
+                else:
+                    click(1170, 40, self.window_rectangle)
+                sleep(1)
                 return True
             laboratory_menu_top_rectangle = find_image_rectangle(self.LABORATORY_MENU_TOP, screenshot)
             if laboratory_menu_top_rectangle:
@@ -287,7 +302,7 @@ class TrainerAndAttacker:
                                                 laboratory_menu_top_rectangle[0]:
                                                 laboratory_menu_top_rectangle[0] + laboratory_menu_top_rectangle[2]]
                 upgradeable_troop_pixel_locations = get_pixels_with_color(self.UPGRADEABLE_TROOP_COLOR, cropped_screenshot,
-                                                                          laboratory_menu_top_rectangle[0], laboratory_menu_top_rectangle[1])
+                                                                          laboratory_menu_top_rectangle[0], laboratory_menu_top_rectangle[1] + laboratory_menu_top_rectangle[3] + 300)
                 if upgradeable_troop_pixel_locations:
                     x, y = upgradeable_troop_pixel_locations[0]
                     # Clicks on the troop icon
@@ -296,7 +311,7 @@ class TrainerAndAttacker:
                     # Clicks on the upgrade button
                     click(laboratory_menu_top_rectangle[0] + laboratory_menu_top_rectangle[2] - 50,
                           laboratory_menu_top_rectangle[1] + laboratory_menu_top_rectangle[3] + 320, self.window_rectangle)
-                    # Closes out of the troop menu
+                    # Closes out of the laboratory menu
                     laboratory_x_button_rectangle = find_image_rectangle(self.LABORATORY_X_BUTTON, screenshot)
                     if laboratory_x_button_rectangle:
                         x, y = get_center_of_rectangle(laboratory_x_button_rectangle)
@@ -304,6 +319,7 @@ class TrainerAndAttacker:
                     else:
                         click(1170, 40, self.window_rectangle)
                     sleep(1)
+                    return True
                 else:
                     # Scrolls to the right to see if there are any other available upgrades
                     click_and_drag(laboratory_menu_top_rectangle[0] + laboratory_menu_top_rectangle[2] - 50,
@@ -313,3 +329,14 @@ class TrainerAndAttacker:
                                    .004,
                                    self.window_rectangle)
                     self.scroll_count += 1
+            else:
+                # Closes out of the laboratory menu
+                laboratory_x_button_rectangle = find_image_rectangle(self.LABORATORY_X_BUTTON, screenshot)
+                if laboratory_x_button_rectangle:
+                    x, y = get_center_of_rectangle(laboratory_x_button_rectangle)
+                    click(x, y, self.window_rectangle)
+                else:
+                    click(1170, 40, self.window_rectangle)
+                sleep(1)
+                return True
+        return False

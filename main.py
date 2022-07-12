@@ -36,7 +36,7 @@ def main():
     data_storer.add_new_accounts()
 
     # Variables used to smoothly move between the functions of the bot
-    mode = 1
+    mode = 3
     tries = 0
 
     # The images used to deal with various pop-ups
@@ -96,16 +96,17 @@ def main():
             village_upgrader.show_suggested_upgrades(screenshot)
         elif mode == 3:  # Trains troops and attacks for loot
             trainer_and_attacker.window_rectangle = window_rectangle
-            trainer_and_attacker.train_troops(screenshot)
+            trainer_and_attacker.attack_completed = True
+            if not trainer_and_attacker.attack_completed:
+                trainer_and_attacker.train_troops(screenshot)
             if trainer_and_attacker.attack_completed:
                 # Attempts to upgrade a troop in the laboratory
                 if trainer_and_attacker.upgrade_troops(screenshot):
-                    trainer_and_attacker.troops_training = False
                     trainer_and_attacker.scroll_count = 0
                     trainer_and_attacker.lab_opened = False
                     mode += 1
                     tries = 0
-            elif (trainer_and_attacker.troops_training and tries > 1) or tries > 200:
+            elif trainer_and_attacker.troops_training or tries > 200:
                 trainer_and_attacker.troops_training = False
                 mode += 1
                 tries = 0

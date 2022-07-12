@@ -244,7 +244,8 @@ def get_pixels_with_color(color: list, cropped_screenshot: Image, x_offset: int 
             if (abs(color[0] - pixel_color[0]) < 3 and
                 abs(color[1] - pixel_color[1]) < 3 and
                 abs(color[2] - pixel_color[2]) < 3):
-                pixel_coordinate_list.append((x, y))
+                pixel_coordinate_list.append((x + x_offset, y + y_offset))
+    print(pixel_coordinate_list)
     return pixel_coordinate_list
 
 
