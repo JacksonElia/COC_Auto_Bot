@@ -36,7 +36,7 @@ def main():
     data_storer.add_new_accounts()
 
     # Variables used to smoothly move between the functions of the bot
-    mode = 0
+    mode = 1
     tries = 0
 
     # The images used to deal with various pop-ups
