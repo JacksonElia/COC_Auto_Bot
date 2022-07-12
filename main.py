@@ -22,7 +22,7 @@ def main():
     win32gui.SetForegroundWindow(hwnd)
 
     # This is how many accounts the bot operates, max is 50
-    number_of_accounts = 9
+    number_of_accounts = 10
 
     # The classes that carry out the main functions of the bot
     village_clearer = VillageClearer(win32gui.GetWindowRect(hwnd))

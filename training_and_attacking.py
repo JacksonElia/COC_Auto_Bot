@@ -47,13 +47,18 @@ class TrainerAndAttacker:
             (cv.imread("assets/laboratories/lab3.jpg", cv.IMREAD_UNCHANGED), .85),
             (cv.imread("assets/laboratories/lab4.jpg", cv.IMREAD_UNCHANGED), .85),
             (cv.imread("assets/laboratories/lab5.jpg", cv.IMREAD_UNCHANGED), .85),
-            (cv.imread("assets/laboratories/lab6.jpg", cv.IMREAD_UNCHANGED), .85)
-        )  # TODO: Add other lab levels
+            (cv.imread("assets/laboratories/lab6.jpg", cv.IMREAD_UNCHANGED), .85),
+            (cv.imread("assets/laboratories/lab7.jpg", cv.IMREAD_UNCHANGED), .85),
+            (cv.imread("assets/laboratories/lab8.jpg", cv.IMREAD_UNCHANGED), .85),
+            (cv.imread("assets/laboratories/lab9.jpg", cv.IMREAD_UNCHANGED), .85),
+            (cv.imread("assets/laboratories/lab10.jpg", cv.IMREAD_UNCHANGED), .85),
+            (cv.imread("assets/laboratories/lab11.jpg", cv.IMREAD_UNCHANGED), .85),
+            (cv.imread("assets/laboratories/lab12.jpg", cv.IMREAD_UNCHANGED), .85)
+        )
 
         self.LAB_LOOT_ICONS = (
             (cv.imread("assets/misc/lab_elixir.jpg", cv.IMREAD_UNCHANGED), .92),
-            # (cv.imread("assets/misc/lab_elixir.jpg", cv.IMREAD_UNCHANGED), .92),
-            # (cv.imread("assets/misc/lab_elixir.jpg", cv.IMREAD_UNCHANGED), .92)
+            (cv.imread("assets/misc/lab_dark_elixir.jpg", cv.IMREAD_UNCHANGED), .92)
         )
 
         self.RESEARCH_BUTTON = (cv.imread("assets/buttons/research_button.jpg", cv.IMREAD_UNCHANGED), .91)
@@ -306,7 +311,7 @@ class TrainerAndAttacker:
                                                 laboratory_menu_top_rectangle[1] + laboratory_menu_top_rectangle[3] + 320,
                                                 laboratory_menu_top_rectangle[0]:
                                                 laboratory_menu_top_rectangle[0] + laboratory_menu_top_rectangle[2]]
-                # This checks for elixir, dark elixir, and gold upgrades
+                # This checks for elixir and dark elixir upgrades
                 for icon in self.LAB_LOOT_ICONS:
                     icon_rectangles = find_image_rectangles(icon, cropped_screenshot)
                     for rectangle in icon_rectangles:
