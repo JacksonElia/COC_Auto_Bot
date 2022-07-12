@@ -82,7 +82,7 @@ def main():
             # Only collects the loot cart if the account is TH5 or above
             if int(data_storer.get_account_info(account_changer.account_number)[0]) > 4:
                 village_clearer.collect_loot_cart(screenshot)
-            if village_clearer.clear_obstacle(screenshot) or tries >= 6:
+            if village_clearer.clear_obstacle(screenshot) or tries >= 10:
                 data_storer.update_account_info(account_changer.account_number,
                                                 rocks_removed=village_clearer.rocks_removed)
                 mode += 1
@@ -103,14 +103,17 @@ def main():
                 if trainer_and_attacker.upgrade_troops(screenshot):
                     trainer_and_attacker.scroll_count = 0
                     trainer_and_attacker.lab_opened = False
+                    trainer_and_attacker.attack_completed = False
                     mode += 1
                     tries = 0
             elif trainer_and_attacker.troops_training or tries > 200:
                 trainer_and_attacker.troops_training = False
+                trainer_and_attacker.attack_completed = False
                 mode += 1
                 tries = 0
             elif trainer_and_attacker.attack_desynced:
                 trainer_and_attacker.attack_desynced = False
+                trainer_and_attacker.attack_completed = False
                 data_storer.update_account_info(account_changer.account_number,
                                                 total_gold=trainer_and_attacker.total_gold,
                                                 total_elixir=trainer_and_attacker.total_elixir,
