@@ -10,6 +10,7 @@ class TrainerAndAttacker:
     """
 
     window_rectangle = []
+    town_hall_level = 2
     gold_read = 0
     elixir_read = 0
     total_gold = 0
@@ -226,7 +227,7 @@ class TrainerAndAttacker:
         # Selects the troops to deploy
         click(230, 715, self.window_rectangle)
         # Deploys the troops
-        for i in range(80):
+        for i in range(10 * self.town_hall_level):
             click(450, 590, self.window_rectangle)
             sleep(.1)
             click(935, 590, self.window_rectangle)

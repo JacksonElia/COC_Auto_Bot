@@ -159,6 +159,7 @@ def main():
                 # Reads values from csv file for the new account
                 village_clearer.rocks_removed = literal_eval(
                     data_storer.get_account_info(account_changer.account_number)[1])
+                trainer_and_attacker.town_hall_level = int(data_storer.get_account_info(account_changer.account_number)[0])
                 trainer_and_attacker.total_gold = int(data_storer.get_account_info(account_changer.account_number)[2])
                 trainer_and_attacker.total_elixir = int(data_storer.get_account_info(account_changer.account_number)[3])
                 trainer_and_attacker.gold_read = int(data_storer.get_account_info(account_changer.account_number)[4])
