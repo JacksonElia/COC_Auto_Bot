@@ -21,6 +21,7 @@ class AccountChanger:
         self.number_of_accounts = number_of_accounts
 
         self.SETTINGS_BUTTON = (cv.imread("assets/buttons/settings_button.jpg", cv.IMREAD_UNCHANGED), .92)
+        self.SETTINGS_BUTTON_2 = (cv.imread("assets/buttons/settings_button_2.jpg", cv.IMREAD_UNCHANGED), .92)
         self.SWITCH_ACCOUNTS_BUTTON = (cv.imread("assets/buttons/switch_accounts_button.jpg", cv.IMREAD_UNCHANGED), .95)
         self.COC_ICON = (cv.imread("assets/misc/coc_icon.jpg", cv.IMREAD_UNCHANGED), .9)
 
@@ -35,6 +36,9 @@ class AccountChanger:
             return
         # Opens the settings menu
         settings_button_rectangle = find_image_rectangle(self.SETTINGS_BUTTON, screenshot)
+        # Tries to find the other setting button image if it cannot be found
+        if not settings_button_rectangle:
+            settings_button_rectangle = find_image_rectangle(self.SETTINGS_BUTTON_2, screenshot)
         if settings_button_rectangle:
             x, y = get_center_of_rectangle(settings_button_rectangle)
             click(x, y, self.window_rectangle)
