@@ -131,12 +131,10 @@ def main():
             if village_builder.town_hall_level >= 4 and randrange(0, 11) == 10:
                 village_builder.building_base = True
             if village_builder.building_base:
-                print("if")
                 village_builder.window_rectangle = window_rectangle
                 if village_builder.base_link_entered:
                     # Handles base editing and saving
                     if village_builder.handle_base_edit(screenshot):
-                        print("handle")
                         village_builder.base_link_entered = False
                         sleep(1)
                         # Once the process is done, it closes out of the base window
@@ -146,11 +144,9 @@ def main():
                         mode += 1
                         tries = 0
                 else:
-                    print("chrome")
                     # Opens chrome and enters the base link
                     village_builder.copy_base_layout(screenshot)
             else:
-                print("else")
                 mode += 1
                 tries = 0
         elif mode == 5:  # Changes Supercell ID accounts
