@@ -52,8 +52,9 @@ class VillageClearer:
         self.RESOURCES = (
             (cv.imread("assets/resources/elixir_icon.jpg", cv.IMREAD_UNCHANGED), .93),
             (cv.imread("assets/resources/gold_icon.jpg", cv.IMREAD_UNCHANGED), .93),
+            (cv.imread("assets/resources/dark_elixir_icon.jpg", cv.IMREAD_UNCHANGED), .93),
             (cv.imread("assets/resources/normal_grave.jpg", cv.IMREAD_UNCHANGED), .96)
-            # TODO: Add dark elixir icon, presents, and graves
+            # TODO: add presents
         )
 
         self.LOOT_CART = (cv.imread("assets/resources/loot_cart.jpg", cv.IMREAD_UNCHANGED), .94)
