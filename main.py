@@ -97,12 +97,20 @@ def main():
         elif mode == 3:  # Trains troops and attacks for loot
             trainer_and_attacker.window_rectangle = window_rectangle
             trainer_and_attacker.train_troops(screenshot)
-            if trainer_and_attacker.troops_training and tries > 1:
+            if trainer_and_attacker.attack_completed:
+                # Attempts to upgrade a troop in the laboratory
+                if trainer_and_attacker.upgrade_troops(screenshot):
+                    trainer_and_attacker.troops_training = False
+                    trainer_and_attacker.scroll_count = 0
+                    trainer_and_attacker.lab_opened = False
+                    mode += 1
+                    tries = 0
+            elif (trainer_and_attacker.troops_training and tries > 1) or tries > 200:
                 trainer_and_attacker.troops_training = False
                 mode += 1
                 tries = 0
-            elif trainer_and_attacker.find_base_to_attack(screenshot) or tries >= 200:
-                # Stores the collected account data in a csv file
+            elif trainer_and_attacker.attack_desynced:
+                trainer_and_attacker.attack_desynced = False
                 data_storer.update_account_info(account_changer.account_number,
                                                 total_gold=trainer_and_attacker.total_gold,
                                                 total_elixir=trainer_and_attacker.total_elixir,
@@ -111,16 +119,16 @@ def main():
                                                 )
                 mode += 1
                 tries = 0
-            elif trainer_and_attacker.attacked:
-                trainer_and_attacker.attacked = False
-                data_storer.update_account_info(account_changer.account_number,
-                                                total_gold=trainer_and_attacker.total_gold,
-                                                total_elixir=trainer_and_attacker.total_elixir,
-                                                gold_read=trainer_and_attacker.gold_read,
-                                                elixir_read=trainer_and_attacker.elixir_read,
-                                                )
-                mode += 1
-                tries = 0
+            else:
+                trainer_and_attacker.find_base_to_attack(screenshot)
+                if trainer_and_attacker.attack_completed:
+                    # Stores the collected account data in a csv file
+                    data_storer.update_account_info(account_changer.account_number,
+                                                    total_gold=trainer_and_attacker.total_gold,
+                                                    total_elixir=trainer_and_attacker.total_elixir,
+                                                    gold_read=trainer_and_attacker.gold_read,
+                                                    elixir_read=trainer_and_attacker.elixir_read,
+                                                    )
         elif mode == 4:  # Sets base layouts
             # Stores the town hall level for the account in a csv file
             town_hall_level = village_builder.get_town_hall_level(screenshot)

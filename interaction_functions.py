@@ -228,6 +228,26 @@ def detect_if_color_present(color: list, cropped_screenshot: Image) -> bool:
     return False
 
 
+def get_pixels_with_color(color: list, cropped_screenshot: Image, x_offset: int = 0, y_offset: int = 0) -> list:
+    """
+    Gets pixels with a certain color
+    :param color: the [r, g, b] list representing the color
+    :param cropped_screenshot: the screenshot of the location where the color might be
+    :param x_offset: How many pixels off the cropped_screenshot is from the window's x coordinate
+    :param y_offset: How many pixels off the cropped_screenshot is from the window's y coordinate
+    :return: a list of (x, y) tuples containing the pixel coordinates for the color
+    """
+    pixel_coordinate_list = []
+    for y in range(len(cropped_screenshot)):
+        for x in range(len(cropped_screenshot[y])):
+            pixel_color = cropped_screenshot[y][x]
+            if (abs(color[0] - pixel_color[0]) < 3 and
+                abs(color[1] - pixel_color[1]) < 3 and
+                abs(color[2] - pixel_color[2]) < 3):
+                pixel_coordinate_list.append((x, y))
+    return pixel_coordinate_list
+
+
 def read_text(cropped_screenshot: Image, a) -> str:
     """
     Attempts to read the text in the cropped screenshot

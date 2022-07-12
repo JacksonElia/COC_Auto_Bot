@@ -17,8 +17,16 @@ class TrainerAndAttacker:
     total_elixir = 0
     troops_trained = False
     troops_training = False
-    attacked = False
+    attack_desynced = False
+    attack_completed = False
+    lab_opened = False
+    scroll_count = 0
 
+    UPGRADEABLE_TROOP_COLOR = [255, 255, 255]
+
+    LABORATORIES: tuple
+    RESEARCH_BUTTON: tuple
+    LABORATORY_MENU_TOP: tuple
     ATTACK_BUTTON: tuple
     ARMY_BUTTON: tuple
     BARBARIAN_BUTTON: tuple
@@ -26,11 +34,18 @@ class TrainerAndAttacker:
     NEXT_BUTTON: tuple
     POPUP_X_BUTTON: tuple
     ARMY_X_BUTTON: tuple
+    LABORATORY_X_BUTTON: tuple
     RETURN_HOME_BUTTON: tuple
 
     def __init__(self, window_rectangle: list):
         self.window_rectangle = window_rectangle
 
+        self.LABORATORIES = (
+
+        )
+
+        self.RESEARCH_BUTTON = (cv.imread("assets/buttons/research_button.jpg", cv.IMREAD_UNCHANGED), .94)
+        self.LABORATORY_MENU_TOP = (cv.imread("assets/misc/laboratory_menu_top.jpg", cv.IMREAD_UNCHANGED), .94)
         self.ATTACK_BUTTON = (cv.imread("assets/buttons/attack_button.jpg", cv.IMREAD_UNCHANGED), .85)
         self.ARMY_BUTTON = (cv.imread("assets/buttons/army_button.jpg", cv.IMREAD_UNCHANGED), .9)
         self.BARBARIAN_BUTTON = (cv.imread("assets/buttons/barbarian_button.jpg", cv.IMREAD_UNCHANGED), .94)
@@ -39,6 +54,7 @@ class TrainerAndAttacker:
         self.NEXT_BUTTON = (cv.imread("assets/buttons/next_button.jpg", cv.IMREAD_UNCHANGED), .9)
         self.POPUP_X_BUTTON = (cv.imread("assets/buttons/popup_x_button.jpg", cv.IMREAD_UNCHANGED), .94)
         self.ARMY_X_BUTTON = (cv.imread("assets/buttons/army_x_button.jpg", cv.IMREAD_UNCHANGED), .94)
+        self.LABORATORY_X_BUTTON = (cv.imread("assets/buttons/laboratory_x_button.jpg", cv.IMREAD_UNCHANGED), .94)
         self.RETURN_HOME_BUTTON = (cv.imread("assets/buttons/return_home_button.jpg", cv.IMREAD_UNCHANGED), .9)
         self.FINISH_TRAINING = (cv.imread("assets/misc/finish_training.jpg", cv.IMREAD_UNCHANGED), .97)
         self.AVAILABLE_LOOT = (cv.imread("assets/misc/available_loot.jpg", cv.IMREAD_UNCHANGED), .8)
@@ -117,7 +133,6 @@ class TrainerAndAttacker:
                         if army_x_button_rectangle:
                             x, y = get_center_of_rectangle(army_x_button_rectangle)
                             click(x, y, self.window_rectangle)
-                            sleep(.3)
                         else:
                             click(1300, 40, self.window_rectangle)
                         sleep(1)
@@ -128,7 +143,7 @@ class TrainerAndAttacker:
                             self.troops_training = False
                             sleep(.5)
 
-    def find_base_to_attack(self, screenshot: Image) -> bool:
+    def find_base_to_attack(self, screenshot: Image):
         """
         Finds a base to attack by reading how much loot there is
         :param screenshot: Screenshot of bluestacks
@@ -140,10 +155,11 @@ class TrainerAndAttacker:
             x, y = get_center_of_rectangle(return_home_button_rectangle)
             click(x, y, self.window_rectangle)
             sleep(2)
-            return True
+            self.attack_completed = True
+            return
         # Makes sure troops have been trained
         if not self.troops_trained:
-            return False
+            return
         # Uses the next button to decide what it should do based on how much loot it reads
         next_button_rectangle = find_image_rectangle(self.NEXT_BUTTON, screenshot)
         if next_button_rectangle:
@@ -209,7 +225,7 @@ class TrainerAndAttacker:
                     click(x, y, self.window_rectangle)
                     sleep(1)
                     self.attack(1.1)
-        return False
+        return
 
     def attack(self, screenshot):
         """
@@ -218,9 +234,10 @@ class TrainerAndAttacker:
         :return:
         """
         self.troops_trained = False
+        # This helps the bot avoid getting stuck when it gets slightly de-synced
         if type(screenshot) != float:
             if not (find_image_rectangle(self.AVAILABLE_LOOT, screenshot) or find_image_rectangle(self.AVAILABLE_LOOT_2, screenshot)):
-                self.attacked = True
+                self.attack_desynced = True
                 return
         # Zooms out the pov
         zoom_out()
@@ -236,3 +253,63 @@ class TrainerAndAttacker:
             sleep(.1)
             click(935, 115, self.window_rectangle)
             sleep(.1)
+
+    def upgrade_troops(self, screenshot: Image) -> bool:
+        """
+        Finds the laboratory and tries to upgrade a troop
+        :param screenshot: The screenshot of Bluestacks
+        :return: True if it is done trying to upgrade a troop
+        """
+        if not self.lab_opened:
+            research_button_rectangle = find_image_rectangle(self.RESEARCH_BUTTON, screenshot)
+            if research_button_rectangle:
+                x, y = get_center_of_rectangle(research_button_rectangle)
+                click(x, y, self.window_rectangle)
+                sleep(1.5)
+                return False
+            for laboratory in self.LABORATORIES:
+                laboratory_rectangle = find_image_rectangle(laboratory, screenshot)
+                if laboratory_rectangle:
+                    x, y = get_center_of_rectangle(laboratory_rectangle)
+                    click(x, y, self.window_rectangle)
+                    sleep(1.5)
+                    return False
+        else:
+            if self.scroll_count > 3:
+
+                return True
+            laboratory_menu_top_rectangle = find_image_rectangle(self.LABORATORY_MENU_TOP, screenshot)
+            if laboratory_menu_top_rectangle:
+                # The top menu rectangle is 355px tall, the bottom menu rectangle is 320px tall
+                # crops the screenshot so it is just the troop icons in the lab
+                cropped_screenshot = screenshot[laboratory_menu_top_rectangle[1] + laboratory_menu_top_rectangle[3]:
+                                                laboratory_menu_top_rectangle[1] + laboratory_menu_top_rectangle[3] + 320,
+                                                laboratory_menu_top_rectangle[0]:
+                                                laboratory_menu_top_rectangle[0] + laboratory_menu_top_rectangle[2]]
+                upgradeable_troop_pixel_locations = get_pixels_with_color(self.UPGRADEABLE_TROOP_COLOR, cropped_screenshot,
+                                                                          laboratory_menu_top_rectangle[0], laboratory_menu_top_rectangle[1])
+                if upgradeable_troop_pixel_locations:
+                    x, y = upgradeable_troop_pixel_locations[0]
+                    # Clicks on the troop icon
+                    click(x, y, self.window_rectangle)
+                    sleep(1)
+                    # Clicks on the upgrade button
+                    click(laboratory_menu_top_rectangle[0] + laboratory_menu_top_rectangle[2] - 50,
+                          laboratory_menu_top_rectangle[1] + laboratory_menu_top_rectangle[3] + 320, self.window_rectangle)
+                    # Closes out of the troop menu
+                    laboratory_x_button_rectangle = find_image_rectangle(self.LABORATORY_X_BUTTON, screenshot)
+                    if laboratory_x_button_rectangle:
+                        x, y = get_center_of_rectangle(laboratory_x_button_rectangle)
+                        click(x, y, self.window_rectangle)
+                    else:
+                        click(1170, 40, self.window_rectangle)
+                    sleep(1)
+                else:
+                    # Scrolls to the right to see if there are any other available upgrades
+                    click_and_drag(laboratory_menu_top_rectangle[0] + laboratory_menu_top_rectangle[2] - 50,
+                                   laboratory_menu_top_rectangle[1] + laboratory_menu_top_rectangle[3] + 100,
+                                   laboratory_menu_top_rectangle[0] + 10,
+                                   laboratory_menu_top_rectangle[1] + laboratory_menu_top_rectangle[3] + 100,
+                                   .004,
+                                   self.window_rectangle)
+                    self.scroll_count += 1
