@@ -61,7 +61,7 @@ class VillageBuilder:
         self.REFRESH_BUTTON = (cv.imread("assets/buttons/refresh_button.jpg", cv.IMREAD_UNCHANGED), .95)
         self.I_HAVE_CLASH_BUTTON = (cv.imread("assets/buttons/i_have_clash_button.jpg", cv.IMREAD_UNCHANGED), .97)
 
-        self.DOWN_ARROW = (cv.imread("assets/misc/down_arrow.jpg", cv.IMREAD_UNCHANGED), .9)
+        self.ACTIVE_VILLAGE = (cv.imread("assets/misc/active_village.jpg", cv.IMREAD_UNCHANGED), .9)
         self.SAVE_BUTTON = (cv.imread("assets/buttons/save_button.jpg", cv.IMREAD_UNCHANGED), .95)
         self.OKAY_BUTTON = (cv.imread("assets/buttons/okay_button_edit_mode.jpg", cv.IMREAD_UNCHANGED), .95)
         self.CANCEL_BUTTON = (cv.imread("assets/buttons/cancel_button.jpg", cv.IMREAD_UNCHANGED), .95)
@@ -121,10 +121,10 @@ class VillageBuilder:
                         sleep(1.5)
 
     def handle_base_edit(self, screenshot: Image) -> bool:
-        down_arrow_rectangle = find_image_rectangle(self.DOWN_ARROW, screenshot)
-        if down_arrow_rectangle:
-            x, y = get_center_of_rectangle(down_arrow_rectangle)
-            click(x, y, self.window_rectangle)
+        active_village_rectangle = find_image_rectangle(self.ACTIVE_VILLAGE, screenshot)
+        if active_village_rectangle:
+            x, y = get_center_of_rectangle(active_village_rectangle)
+            click(x, y + 100, self.window_rectangle)
             sleep(1.5)
         else:
             okay_button_rectangle = find_image_rectangle(self.OKAY_BUTTON, screenshot)
