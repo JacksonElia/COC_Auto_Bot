@@ -52,6 +52,8 @@ def main():
         (cv.imread("assets/buttons/okay_button_3.jpg", cv.IMREAD_UNCHANGED), .95),
         # Clicks on the okay button when you get treasury loot
         (cv.imread("assets/buttons/okay_button_4.jpg", cv.IMREAD_UNCHANGED), .95),
+        # Returns home after watching someone attack the selected base
+        (cv.imread("assets/buttons/return_home_villager_button.jpg", cv.IMREAD_UNCHANGED), .93),
     )
 
     pop_up_button_i = 0
