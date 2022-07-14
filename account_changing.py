@@ -27,6 +27,7 @@ class AccountChanger:
         self.SWITCH_ACCOUNTS_BUTTON = (cv.imread("assets/buttons/switch_accounts_button.jpg", cv.IMREAD_UNCHANGED), .95)
         self.COC_ICON = (cv.imread("assets/misc/coc_icon.jpg", cv.IMREAD_UNCHANGED), .9)
         self.I_HAVE_CLASH_BUTTON = (cv.imread("assets/buttons/i_have_clash_button.jpg", cv.IMREAD_UNCHANGED), .97)
+        self.CLASH_OF_CLANS_BUTTON = (cv.imread("assets/buttons/clash_of_clans_button.jpg", cv.IMREAD_UNCHANGED), .95)
 
     def open_account_menu(self, screenshot: Image):
         """
@@ -94,7 +95,7 @@ class AccountChanger:
                 sleep(2)
                 self.scrolled_to_account = True
         else:
-            # Sometimes Bluestacks inexplicably switches to chrome, this fixes it
+            # Sometimes Bluestacks inexplicably switches to chrome or the homepage, this fixes it
             i_have_clash_button_rectangle = find_image_rectangle(self.I_HAVE_CLASH_BUTTON, screenshot)
             if i_have_clash_button_rectangle:
                 keyDown("ctrl")
@@ -112,3 +113,10 @@ class AccountChanger:
                 keyUp("ctrl")
                 keyUp("shift")
                 keyUp("5")
+            else:
+                clash_of_clans_button_rectangle = find_image_rectangle(self.CLASH_OF_CLANS_BUTTON, screenshot)
+                if clash_of_clans_button_rectangle:
+                    x, y = get_center_of_rectangle(clash_of_clans_button_rectangle)
+                    click(x, y, self.window_rectangle)
+                    sleep(1)
+
