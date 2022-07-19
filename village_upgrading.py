@@ -113,10 +113,10 @@ class VillageUpgrader:
                 # Clicks the upgrade button
                 click(x, y, self.window_rectangle)
                 sleep(.3)
-                click(1000, 580, self.window_rectangle)  # Clicks the button that appears on the CC rebuild menu
-                sleep(.3)
                 # Clicks the confirmation button
                 click(700, 680, self.window_rectangle)
+                sleep(.3)
+                click(1000, 580, self.window_rectangle)  # Clicks the button that appears on the CC rebuild menu
                 sleep(.3)
                 self.upgrading_building = False
                 return True
