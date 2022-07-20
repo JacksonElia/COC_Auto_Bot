@@ -108,7 +108,7 @@ def main():
                     trainer_and_attacker.attack_completed = False
                     mode += 1
                     tries = 0
-            elif trainer_and_attacker.troops_training or tries > 200:
+            elif trainer_and_attacker.troops_training or tries > 250:
                 trainer_and_attacker.troops_training = False
                 trainer_and_attacker.attack_completed = False
                 mode += 1
