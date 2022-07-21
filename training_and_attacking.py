@@ -195,8 +195,8 @@ class TrainerAndAttacker:
                 # Elixir text is from x: 65-225px y: 175-200px
                 elixir_cropped_screenshot = screenshot[178:202, 70:225]
             # Reads the loot numbers and clears everything except the numbers
-            gold_loot_text = read_text(gold_cropped_screenshot, "Gold").strip().replace("", "").replace(" ", "")
-            elixir_loot_text = read_text(elixir_cropped_screenshot, "Elixir").strip().replace("", "").replace(" ", "")
+            gold_loot_text = read_text(gold_cropped_screenshot).strip().replace("", "").replace(" ", "")
+            elixir_loot_text = read_text(elixir_cropped_screenshot).strip().replace("", "").replace(" ", "")
             # Checks to make sure everything was read correctly
             gold = 0
             elixir = 0
@@ -340,6 +340,7 @@ class TrainerAndAttacker:
                                    .001,
                                    self.window_rectangle)
                     self.scroll_count += 1
+                    sleep(1)
             else:
                 # Closes out of the laboratory menu
                 laboratory_x_button_rectangle = find_image_rectangle(self.LABORATORY_X_BUTTON, screenshot)

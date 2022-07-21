@@ -246,12 +246,10 @@ def get_pixels_with_color(color: list, cropped_screenshot: Image, x_offset: int 
                 abs(color[2] - pixel_color[2]) < 2):
                 pixel_coordinate_list.append((x + x_offset, y + y_offset))
                 cropped_screenshot[y][x] = [0, 0, 255]
-    print(pixel_coordinate_list)
-    cv.imshow("s", cropped_screenshot)
     return pixel_coordinate_list
 
 
-def read_text(cropped_screenshot: Image, a) -> str:
+def read_text(cropped_screenshot: Image) -> str:
     """
     Attempts to read the text in the cropped screenshot
     :param cropped_screenshot: the screenshot of the location where the text might be
@@ -260,8 +258,6 @@ def read_text(cropped_screenshot: Image, a) -> str:
     pytesseract.pytesseract.tesseract_cmd = "Tesseract-OCR/tesseract.exe"
     processed_image = process_image_for_reading(cropped_screenshot)
     text = pytesseract.image_to_string(processed_image, lang="eng", config="-c tessedit_char_whitelist=0123456789 --psm 6")
-    cv.imshow(a, processed_image)
-    print(f"{a}: {text}")
     return text
 
 
