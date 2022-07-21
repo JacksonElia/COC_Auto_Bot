@@ -33,7 +33,6 @@ class VillageUpgrader:
         self.UPGRADE_BUTTON = (cv.imread("assets/buttons/upgrade_button.jpg", cv.IMREAD_UNCHANGED), .91)
         self.ARROW = (cv.imread("assets/misc/arrow.jpg", cv.IMREAD_UNCHANGED), .85)
         self.CHECK_BUTTON = (cv.imread("assets/buttons/check_button.jpg", cv.IMREAD_UNCHANGED), .9)
-        self.CC_UPGRADE_BUTTON = (cv.imread("assets/buttons/cc_upgrade_button.jpg", cv.IMREAD_UNCHANGED), .95)
 
     def open_builder_menu(self, screenshot):
         """
@@ -88,11 +87,10 @@ class VillageUpgrader:
                 bottom_right = (rectangle[0] + rectangle[2], rectangle[1] + rectangle[3])
                 cv.rectangle(screenshot, top_left, bottom_right, (255, 0, 255), cv.LINE_4)
 
-    def upgrade_building(self, screenshot: Image, town_hall_number: int = 2) -> bool:
+    def upgrade_building(self, screenshot: Image) -> bool:
         """
         Attempts to upgrade a building by clicking buttons at various stages in the upgrade process
         :param screenshot: Screenshot of bluestacks
-        :param town_hall_number: The townhall number of the account
         :return: True if it has finished upgrading a building, False if it has not
         """
         # This gross looking if statement is for efficiency, it only checks the screenshot for the image if it can't
@@ -118,13 +116,6 @@ class VillageUpgrader:
                 # Clicks the confirmation button
                 click(700, 680, self.window_rectangle)
                 sleep(.3)
-                # The CC building has the upgrade button in a different spot than normal, this handles that
-                if town_hall_number == 3:
-                    cc_upgrade_button_rectangle = find_image_rectangle(self.CC_UPGRADE_BUTTON, screenshot)
-                    if cc_upgrade_button_rectangle:
-                        x, y = get_center_of_rectangle(cc_upgrade_button_rectangle)
-                        click(x, y, self.window_rectangle)
-                        sleep(.3)
                 self.upgrading_building = False
                 return True
             else:

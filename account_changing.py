@@ -1,5 +1,3 @@
-import win32api
-
 from interaction_functions import *
 from time import sleep
 import cv2 as cv

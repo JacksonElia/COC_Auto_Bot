@@ -56,6 +56,8 @@ def main():
         (cv.imread("assets/buttons/return_home_villager_button.jpg", cv.IMREAD_UNCHANGED), .93),
     )
 
+    CC_UPGRADE_BUTTON = (cv.imread("assets/buttons/cc_upgrade_button.jpg", cv.IMREAD_UNCHANGED), .95)
+
     pop_up_button_i = 0
 
     sleep(3)
@@ -78,6 +80,14 @@ def main():
             x, y = get_center_of_rectangle(button_rectangle)
             click(x, y, window_rectangle)
 
+        # The CC building has the upgrade button in a different spot than normal, this handles that
+        if village_builder.town_hall_level == 3 and mode == 3:
+            cc_upgrade_button_rectangle = find_image_rectangle(CC_UPGRADE_BUTTON, screenshot)
+            if cc_upgrade_button_rectangle:
+                x, y = get_center_of_rectangle(cc_upgrade_button_rectangle)
+                click(x, y, window_rectangle)
+                sleep(.3)
+
         if mode == 1:  # Clears the village of obstacles and collects loot
             village_clearer.window_rectangle = window_rectangle
             village_clearer.collect_resources(screenshot)
@@ -91,8 +101,8 @@ def main():
                 tries = 0
         elif mode == 2:  # Upgrades and purchases buildings
             village_upgrader.window_rectangle = window_rectangle
-            if (village_upgrader.upgrade_building(
-                    screenshot) or tries >= 5) and not village_upgrader.upgrading_building:
+            if (village_upgrader.upgrade_building(screenshot) or tries >= 5) and \
+                    not village_upgrader.upgrading_building:
                 mode += 1
                 tries = 0
             village_upgrader.show_suggested_upgrades(screenshot)
