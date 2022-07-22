@@ -86,9 +86,13 @@ class AccountChanger:
                 move_mouse_to_position(coc_icon_rectangles[0][0], coc_icon_rectangles[0][1], self.window_rectangle)
                 scroll_up(20)
                 for i in range(self.account_number):
-                    # Scrolls by clicking and holding on the 2nd icon and moving the mouse to the first icon
-                    click_and_drag(coc_icon_rectangles[1][0], coc_icon_rectangles[1][1], coc_icon_rectangles[0][0],
-                                   coc_icon_rectangles[0][1], .008, self.window_rectangle)
+                    # Scrolls by clicking and holding on the 2nd icon and moving the mouse to the first icon, each icon
+                    # should be 107 pixels away from the next, but sometimes things load weird and that doesn't happen
+                    click_and_drag(coc_icon_rectangles[0][0],
+                                   coc_icon_rectangles[0][1] + 107,
+                                   coc_icon_rectangles[0][0],
+                                   coc_icon_rectangles[0][1], 
+                                   .00265, self.window_rectangle)
                     sleep(.5)
                 sleep(2)
                 self.scrolled_to_account = True

@@ -94,7 +94,7 @@ def main():
             # Only collects the loot cart if the account is TH5 or above
             if int(data_storer.get_account_info(account_changer.account_number)[0]) > 4:
                 village_clearer.collect_loot_cart(screenshot)
-            if village_clearer.clear_obstacle(screenshot) or tries >= 10:
+            if village_clearer.clear_obstacle(screenshot) or tries >= 6:
                 data_storer.update_account_info(account_changer.account_number,
                                                 rocks_removed=village_clearer.rocks_removed)
                 mode += 1
@@ -105,7 +105,6 @@ def main():
                     not village_upgrader.upgrading_building:
                 mode += 1
                 tries = 0
-            village_upgrader.show_suggested_upgrades(screenshot)
         elif mode == 3:  # Trains troops and attacks for loot
             trainer_and_attacker.window_rectangle = window_rectangle
             if not trainer_and_attacker.attack_completed:
