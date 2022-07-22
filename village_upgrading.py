@@ -105,7 +105,8 @@ class VillageUpgrader:
             click(x - 40, y, self.window_rectangle)
             sleep(.3)
             self.upgrading_building = False
-            return True
+            # Does this to see if it can do multiple upgrades instead of just one
+            return not self.check_for_builders(screenshot)
         else:
             upgrade_button_rectangle = find_image_rectangle(self.UPGRADE_BUTTON, screenshot)
             if upgrade_button_rectangle and self.upgrading_building:
@@ -117,7 +118,7 @@ class VillageUpgrader:
                 click(700, 680, self.window_rectangle)
                 sleep(.3)
                 self.upgrading_building = False
-                return True
+                return not self.check_for_builders(screenshot)
             else:
                 arrow_rectangle = find_image_rectangle(self.ARROW, screenshot)
                 if arrow_rectangle:
