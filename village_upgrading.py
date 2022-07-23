@@ -1,5 +1,6 @@
 from interaction_functions import *
 from time import sleep
+from random import randrange
 import cv2 as cv
 
 
@@ -135,18 +136,22 @@ class VillageUpgrader:
                 else:
                     self.find_suggested_upgrades(screenshot)
                     # If the upgrade button or arrow are not present, it checks to see if there are any available upgrades
+                    available_upgrades = []
                     for suggested_upgrade in self.suggested_upgrades:
                         # Crops the screenshot for efficiency in color detection
                         cropped_screenshot = screenshot[suggested_upgrade[1]:suggested_upgrade[1] + suggested_upgrade[3],
                                              suggested_upgrade[0] + 300:suggested_upgrade[0] + suggested_upgrade[2]]
                         # Makes sure there are enough resources for upgrading
                         if not detect_if_color_present(self.NOT_ENOUGH_RESOURCES_COLOR, cropped_screenshot) and not self.upgrading_building:
-                            x, y = get_center_of_rectangle(suggested_upgrade)
-                            # Clicks on the building to be upgraded
-                            click(x, y, self.window_rectangle)
-                            self.upgrading_building = True
-                            sleep(1)
-                            break
+                            available_upgrades.append(suggested_upgrade)
+                    # Makes it so no resource is prioritized over others
+                    if available_upgrades:
+                        available_upgrade = available_upgrades[randrange(0, len(available_upgrades))]
+                        x, y = get_center_of_rectangle(available_upgrade)
+                        # Clicks on the building to be upgraded
+                        click(x, y, self.window_rectangle)
+                        self.upgrading_building = True
+                        sleep(1)
         return False
 
     def check_for_builders(self, screenshot) -> bool:
