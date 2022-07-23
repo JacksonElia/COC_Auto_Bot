@@ -13,6 +13,7 @@ class VillageUpgrader:
     suggested_upgrades_rectangle = []
     suggested_upgrades = []
     upgrading_building = False
+    town_hall_level = 2
 
     ZERO_BUILDERS: tuple
     BUILDER_FACE: tuple
@@ -54,9 +55,13 @@ class VillageUpgrader:
         """
         self.suggested_upgrades = []
         self.suggested_upgrades_rectangle = find_image_rectangle(self.SUGGESTED_UPGRADES, screenshot)
-        # Uses the position of the suggested upgrades text to create 3 rectangles where suggested upgrades could be
+        # Uses the position of the suggested upgrades text to create 2-3 rectangles where suggested upgrades could be,
+        # town halls without dark elixir only have 2 suggested upgrades
+        number_of_suggested_upgrades = 2
+        if self.town_hall_level >= 7:
+            number_of_suggested_upgrades = 3
         if self.suggested_upgrades_rectangle:
-            for i in range(1, 4):
+            for i in range(1, number_of_suggested_upgrades + 1):
                 self.suggested_upgrades.append([self.suggested_upgrades_rectangle[0],
                                                 int(self.suggested_upgrades_rectangle[1] + i * 41.5),
                                                 self.suggested_upgrades_rectangle[2],
@@ -64,7 +69,7 @@ class VillageUpgrader:
         else:
             self.suggested_upgrades_rectangle = find_image_rectangle(self.SUGGESTED_UPGRADES_2, screenshot)
             if self.suggested_upgrades_rectangle:
-                for i in range(1, 4):
+                for i in range(1, number_of_suggested_upgrades + 1):
                     self.suggested_upgrades.append([self.suggested_upgrades_rectangle[0],
                                                     int(self.suggested_upgrades_rectangle[1] + i * 41.5),
                                                     self.suggested_upgrades_rectangle[2],

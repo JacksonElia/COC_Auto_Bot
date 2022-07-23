@@ -81,7 +81,7 @@ def main():
             click(x, y, window_rectangle)
 
         # The CC building has the upgrade button in a different spot than normal, this handles that
-        if village_builder.town_hall_level == 3 and mode == 3:
+        if village_upgrader.town_hall_level == 3 and mode == 3:
             cc_upgrade_button_rectangle = find_image_rectangle(CC_UPGRADE_BUTTON, screenshot)
             if cc_upgrade_button_rectangle:
                 x, y = get_center_of_rectangle(cc_upgrade_button_rectangle)
@@ -181,6 +181,7 @@ def main():
                 # Reads values from csv file for the new account
                 village_clearer.rocks_removed = literal_eval(
                     data_storer.get_account_info(account_changer.account_number)[1])
+                village_upgrader.town_hall_level = int(data_storer.get_account_info(account_changer.account_number)[0])
                 trainer_and_attacker.town_hall_level = int(data_storer.get_account_info(account_changer.account_number)[0])
                 trainer_and_attacker.total_gold = int(data_storer.get_account_info(account_changer.account_number)[2])
                 trainer_and_attacker.total_elixir = int(data_storer.get_account_info(account_changer.account_number)[3])
