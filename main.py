@@ -101,10 +101,11 @@ def main():
                 tries = 0
         elif mode == 2:  # Upgrades and purchases buildings
             village_upgrader.window_rectangle = window_rectangle
-            if (village_upgrader.upgrade_building(screenshot) or tries >= 10) and \
-                    not village_upgrader.upgrading_building:
+            if ((village_upgrader.upgrade_building(screenshot) or tries >= 10) and
+                    not village_upgrader.upgrading_building or tries >= 30):
                 mode += 1
                 tries = 0
+            village_upgrader.show_suggested_upgrades(screenshot)
         elif mode == 3:  # Trains troops and attacks for loot
             trainer_and_attacker.window_rectangle = window_rectangle
             if not trainer_and_attacker.attack_completed:
@@ -195,7 +196,7 @@ def main():
         print(mode)
         tries += 1
 
-        # cv.imshow("What the code sees", screenshot)
+        cv.imshow("What the code sees", screenshot)
 
         if cv.waitKey(1) == ord("q"):
             cv.destroyWindow()

@@ -66,7 +66,7 @@ class TrainerAndAttacker:
         self.ATTACK_BUTTON = (cv.imread("assets/buttons/attack_button.jpg", cv.IMREAD_UNCHANGED), .85)
         self.ARMY_BUTTON = (cv.imread("assets/buttons/army_button.jpg", cv.IMREAD_UNCHANGED), .9)
         self.BARBARIAN_BUTTON = (cv.imread("assets/buttons/barbarian_button.jpg", cv.IMREAD_UNCHANGED), .94)
-        self.GOBLIN_BUTTON = (cv.imread("assets/buttons/goblin_button.jpg", cv.IMREAD_UNCHANGED), .97)
+        self.GOBLIN_BUTTON = (cv.imread("assets/buttons/goblin_button.jpg", cv.IMREAD_UNCHANGED), .94)
         self.GREY_GOBLIN_BUTTON = (cv.imread("assets/buttons/grey_goblin_button.jpg", cv.IMREAD_UNCHANGED), .94)
         self.NEXT_BUTTON = (cv.imread("assets/buttons/next_button.jpg", cv.IMREAD_UNCHANGED), .9)
         self.POPUP_X_BUTTON = (cv.imread("assets/buttons/popup_x_button.jpg", cv.IMREAD_UNCHANGED), .94)
@@ -263,13 +263,17 @@ class TrainerAndAttacker:
         # Deploys the troops
         for i in range(10 * self.town_hall_level):
             click(450, 590, self.window_rectangle)
-            sleep(.1)
+            sleep(.05)
             click(935, 590, self.window_rectangle)
-            sleep(.1)
+            sleep(.05)
             click(450, 115, self.window_rectangle)
-            sleep(.1)
+            sleep(.05)
             click(935, 115, self.window_rectangle)
-            sleep(.1)
+            sleep(.05)
+            if i % 2 == 0:
+                click(230, 715, self.window_rectangle)
+            else:
+                click(230, 715, self.window_rectangle)
 
     def upgrade_troops(self, screenshot: Image) -> bool:
         """
