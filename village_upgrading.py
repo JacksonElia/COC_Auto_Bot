@@ -23,6 +23,7 @@ class VillageUpgrader:
     ARROW: tuple
     CHECK_BUTTON: tuple
     NOT_ENOUGH_RESOURCES_COLOR = [127, 137, 254]  # In [B, G, R]
+    FILLER_TEXT_COLOR = [202, 244, 202]  # In [B, G, R]
     # NEW_BUILDING_COLOR = [13, 255, 13]  # In [B, G, R]
 
     def __init__(self, window_rectangle: list):
@@ -142,7 +143,7 @@ class VillageUpgrader:
                         cropped_screenshot = screenshot[suggested_upgrade[1]:suggested_upgrade[1] + suggested_upgrade[3],
                                              suggested_upgrade[0] + 300:suggested_upgrade[0] + suggested_upgrade[2]]
                         # Makes sure there are enough resources for upgrading
-                        if not detect_if_color_present(self.NOT_ENOUGH_RESOURCES_COLOR, cropped_screenshot) and not self.upgrading_building:
+                        if not detect_if_color_present(self.NOT_ENOUGH_RESOURCES_COLOR, cropped_screenshot) and not detect_if_color_present(self.FILLER_TEXT_COLOR, cropped_screenshot) and not self.upgrading_building:
                             available_upgrades.append(suggested_upgrade)
                     # Makes it so no resource is prioritized over others
                     if available_upgrades:
