@@ -261,15 +261,15 @@ class TrainerAndAttacker:
         # Selects the troops to deploy
         click(230, 715, self.window_rectangle)
         # Deploys the troops
-        for i in range(10 * self.town_hall_level):
+        for i in range(12 * self.town_hall_level):
             click(450, 590, self.window_rectangle)
-            sleep(.05)
+            sleep(.08)
             click(935, 590, self.window_rectangle)
-            sleep(.05)
+            sleep(.08)
             click(450, 115, self.window_rectangle)
-            sleep(.05)
+            sleep(.08)
             click(935, 115, self.window_rectangle)
-            sleep(.05)
+            sleep(.08)
             if i % 2 == 0:
                 click(230, 715, self.window_rectangle)
             else:
