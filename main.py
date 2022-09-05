@@ -105,6 +105,7 @@ def main():
                     not village_upgrader.upgrading_building or tries >= 30):
                 mode += 1
                 tries = 0
+                village_upgrader.upgrading_building = False
             # village_upgrader.show_suggested_upgrades(screenshot)
         elif mode == 3:  # Trains troops and attacks for loot
             trainer_and_attacker.window_rectangle = window_rectangle
@@ -170,6 +171,10 @@ def main():
                     # Opens chrome and enters the base link
                     village_builder.copy_base_layout(screenshot)
             else:
+                mode += 1
+                tries = 0
+            # Sometimes Bluestacks glitches and the window for base layouts just doesn't get pulled up
+            if tries >= 30:
                 mode += 1
                 tries = 0
         elif mode == 5:  # Changes Supercell ID accounts

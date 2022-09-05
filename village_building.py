@@ -59,7 +59,7 @@ class VillageBuilder:
         self.HOME_BUTTON = (cv.imread("assets/buttons/home_button.jpg", cv.IMREAD_UNCHANGED), .95)
         self.CHROME_BUTTON = (cv.imread("assets/buttons/chrome_button.jpg", cv.IMREAD_UNCHANGED), .95)
         self.REFRESH_BUTTON = (cv.imread("assets/buttons/refresh_button.jpg", cv.IMREAD_UNCHANGED), .95)
-        self.I_HAVE_CLASH_BUTTON = (cv.imread("assets/buttons/i_have_clash_button.jpg", cv.IMREAD_UNCHANGED), .97)
+        self.I_HAVE_CLASH_BUTTON = (cv.imread("assets/buttons/i_have_clash_button.jpg", cv.IMREAD_UNCHANGED), .96)
 
         self.ACTIVE_VILLAGE = (cv.imread("assets/misc/active_village.jpg", cv.IMREAD_UNCHANGED), .9)
         self.SAVE_BUTTON = (cv.imread("assets/buttons/save_button.jpg", cv.IMREAD_UNCHANGED), .95)
@@ -78,6 +78,8 @@ class VillageBuilder:
         i_have_clash_button_rectangle = find_image_rectangle(self.I_HAVE_CLASH_BUTTON, screenshot)
         if self.base_copied and i_have_clash_button_rectangle:
             x, y = get_center_of_rectangle(i_have_clash_button_rectangle)
+            click(x, y, self.window_rectangle)
+            sleep(.3)
             click(x, y, self.window_rectangle)
             sleep(3)
             self.base_link_entered = True
@@ -124,7 +126,7 @@ class VillageBuilder:
         active_village_rectangle = find_image_rectangle(self.ACTIVE_VILLAGE, screenshot)
         if active_village_rectangle:
             x, y = get_center_of_rectangle(active_village_rectangle)
-            click(x, y + 100, self.window_rectangle)
+            click(x, y + 200, self.window_rectangle)
             sleep(1.5)
         else:
             okay_button_rectangle = find_image_rectangle(self.OKAY_BUTTON, screenshot)
