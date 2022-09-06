@@ -171,10 +171,12 @@ def main():
                     # Opens chrome and enters the base link
                     village_builder.copy_base_layout(screenshot)
             else:
+                village_builder.building_base = False
                 mode += 1
                 tries = 0
             # Sometimes Bluestacks glitches and the window for base layouts just doesn't get pulled up
             if tries >= 30:
+                village_builder.building_base = False
                 mode += 1
                 tries = 0
         elif mode == 5:  # Changes Supercell ID accounts
