@@ -127,16 +127,15 @@ class VillageUpgrader:
                 sleep(.3)
                 self.upgrading_building = False
                 return not self.check_for_builders(screenshot)
-            else:
-                if self.town_hall_level == 3:
-                    cc_upgrade_button_rectangle = find_image_rectangle(self.CC_UPGRADE_BUTTON, screenshot)
-                    if cc_upgrade_button_rectangle and self.upgrading_building:
-                        x, y = get_center_of_rectangle(cc_upgrade_button_rectangle)
-                        # Clicks the upgrade button
-                        click(x, y, self.window_rectangle)
-                        sleep(.3)
-                        self.upgrading_building = False
-                        return not self.check_for_builders(screenshot)
+            elif self.town_hall_level == 3:
+                cc_upgrade_button_rectangle = find_image_rectangle(self.CC_UPGRADE_BUTTON, screenshot)
+                if cc_upgrade_button_rectangle and self.upgrading_building:
+                    x, y = get_center_of_rectangle(cc_upgrade_button_rectangle)
+                    # Clicks the upgrade button
+                    click(x, y, self.window_rectangle)
+                    sleep(.3)
+                    self.upgrading_building = False
+                    return not self.check_for_builders(screenshot)
                 else:
                     arrow_rectangle = find_image_rectangle(self.ARROW, screenshot)
                     if arrow_rectangle:
