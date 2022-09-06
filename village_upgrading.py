@@ -30,7 +30,7 @@ class VillageUpgrader:
         self.window_rectangle = window_rectangle
 
         self.ZERO_BUILDERS = (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .89)
-        self.BUILDER_FACE = (cv.imread("assets/misc/builder_face.jpg", cv.IMREAD_UNCHANGED), .96)
+        self.BUILDER_FACE = (cv.imread("assets/misc/builder_face.jpg", cv.IMREAD_UNCHANGED), .92)
         self.SUGGESTED_UPGRADES = (cv.imread("assets/misc/suggested_upgrades.jpg", cv.IMREAD_UNCHANGED), .8)
         self.SUGGESTED_UPGRADES_2 = (cv.imread("assets/misc/suggested_upgrades_2.jpg", cv.IMREAD_UNCHANGED), .8)
         self.UPGRADE_BUTTON = (cv.imread("assets/buttons/upgrade_button.jpg", cv.IMREAD_UNCHANGED), .91)
@@ -43,6 +43,7 @@ class VillageUpgrader:
         Opens the builder menu if there are available builders
         :param screenshot: screenshot of bluestacks
         """
+        print("looking for builders")
         if self.check_for_builders(screenshot):
             builder_face_rectangle = find_image_rectangle(self.BUILDER_FACE, screenshot)
             if builder_face_rectangle:

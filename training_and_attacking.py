@@ -57,8 +57,8 @@ class TrainerAndAttacker:
         )
 
         self.LAB_LOOT_ICONS = (
-            (cv.imread("assets/misc/lab_elixir.jpg", cv.IMREAD_UNCHANGED), .92),
-            (cv.imread("assets/misc/lab_dark_elixir.jpg", cv.IMREAD_UNCHANGED), .92)
+            (cv.imread("assets/misc/lab_elixir.jpg", cv.IMREAD_UNCHANGED), .91),
+            (cv.imread("assets/misc/lab_dark_elixir.jpg", cv.IMREAD_UNCHANGED), .91)
         )
 
         self.RESEARCH_BUTTON = (cv.imread("assets/buttons/research_button.jpg", cv.IMREAD_UNCHANGED), .91)
