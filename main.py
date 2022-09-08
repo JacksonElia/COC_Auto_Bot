@@ -54,6 +54,8 @@ def main():
         (cv.imread("assets/buttons/okay_button_4.jpg", cv.IMREAD_UNCHANGED), .95),
         # Returns home after watching someone attack the selected base
         (cv.imread("assets/buttons/return_home_villager_button.jpg", cv.IMREAD_UNCHANGED), .93),
+        # Clicks the x button that appears in the Town Hall Upgraded popup
+        (cv.imread("assets/buttons/new_th_x_button.jpg", cv.IMREAD_UNCHANGED), .94)
     )
 
     pop_up_button_i = 0
