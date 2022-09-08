@@ -137,7 +137,7 @@ class VillageUpgrader:
                 cc_upgrade_button_rectangle = []
                 if self.town_hall_level == 3:
                     cc_upgrade_button_rectangle = find_image_rectangle(self.CC_UPGRADE_BUTTON, screenshot)
-                if cc_upgrade_button_rectangle and self.upgrading_building:
+                if cc_upgrade_button_rectangle:
                     x, y = get_center_of_rectangle(cc_upgrade_button_rectangle)
                     # Clicks the upgrade button
                     click(x, y, self.window_rectangle)
