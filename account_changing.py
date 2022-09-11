@@ -12,7 +12,7 @@ class AccountChanger:
     number_of_accounts = 1
 
     accounts_menu_opened = False
-    account_number = 12
+    account_number = 0
     scrolled_to_account = False
     account_changed = False
 
