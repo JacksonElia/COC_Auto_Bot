@@ -14,7 +14,7 @@ class VillageUpgrader:
     suggested_upgrades_rectangle = []
     suggested_upgrades = []
     upgrading_building = False
-    town_hall_level = 2
+    town_hall_level = 4
 
     ZERO_BUILDERS: tuple
     BUILDER_FACE: tuple
@@ -37,6 +37,7 @@ class VillageUpgrader:
         self.CC_UPGRADE_BUTTON = (cv.imread("assets/buttons/cc_upgrade_button.jpg", cv.IMREAD_UNCHANGED), .93)
         self.ARROW = (cv.imread("assets/misc/arrow.jpg", cv.IMREAD_UNCHANGED), .85)
         self.CHECK_BUTTON = (cv.imread("assets/buttons/check_button.jpg", cv.IMREAD_UNCHANGED), .9)
+        self.FREE_TEXT = (cv.imread("assets/misc/FREE.jpg", cv.IMREAD_UNCHANGED), .9)
 
     def open_builder_menu(self, screenshot):
         """
@@ -162,11 +163,16 @@ class VillageUpgrader:
                         available_upgrades = []
                         for suggested_upgrade in self.suggested_upgrades:
                             # Crops the screenshot for efficiency in color detection
-                            cropped_screenshot = screenshot[suggested_upgrade[1]:suggested_upgrade[1] + suggested_upgrade[3],
-                                                 suggested_upgrade[0] + 300:suggested_upgrade[0] + suggested_upgrade[2]]
+                            cropped_screenshot = screenshot[suggested_upgrade[1] - 3:suggested_upgrade[1] + suggested_upgrade[3],
+                                                 suggested_upgrade[0] + 200:suggested_upgrade[0] + suggested_upgrade[2]]
                             # Makes sure there are enough resources for upgrading
                             if not detect_if_color_present(self.NOT_ENOUGH_RESOURCES_COLOR, cropped_screenshot) and not detect_if_color_present(self.FILLER_TEXT_COLOR, cropped_screenshot) and not self.upgrading_building:
-                                available_upgrades.append(suggested_upgrade)
+                                if self.town_hall_level >= 4:
+                                    # Makes sure it doesn't start upgrading the boat
+                                    if not bool(find_image_rectangle(self.FREE_TEXT, cropped_screenshot)):
+                                        available_upgrades.append(suggested_upgrade)
+                                else:
+                                    available_upgrades.append(suggested_upgrade)
                         # Makes it so no resource is prioritized over others
                         if available_upgrades:
                             print(6)
