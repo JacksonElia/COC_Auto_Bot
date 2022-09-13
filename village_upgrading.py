@@ -23,8 +23,11 @@ class VillageUpgrader:
     ARROW: tuple
     CHECK_BUTTON: tuple
     NOT_ENOUGH_RESOURCES_COLOR = [127, 137, 254]  # In [B, G, R]
-    FILLER_TEXT_COLOR = [202, 244, 202]  # In [B, G, R]
-    # NEW_BUILDING_COLOR = [13, 255, 13]  # In [B, G, R]
+    FILLER_TEXT_COLOR = [202, 244, 202]
+    GOLD_COLOR = [84, 251, 255]
+    ELIXIR_COLOR = [254, 52, 249]
+    DARK_ELIXIR_COLOR = [57, 31, 46]
+    # NEW_BUILDING_COLOR = [13, 255, 13]
 
     def __init__(self, window_rectangle: list):
         self.window_rectangle = window_rectangle
@@ -33,11 +36,10 @@ class VillageUpgrader:
         self.BUILDER_FACE = (cv.imread("assets/misc/builder_face.jpg", cv.IMREAD_UNCHANGED), .92)
         self.SUGGESTED_UPGRADES = (cv.imread("assets/misc/suggested_upgrades.jpg", cv.IMREAD_UNCHANGED), .8)
         self.SUGGESTED_UPGRADES_2 = (cv.imread("assets/misc/suggested_upgrades_2.jpg", cv.IMREAD_UNCHANGED), .8)
-        self.UPGRADE_BUTTON = (cv.imread("assets/buttons/upgrade_button.jpg", cv.IMREAD_UNCHANGED), .91)
+        self.UPGRADE_BUTTON = (cv.imread("assets/buttons/upgrade_button.jpg", cv.IMREAD_UNCHANGED), .94)
         self.CC_UPGRADE_BUTTON = (cv.imread("assets/buttons/cc_upgrade_button.jpg", cv.IMREAD_UNCHANGED), .93)
         self.ARROW = (cv.imread("assets/misc/arrow.jpg", cv.IMREAD_UNCHANGED), .85)
         self.CHECK_BUTTON = (cv.imread("assets/buttons/check_button.jpg", cv.IMREAD_UNCHANGED), .9)
-        self.FREE_TEXT = (cv.imread("assets/misc/FREE.jpg", cv.IMREAD_UNCHANGED), .9)
 
     def open_builder_menu(self, screenshot):
         """
@@ -169,7 +171,9 @@ class VillageUpgrader:
                             if not detect_if_color_present(self.NOT_ENOUGH_RESOURCES_COLOR, cropped_screenshot) and not detect_if_color_present(self.FILLER_TEXT_COLOR, cropped_screenshot) and not self.upgrading_building:
                                 if self.town_hall_level >= 4:
                                     # Makes sure it doesn't start upgrading the boat
-                                    if not bool(find_image_rectangle(self.FREE_TEXT, cropped_screenshot)):
+                                    if (detect_if_color_present(self.GOLD_COLOR, cropped_screenshot) or
+                                            detect_if_color_present(self.ELIXIR_COLOR, cropped_screenshot) or
+                                            detect_if_color_present(self.DARK_ELIXIR_COLOR, cropped_screenshot)):
                                         available_upgrades.append(suggested_upgrade)
                                 else:
                                     available_upgrades.append(suggested_upgrade)
