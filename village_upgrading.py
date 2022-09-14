@@ -109,7 +109,6 @@ class VillageUpgrader:
         # find the previous image in the screenshot
         check_button_rectangle = find_image_rectangle(self.CHECK_BUTTON, screenshot)
         if check_button_rectangle:
-            print(1)
             x, y = get_center_of_rectangle(check_button_rectangle)
             # Clicks the check button
             click(x, y, self.window_rectangle)
@@ -121,9 +120,12 @@ class VillageUpgrader:
             # Does this to see if it can do multiple upgrades instead of just one
             return not self.check_for_builders(screenshot)
         else:
-            print(2)
-
-            upgrade_button_rectangle = find_image_rectangle(self.UPGRADE_BUTTON, screenshot)
+            upgrade_button_rectangle = []
+            # This lets the robot click the clan castle's rebuild button, but not the boat's
+            if self.town_hall_level < 4:
+                upgrade_button_rectangle = find_image_rectangle((self.UPGRADE_BUTTON[0], .91), screenshot)
+            else:
+                upgrade_button_rectangle = find_image_rectangle(self.UPGRADE_BUTTON, screenshot)
             if upgrade_button_rectangle and self.upgrading_building:
                 x, y = get_center_of_rectangle(upgrade_button_rectangle)
                 # Clicks the upgrade button
@@ -135,8 +137,6 @@ class VillageUpgrader:
                 self.upgrading_building = False
                 return not self.check_for_builders(screenshot)
             else:
-                print(3)
-
                 cc_upgrade_button_rectangle = []
                 if self.town_hall_level == 3:
                     cc_upgrade_button_rectangle = find_image_rectangle(self.CC_UPGRADE_BUTTON, screenshot)
@@ -148,8 +148,6 @@ class VillageUpgrader:
                     self.upgrading_building = False
                     return not self.check_for_builders(screenshot)
                 else:
-                    print(4)
-
                     arrow_rectangle = find_image_rectangle(self.ARROW, screenshot)
                     if arrow_rectangle:
                         x = arrow_rectangle[0]
@@ -158,8 +156,6 @@ class VillageUpgrader:
                         click(x, y, self.window_rectangle)
                         sleep(1)
                     else:
-                        print(5)
-
                         self.find_suggested_upgrades(screenshot)
                         # If the upgrade button or arrow are not present, it checks to see if there are any available upgrades
                         available_upgrades = []
@@ -179,8 +175,6 @@ class VillageUpgrader:
                                     available_upgrades.append(suggested_upgrade)
                         # Makes it so no resource is prioritized over others
                         if available_upgrades:
-                            print(6)
-
                             available_upgrade = available_upgrades[randrange(0, len(available_upgrades))]
                             x, y = get_center_of_rectangle(available_upgrade)
                             # Clicks on the building to be upgraded
