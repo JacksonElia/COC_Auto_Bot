@@ -26,7 +26,7 @@ class VillageUpgrader:
     FILLER_TEXT_COLOR = [202, 244, 202]
     GOLD_COLOR = [84, 251, 255]
     ELIXIR_COLOR = [254, 52, 249]
-    DARK_ELIXIR_COLOR = [57, 31, 46]
+    # DARK_ELIXIR_COLOR = [57, 31, 46]
     # NEW_BUILDING_COLOR = [13, 255, 13]
 
     def __init__(self, window_rectangle: list):
@@ -40,6 +40,7 @@ class VillageUpgrader:
         self.CC_UPGRADE_BUTTON = (cv.imread("assets/buttons/cc_upgrade_button.jpg", cv.IMREAD_UNCHANGED), .93)
         self.ARROW = (cv.imread("assets/misc/arrow.jpg", cv.IMREAD_UNCHANGED), .85)
         self.CHECK_BUTTON = (cv.imread("assets/buttons/check_button.jpg", cv.IMREAD_UNCHANGED), .9)
+        self.FREE = (cv.imread("assets/misc/FREE.jpg", cv.IMREAD_UNCHANGED), .8)
 
     def open_builder_menu(self, screenshot):
         """
@@ -159,19 +160,17 @@ class VillageUpgrader:
                         self.find_suggested_upgrades(screenshot)
                         # If the upgrade button or arrow are not present, it checks to see if there are any available upgrades
                         available_upgrades = []
-                        for suggested_upgrade in self.suggested_upgrades:
+                        for i, suggested_upgrade in enumerate(self.suggested_upgrades):
                             # Crops the screenshot for efficiency in color detection
                             cropped_screenshot = screenshot[suggested_upgrade[1] - 3:suggested_upgrade[1] + suggested_upgrade[3],
                                                  suggested_upgrade[0] + 200:suggested_upgrade[0] + suggested_upgrade[2]]
                             # Makes sure there are enough resources for upgrading
                             if not detect_if_color_present(self.NOT_ENOUGH_RESOURCES_COLOR, cropped_screenshot) and not detect_if_color_present(self.FILLER_TEXT_COLOR, cropped_screenshot) and not self.upgrading_building:
-                                if self.town_hall_level >= 4:
-                                    # Makes sure it doesn't start upgrading the boat
-                                    if (detect_if_color_present(self.GOLD_COLOR, cropped_screenshot) or
-                                            detect_if_color_present(self.ELIXIR_COLOR, cropped_screenshot) or
-                                            detect_if_color_present(self.DARK_ELIXIR_COLOR, cropped_screenshot)):
-                                        available_upgrades.append(suggested_upgrade)
-                                else:
+                                # Makes sure it doesn't start upgrading the boat
+                                if ((detect_if_color_present(self.GOLD_COLOR, cropped_screenshot) or
+                                        detect_if_color_present(self.ELIXIR_COLOR, cropped_screenshot) or
+                                        i >= 2) and
+                                        not bool(find_image_rectangle(self.FREE, cropped_screenshot))):
                                     available_upgrades.append(suggested_upgrade)
                         # Makes it so no resource is prioritized over others
                         if available_upgrades:
