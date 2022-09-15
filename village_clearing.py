@@ -58,8 +58,8 @@ class VillageClearer:
         )
 
         self.LOOT_CART = (cv.imread("assets/resources/loot_cart.jpg", cv.IMREAD_UNCHANGED), .94)
-        self.REMOVE_BUTTON = (cv.imread("assets/buttons/remove_button.jpg", cv.IMREAD_UNCHANGED), .94)
-        self.REMOVE_BUTTON_2 = (cv.imread("assets/buttons/remove_button_2.jpg", cv.IMREAD_UNCHANGED), .94)
+        self.REMOVE_BUTTON = (cv.imread("assets/buttons/remove_button.jpg", cv.IMREAD_UNCHANGED), .93)
+        self.REMOVE_BUTTON_2 = (cv.imread("assets/buttons/remove_button_2.jpg", cv.IMREAD_UNCHANGED), .92)
         self.COLLECT_BUTTON = (cv.imread("assets/buttons/collect_button.jpg", cv.IMREAD_UNCHANGED), .94)
         self.ZERO_BUILDERS = (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .92)
 
