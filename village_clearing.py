@@ -9,6 +9,9 @@ class VillageClearer:
     Finds obstacles and resources on the screen, stores their locations, and collects/clears them.
     :param window_rectangle: The rectangle of the application window gotten with GetWindowRect
     """
+
+    main_window = None
+
     window_rectangle = []
     obstacle_rectangles = []
     resource_rectangles = []
@@ -25,7 +28,10 @@ class VillageClearer:
 
     rocks_removed = False
 
-    def __init__(self, window_rectangle: list):
+    def __init__(self, window_rectangle: list, main_window):
+
+        self.main_window = main_window
+
         self.window_rectangle = window_rectangle
 
         self.OBSTACLES = (
@@ -78,10 +84,12 @@ class VillageClearer:
         :param screenshot: the screenshot of bluestacks
         :return: True if it removes an obstacle
         """
+        self.main_window.update_message_text("Looking for obstacle to remove.")
         # Cropped screenshot for better efficiency and so that the bot doesn't click on buttons by accident
         self.obstacle_rectangles = []
         # Doesn't try to remove any obstacles if there are no builders
         if not self.check_for_builders(screenshot):
+            self.main_window.update_message_text("Attempted to remove obstacles, but there were no available builders.")
             return True
         zoom_out()
         cropped_screenshot = screenshot[145:screenshot.shape[0] - 60, 100:screenshot.shape[1] - 100]
@@ -106,14 +114,13 @@ class VillageClearer:
                 cropped_screenshot = screenshot[remove_button_rectangle[1]:remove_button_rectangle[1] + remove_button_rectangle[3],
                                      remove_button_rectangle[0]:remove_button_rectangle[0] + remove_button_rectangle[2]]
                 if not detect_if_color_present(self.NOT_ENOUGH_RESOURCES_COLOR, cropped_screenshot):
-                    print("Enough Resources")
                     x, y = get_center_of_rectangle(remove_button_rectangle)
                     click(x, y, self.window_rectangle)
+                    self.main_window.update_message_text("Removed Obstacle.")
                     sleep(.3)
                     return True
                 else:
-                    print("Not Enough")
-
+                    self.main_window.update_message_text("Searching for obstacle that costs less resources.")
             rectangle = None
 
             while True:
@@ -165,6 +172,7 @@ class VillageClearer:
         Collects all the visible collectors and graves
         :return:
         """
+        self.main_window.update_message_text("Collecting resources.")
         self.resource_rectangles = []
         cropped_screenshot = screenshot[145:screenshot.shape[0] - 60, 100:screenshot.shape[1] - 100]
         for resource in self.RESOURCES:
@@ -200,10 +208,12 @@ class VillageClearer:
         """
         collect_button_rectangle = find_image_rectangle(self.COLLECT_BUTTON, screenshot)
         if collect_button_rectangle:
+            self.main_window.update_message_text("Collecting loot cart.")
             x, y = get_center_of_rectangle(collect_button_rectangle)
             click(x, y, self.window_rectangle)
             sleep(1.5)
         else:
+            self.main_window.update_message_text("Collecting loot cart.")
             loot_cart_rectangle = find_image_rectangle(self.LOOT_CART, screenshot)
             if loot_cart_rectangle:
                 x, y = get_center_of_rectangle(loot_cart_rectangle)

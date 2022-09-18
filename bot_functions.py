@@ -1,6 +1,6 @@
 from ctypes import windll
 from ast import literal_eval
-
+from main_window import *
 from training_and_attacking import *
 from village_clearing import *
 from village_upgrading import *
@@ -14,6 +14,8 @@ import numpy as np
 
 class AutoBot:
 
+    main_window = None
+    bot_active = False
     # Variables used to smoothly move between the functions of the bot
     mode = 1
     tries = 0
@@ -39,36 +41,39 @@ class AutoBot:
 
     pop_up_button_i = 0
 
-    def __init__(self, number_of_accounts):
+    def __init__(self, number_of_accounts, main_window):
+
+        self.main_window = main_window
 
         # Makes program aware of DPI scaling,
         windll.user32.SetProcessDPIAware()
+
+        # Gets the hwnd and window rectangle used for locating the correct window
         self.hwnd = get_hwnd("bluestacks")
+        window_rectangle = win32gui.GetWindowRect(self.hwnd)
 
         # Resizes and moves the window to the front
         win32gui.MoveWindow(self.hwnd, 10, 10, 1400, 805, True)
         win32gui.SetForegroundWindow(self.hwnd)
 
-        window_rectangle = win32gui.GetWindowRect(self.hwnd)
-
         # The classes that carry out the main functions of the bot
-        self.village_clearer = VillageClearer(win32gui.GetWindowRect(window_rectangle))
-        self.village_upgrader = VillageUpgrader(win32gui.GetWindowRect(window_rectangle))
-        self.trainer_and_attacker = TrainerAndAttacker(win32gui.GetWindowRect(window_rectangle))
-        self.account_changer = AccountChanger(win32gui.GetWindowRect(window_rectangle), number_of_accounts)
-        self.village_builder = VillageBuilder(win32gui.GetWindowRect(window_rectangle))
+        self.village_clearer = VillageClearer(window_rectangle, main_window)
+        self.village_upgrader = VillageUpgrader(window_rectangle, main_window)
+        self.trainer_and_attacker = TrainerAndAttacker(window_rectangle, main_window)
+        self.account_changer = AccountChanger(window_rectangle, number_of_accounts, main_window)
+        self.village_builder = VillageBuilder(window_rectangle, main_window)
         self.data_storer = DataStorer(number_of_accounts)
 
         # Makes sure the csv file has rows for each account
         self.data_storer.add_new_accounts()
 
     def run_bot(self):
-
         sleep(3)
         # The main loop of the bot
-        while True:
+        while self.bot_active:
             window_rectangle = win32gui.GetWindowRect(self.hwnd)
 
+            # Takes a screenshot of bluestacks and converts it into a usable image
             screenshot = get_screenshot(self.hwnd)
             screenshot = np.array(screenshot)
             screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2BGR)
@@ -91,7 +96,7 @@ class AutoBot:
                     self.village_clearer.collect_loot_cart(screenshot)
                 if self.village_clearer.clear_obstacle(screenshot) or self.tries >= 6:
                     self.data_storer.update_account_info(self.account_changer.account_number,
-                                                    rocks_removed=self.village_clearer.rocks_removed)
+                                                         rocks_removed=self.village_clearer.rocks_removed)
                     self.mode += 1
                     self.tries = 0
             elif self.mode == 2:  # Upgrades and purchases buildings
@@ -123,11 +128,11 @@ class AutoBot:
                     self.trainer_and_attacker.attack_desynced = False
                     self.trainer_and_attacker.attack_completed = False
                     self.data_storer.update_account_info(self.account_changer.account_number,
-                                                    total_gold=self.trainer_and_attacker.total_gold,
-                                                    total_elixir=self.trainer_and_attacker.total_elixir,
-                                                    gold_read=self.trainer_and_attacker.gold_read,
-                                                    elixir_read=self.trainer_and_attacker.elixir_read,
-                                                    )
+                                                         total_gold=self.trainer_and_attacker.total_gold,
+                                                         total_elixir=self.trainer_and_attacker.total_elixir,
+                                                         gold_read=self.trainer_and_attacker.gold_read,
+                                                         elixir_read=self.trainer_and_attacker.elixir_read,
+                                                         )
                     self.mode += 1
                     self.tries = 0
                 else:
@@ -135,18 +140,19 @@ class AutoBot:
                     if self.trainer_and_attacker.attack_completed:
                         # Stores the collected account data in a csv file
                         self.data_storer.update_account_info(self.account_changer.account_number,
-                                                        total_gold=self.trainer_and_attacker.total_gold,
-                                                        total_elixir=self.trainer_and_attacker.total_elixir,
-                                                        gold_read=self.trainer_and_attacker.gold_read,
-                                                        elixir_read=self.trainer_and_attacker.elixir_read,
-                                                        )
+                                                             total_gold=self.trainer_and_attacker.total_gold,
+                                                             total_elixir=self.trainer_and_attacker.total_elixir,
+                                                             gold_read=self.trainer_and_attacker.gold_read,
+                                                             elixir_read=self.trainer_and_attacker.elixir_read,
+                                                             )
             elif self.mode == 4:  # Sets base layouts
                 # Stores the town hall level for the account in a csv file
                 town_hall_level = self.village_builder.get_town_hall_level(screenshot)
                 if town_hall_level > 0:
                     self.data_storer.update_account_info(self.account_changer.account_number,
-                                                    town_hall=self.village_builder.get_town_hall_level(screenshot))
-                self.village_builder.town_hall_level = int(self.data_storer.get_account_info(self.account_changer.account_number)[0])
+                                                         town_hall=self.village_builder.get_town_hall_level(screenshot))
+                self.village_builder.town_hall_level = int(
+                    self.data_storer.get_account_info(self.account_changer.account_number)[0])
                 if self.village_builder.town_hall_level >= 4 and randrange(0, 11) == 10:
                     self.village_builder.building_base = True
                 if self.village_builder.building_base:
@@ -184,22 +190,24 @@ class AutoBot:
                     # Reads values from csv file for the new account
                     self.village_clearer.rocks_removed = literal_eval(
                         self.data_storer.get_account_info(self.account_changer.account_number)[1])
-                    self.village_upgrader.town_hall_level = int(self.data_storer.get_account_info(self.account_changer.account_number)[0])
-                    self.trainer_and_attacker.town_hall_level = int(self.data_storer.get_account_info(self.account_changer.account_number)[0])
-                    self.trainer_and_attacker.total_gold = int(self.data_storer.get_account_info(self.account_changer.account_number)[2])
-                    self.trainer_and_attacker.total_elixir = int(self.data_storer.get_account_info(self.account_changer.account_number)[3])
-                    self.trainer_and_attacker.gold_read = int(self.data_storer.get_account_info(self.account_changer.account_number)[4])
-                    self.trainer_and_attacker.elixir_read = int(self.data_storer.get_account_info(self.account_changer.account_number)[5])
+                    self.village_upgrader.town_hall_level = int(
+                        self.data_storer.get_account_info(self.account_changer.account_number)[0])
+                    self.trainer_and_attacker.town_hall_level = int(
+                        self.data_storer.get_account_info(self.account_changer.account_number)[0])
+                    self.trainer_and_attacker.total_gold = int(
+                        self.data_storer.get_account_info(self.account_changer.account_number)[2])
+                    self.trainer_and_attacker.total_elixir = int(
+                        self.data_storer.get_account_info(self.account_changer.account_number)[3])
+                    self.trainer_and_attacker.gold_read = int(
+                        self.data_storer.get_account_info(self.account_changer.account_number)[4])
+                    self.trainer_and_attacker.elixir_read = int(
+                        self.data_storer.get_account_info(self.account_changer.account_number)[5])
                     self.mode += 1
                     self.tries = 0
             else:
                 self.mode = 1
 
-            print(self.mode)
             self.tries += 1
 
-            # cv.imshow("What the code sees", screenshot)
-
-            if cv.waitKey(1) == ord("q"):
-                cv.destroyWindow()
-                break
+            # Updates GUI
+            self.main_window.update_mode_tries_text(self.mode, self.tries)

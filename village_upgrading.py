@@ -10,6 +10,8 @@ class VillageUpgrader:
     :param window_rectangle: The rectangle of the application window gotten with GetWindowRect
     """
 
+    main_window = None
+
     window_rectangle = []
     suggested_upgrades_rectangle = []
     suggested_upgrades = []
@@ -29,7 +31,10 @@ class VillageUpgrader:
     # DARK_ELIXIR_COLOR = [57, 31, 46]
     # NEW_BUILDING_COLOR = [13, 255, 13]
 
-    def __init__(self, window_rectangle: list):
+    def __init__(self, window_rectangle: list, main_window):
+
+        self.main_window = main_window
+
         self.window_rectangle = window_rectangle
 
         self.ZERO_BUILDERS = (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .89)
@@ -47,7 +52,7 @@ class VillageUpgrader:
         Opens the builder menu if there are available builders
         :param screenshot: screenshot of bluestacks
         """
-        print("looking for builders")
+        self.main_window.update_message_text("Opening the builder menu.")
         if self.check_for_builders(screenshot):
             builder_face_rectangle = find_image_rectangle(self.BUILDER_FACE, screenshot)
             if builder_face_rectangle:
@@ -68,6 +73,7 @@ class VillageUpgrader:
         number_of_suggested_upgrades = 2
         if self.town_hall_level >= 7:
             number_of_suggested_upgrades = 3
+        self.main_window.update_message_text("Looking for available upgrades.")
         if self.suggested_upgrades_rectangle:
             for i in range(1, number_of_suggested_upgrades + 1):
                 self.suggested_upgrades.append([self.suggested_upgrades_rectangle[0],
@@ -106,6 +112,7 @@ class VillageUpgrader:
         :param screenshot: Screenshot of bluestacks
         :return: True if it has finished upgrading a building, False if it has not
         """
+        self.main_window.update_message_text("Upgrading a building.")
         # This gross looking if statement is for efficiency, it only checks the screenshot for the image if it can't
         # find the previous image in the screenshot
         check_button_rectangle = find_image_rectangle(self.CHECK_BUTTON, screenshot)
@@ -142,6 +149,7 @@ class VillageUpgrader:
                 if self.town_hall_level == 3:
                     cc_upgrade_button_rectangle = find_image_rectangle(self.CC_UPGRADE_BUTTON, screenshot)
                 if cc_upgrade_button_rectangle:
+                    self.main_window.update_message_text("Rebuilding the Clan Castle.")
                     x, y = get_center_of_rectangle(cc_upgrade_button_rectangle)
                     # Clicks the upgrade button
                     click(x, y, self.window_rectangle)
@@ -151,6 +159,7 @@ class VillageUpgrader:
                 else:
                     arrow_rectangle = find_image_rectangle(self.ARROW, screenshot)
                     if arrow_rectangle:
+                        self.main_window.update_message_text("Buying a new building.")
                         x = arrow_rectangle[0]
                         y = arrow_rectangle[1] + arrow_rectangle[3]
                         # Clicks in the bottom left of the arrow, or where its pointing
@@ -158,6 +167,7 @@ class VillageUpgrader:
                         sleep(1)
                     else:
                         self.find_suggested_upgrades(screenshot)
+                        self.main_window.update_message_text("Checking for available upgrades.")
                         # If the upgrade button or arrow are not present, it checks to see if there are any available upgrades
                         available_upgrades = []
                         for i, suggested_upgrade in enumerate(self.suggested_upgrades):
