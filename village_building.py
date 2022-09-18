@@ -11,6 +11,8 @@ class VillageBuilder:
     :param window_rectangle: The rectangle of the application window gotten with GetWindowRect
     """
 
+    main_window = None
+
     window_rectangle = []
     town_hall_level = 2
     building_base = False
@@ -37,7 +39,10 @@ class VillageBuilder:
         "https://link.clashofclans.com/en?action=OpenLayout&id=TH14%3AHV%3AAAAALAAAAAHuYCXPQ0h8bzRVZv93-6Zc"
     )
 
-    def __init__(self, window_rectangle: list):
+    def __init__(self, window_rectangle: list, main_window):
+
+        self.main_window = main_window
+
         self.window_rectangle = window_rectangle
 
         self.TOWN_HALLS = (
@@ -68,6 +73,7 @@ class VillageBuilder:
         self.CANCEL_BUTTON = (cv.imread("assets/buttons/cancel_button.jpg", cv.IMREAD_UNCHANGED), .95)
 
     def get_town_hall_level(self, screenshot: Image) -> int:
+        self.main_window.update_message_text("Getting the current account's town hall level.")
         zoom_out()
         for i, th in enumerate(self.TOWN_HALLS):
             if find_image_rectangle(th, screenshot):
@@ -76,6 +82,7 @@ class VillageBuilder:
         return 0
 
     def copy_base_layout(self, screenshot: Image):
+        self.main_window.update_message_text("Getting the base layout link.")
         i_have_clash_button_rectangle = find_image_rectangle(self.I_HAVE_CLASH_BUTTON, screenshot)
         if self.base_copied and i_have_clash_button_rectangle:
             x, y = get_center_of_rectangle(i_have_clash_button_rectangle)
@@ -109,6 +116,7 @@ class VillageBuilder:
             else:
                 chrome_button_rectangle = find_image_rectangle(self.CHROME_BUTTON, screenshot)
                 if chrome_button_rectangle:
+                    self.main_window.update_message_text("Opening chrome.")
                     x, y = get_center_of_rectangle(chrome_button_rectangle)
                     click(x, y, self.window_rectangle)
                     sleep(1.5)
@@ -124,6 +132,7 @@ class VillageBuilder:
                         sleep(1.5)
 
     def handle_base_edit(self, screenshot: Image) -> bool:
+        self.main_window.update_message_text("Attempting to set the base layout.")
         active_village_rectangle = find_image_rectangle(self.ACTIVE_VILLAGE, screenshot)
         if not active_village_rectangle:
             active_village_rectangle = find_image_rectangle(self.ACTIVE_VILLAGE_2, screenshot)

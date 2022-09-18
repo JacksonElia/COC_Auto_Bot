@@ -9,6 +9,8 @@ class TrainerAndAttacker:
     :param window_rectangle: The rectangle of the application window gotten with GetWindowRect
     """
 
+    main_window = None
+
     window_rectangle = []
     town_hall_level = 2
     gold_read = 0
@@ -38,7 +40,10 @@ class TrainerAndAttacker:
     LABORATORY_X_BUTTON: tuple
     RETURN_HOME_BUTTON: tuple
 
-    def __init__(self, window_rectangle: list):
+    def __init__(self, window_rectangle: list, main_window):
+
+        self.main_window = main_window
+
         self.window_rectangle = window_rectangle
 
         self.LABORATORIES = (
@@ -82,6 +87,7 @@ class TrainerAndAttacker:
         Trains either goblins or barbarians for attacking
         :param screenshot: Screenshot of bluestacks
         """
+        self.main_window.update_message_text("Training troops.")
         # Doesn't try to train troops if they have already been trained
         if self.troops_trained:
             return
@@ -166,6 +172,7 @@ class TrainerAndAttacker:
         :param screenshot: Screenshot of bluestacks
         :return: True if the attack has been finished
         """
+        self.main_window.update_message_text("Finding a base to attack.")
         return_home_button_rectangle = find_image_rectangle(self.RETURN_HOME_BUTTON, screenshot)
         if return_home_button_rectangle:
             # Appears once the attack is finished
@@ -209,6 +216,7 @@ class TrainerAndAttacker:
                 self.total_elixir = elixir
                 self.elixir_read += 1
             # Attacks if the base has a lot of loot
+            self.main_window.update_message_text("Trying to find a base with a lot of loot.")
             if ((self.gold_read > 4 and self.elixir_read > 4) and (1.25 * gold >= self.total_gold / self.gold_read and
                     1.25 * elixir >= self.total_elixir / self.elixir_read * 1.25)) or self.gold_read > 20:
                 self.attack(screenshot)
@@ -250,6 +258,7 @@ class TrainerAndAttacker:
         :param screenshot: Screenshot of bluestacks
         :return:
         """
+        self.main_window.update_message_text("Attacking the base.")
         self.troops_trained = False
         # This helps the bot avoid getting stuck when it gets slightly de-synced
         if type(screenshot) != float:
@@ -281,6 +290,7 @@ class TrainerAndAttacker:
         :param screenshot: The screenshot of Bluestacks
         :return: True if it is done trying to upgrade a troop
         """
+        self.main_window.update_message_text("Attempting to upgrade troops and spells.")
         if not self.lab_opened:
             research_button_rectangle = find_image_rectangle(self.RESEARCH_BUTTON, screenshot)
             if research_button_rectangle:

@@ -8,6 +8,8 @@ class AccountChanger:
     Changes COC accounts using Supercell ID
     """
 
+    main_window = None
+
     window_rectangle = []
     number_of_accounts = 1
 
@@ -16,7 +18,10 @@ class AccountChanger:
     scrolled_to_account = False
     account_changed = False
 
-    def __init__(self, window_rectangle: list, number_of_accounts: int):
+    def __init__(self, window_rectangle: list, number_of_accounts: int, main_window):
+
+        self.main_window = main_window
+
         self.window_rectangle = window_rectangle
         self.number_of_accounts = number_of_accounts
 
@@ -33,6 +38,7 @@ class AccountChanger:
         :param screenshot: Screenshot of Bluestacks
         :return:
         """
+        self.main_window.update_message_text("Opening the account menu.")
         # Doesn't try to open the menu if it is already opened
         if self.accounts_menu_opened:
             return
@@ -60,6 +66,7 @@ class AccountChanger:
         :param screenshot: Screenshot of Bluestacks
         :return:
         """
+        self.main_window.update_message_text("Switching accounts.")
         # The rectangles are sorted by y (lowest first)
         coc_icon_rectangles = find_image_rectangles(self.COC_ICON, screenshot)
         if coc_icon_rectangles:
