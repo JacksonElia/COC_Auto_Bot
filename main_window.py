@@ -1,4 +1,5 @@
 from PyQt6 import QtWidgets
+from threading import *
 from GUI.ui_main_window import Ui_MainWindow
 
 
