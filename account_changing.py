@@ -71,6 +71,7 @@ class AccountChanger:
         coc_icon_rectangles = find_image_rectangles(self.COC_ICON, screenshot)
         if coc_icon_rectangles:
             if self.scrolled_to_account:
+                self.main_window.update_message_text("Selecting account.")
                 if self.account_number <= self.number_of_accounts - 3:
                     # Opens the new account
                     click(coc_icon_rectangles[0][0], coc_icon_rectangles[0][1], self.window_rectangle)
@@ -105,6 +106,7 @@ class AccountChanger:
                 self.scrolled_to_account = True
         else:
             # Sometimes Bluestacks inexplicably switches to chrome or the homepage, this fixes it
+            self.main_window.update_message_text("Reopening bluestacks.")
             i_have_clash_button_rectangle = find_image_rectangle(self.I_HAVE_CLASH_BUTTON, screenshot)
             if i_have_clash_button_rectangle:
                 keyDown("ctrl")
@@ -128,4 +130,3 @@ class AccountChanger:
                     x, y = get_center_of_rectangle(clash_of_clans_button_rectangle)
                     click(x, y, self.window_rectangle)
                     sleep(1)
-

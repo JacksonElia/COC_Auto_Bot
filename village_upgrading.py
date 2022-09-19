@@ -187,6 +187,7 @@ class VillageUpgrader:
                             available_upgrade = available_upgrades[randrange(0, len(available_upgrades))]
                             x, y = get_center_of_rectangle(available_upgrade)
                             # Clicks on the building to be upgraded
+                            self.main_window.update_message_text("Found building to be upgraded.")
                             click(x, y, self.window_rectangle)
                             self.upgrading_building = True
                             sleep(1)

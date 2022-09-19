@@ -1,6 +1,6 @@
 from bot_functions import *
 from interaction_functions import *
-from PyQt6 import QtWidgets
+from PyQt6 import QtWidgets, QtGui
 from threading import *
 from GUI.ui_main_window import Ui_MainWindow
 
@@ -13,6 +13,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, *args, obj=None, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
+        self.setWindowTitle("COC Auto Bot")
+        self.setWindowIcon(QtGui.QIcon("GUI/COC_Auto_Bot_Icon.png"))
         self.pushButton.clicked.connect(self.start_button_clicked)
         self.spinBox.valueChanged.connect(self.spinbox_value_changed)
         self.spinBox.setValue(1)
