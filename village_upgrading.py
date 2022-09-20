@@ -70,9 +70,9 @@ class VillageUpgrader:
         self.suggested_upgrades_rectangle = find_image_rectangle(self.SUGGESTED_UPGRADES, screenshot)
         # Uses the position of the suggested upgrades text to create 2-3 rectangles where suggested upgrades could be,
         # town halls without dark elixir only have 2 suggested upgrades
-        number_of_suggested_upgrades = 2
+        number_of_suggested_upgrades = 3
         if self.town_hall_level >= 7:
-            number_of_suggested_upgrades = 3
+            number_of_suggested_upgrades = 4
         self.main_window.window_message = "Looking for available upgrades."
         if self.suggested_upgrades_rectangle:
             for i in range(1, number_of_suggested_upgrades + 1):
