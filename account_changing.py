@@ -38,7 +38,7 @@ class AccountChanger:
         :param screenshot: Screenshot of Bluestacks
         :return:
         """
-        self.main_window.update_message_text("Opening the account menu.")
+        self.main_window.window_message = "Opening the account menu."
         # Doesn't try to open the menu if it is already opened
         if self.accounts_menu_opened:
             return
@@ -66,12 +66,12 @@ class AccountChanger:
         :param screenshot: Screenshot of Bluestacks
         :return:
         """
-        self.main_window.update_message_text("Switching accounts.")
+        self.main_window.window_message = "Switching accounts."
         # The rectangles are sorted by y (lowest first)
         coc_icon_rectangles = find_image_rectangles(self.COC_ICON, screenshot)
         if coc_icon_rectangles:
             if self.scrolled_to_account:
-                self.main_window.update_message_text("Selecting account.")
+                self.main_window.window_message = "Selecting account."
                 if self.account_number <= self.number_of_accounts - 3:
                     # Opens the new account
                     click(coc_icon_rectangles[0][0], coc_icon_rectangles[0][1], self.window_rectangle)
@@ -106,7 +106,7 @@ class AccountChanger:
                 self.scrolled_to_account = True
         else:
             # Sometimes Bluestacks inexplicably switches to chrome or the homepage, this fixes it
-            self.main_window.update_message_text("Reopening bluestacks.")
+            self.main_window.window_message = "Reopening bluestacks."
             i_have_clash_button_rectangle = find_image_rectangle(self.I_HAVE_CLASH_BUTTON, screenshot)
             if i_have_clash_button_rectangle:
                 keyDown("ctrl")

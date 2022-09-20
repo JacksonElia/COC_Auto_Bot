@@ -1,3 +1,5 @@
+from PyQt6.QtWidgets import QApplication
+
 from main_window import *
 import sys
 
@@ -7,6 +9,10 @@ def main():
     app = QtWidgets.QApplication(sys.argv)
     window = MainWindow()
     window.show()
+    while True:
+        window.update_message_text(window.window_message)
+        window.update_mode_tries_text(window.mode, window.tries)
+        QApplication.processEvents()
     app.exec()
 
 

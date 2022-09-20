@@ -1,4 +1,6 @@
-from bot_functions import *
+from PyQt6.QtCore import QThread, pyqtSignal
+
+from bot_functions import AutoBot
 from interaction_functions import *
 from PyQt6 import QtWidgets, QtGui
 from threading import *
@@ -9,6 +11,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     bot_active = False
     auto_bot = None
+    window_message = ""
+    mode = 0
+    tries = 0
 
     def __init__(self, *args, obj=None, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)

@@ -208,6 +208,5 @@ class AutoBot:
                 self.mode = 1
 
             self.tries += 1
-
-            # Updates GUI
-            self.main_window.update_mode_tries_text(self.mode, self.tries)
+            self.main_window.mode = self.mode
+            self.main_window.tries = self.tries
