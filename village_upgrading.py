@@ -25,7 +25,7 @@ class VillageUpgrader:
     ARROW: tuple
     CHECK_BUTTON: tuple
     NOT_ENOUGH_RESOURCES_COLOR = [127, 137, 254]  # In [B, G, R]
-    FILLER_TEXT_COLOR = [202, 244, 202]
+    FILLER_TEXT_COLOR = [126, 250, 208]
     GOLD_COLOR = [84, 251, 255]
     ELIXIR_COLOR = [254, 52, 249]
     # DARK_ELIXIR_COLOR = [57, 31, 46]
@@ -37,7 +37,7 @@ class VillageUpgrader:
 
         self.window_rectangle = window_rectangle
 
-        self.ZERO_BUILDERS = (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .89)
+        self.ZERO_BUILDERS = (cv.imread("assets/misc/zero_builders.jpg", cv.IMREAD_UNCHANGED), .91)
         self.BUILDER_FACE = (cv.imread("assets/misc/builder_face.jpg", cv.IMREAD_UNCHANGED), .91)
         self.SUGGESTED_UPGRADES = (cv.imread("assets/misc/suggested_upgrades.jpg", cv.IMREAD_UNCHANGED), .8)
         self.SUGGESTED_UPGRADES_2 = (cv.imread("assets/misc/suggested_upgrades_2.jpg", cv.IMREAD_UNCHANGED), .8)
@@ -173,7 +173,7 @@ class VillageUpgrader:
                         for i, suggested_upgrade in enumerate(self.suggested_upgrades):
                             # Crops the screenshot for efficiency in color detection
                             cropped_screenshot = screenshot[suggested_upgrade[1] - 3:suggested_upgrade[1] + suggested_upgrade[3],
-                                                 suggested_upgrade[0] + 200:suggested_upgrade[0] + suggested_upgrade[2]]
+                                                 suggested_upgrade[0] + 100:suggested_upgrade[0] + suggested_upgrade[2]]
                             # Makes sure there are enough resources for upgrading
                             if not detect_if_color_present(self.NOT_ENOUGH_RESOURCES_COLOR, cropped_screenshot) and not detect_if_color_present(self.FILLER_TEXT_COLOR, cropped_screenshot) and not self.upgrading_building:
                                 # Makes sure it doesn't start upgrading the boat
